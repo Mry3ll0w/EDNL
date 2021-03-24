@@ -1,0 +1,3 @@
+D:/Proyectos/EDNL/cmake-build-debug/CMakeFiles/EDNLv2.dir
+D:/Proyectos/EDNL/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/Proyectos/EDNL/cmake-build-debug/CMakeFiles/rebuild_cache.dir

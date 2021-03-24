@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/Proyectos/EDNL/main.cpp
+iostream
+-
+tads/agenEnlazado.h
+D:/Proyectos/EDNL/tads/agenEnlazado.h
+tads/agen_E-S.h
+D:/Proyectos/EDNL/tads/agen_E-S.h
+tads/practica3.h
+D:/Proyectos/EDNL/tads/practica3.h
+
+D:/Proyectos/EDNL/tads/agenEnlazado.h
+cassert
+-
+iostream
+-
+
+D:/Proyectos/EDNL/tads/agen_E-S.h
+agenEnlazado.h
+D:/Proyectos/EDNL/tads/agenEnlazado.h
+cassert
+-
+iostream
+-
+fstream
+-
+
+D:/Proyectos/EDNL/tads/practica3.h
+agenEnlazado.h
+D:/Proyectos/EDNL/tads/agenEnlazado.h
+algorithm
+-
+
