@@ -3,4 +3,4 @@ project(EDNLv2)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(EDNLv2 main.cpp)
+add_executable(EDNLv2 main.cpp tads/abb.h)

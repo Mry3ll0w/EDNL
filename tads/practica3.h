@@ -58,5 +58,32 @@ int altura_nodo(Agen<t>tree, typename Agen<t>::nodo n){
        return std::max((1+altura_nodo(tree,tree.hijoIzqdo(n))),1+altura_nodo(tree,tree.hermDrcho(tree.hijoIzqdo(n))))+1;
 }
 
+Agen<int>poda_rec(int cota,typename Agen<int>::nodo n,Agen<int>Arbol)
+{
+    if (n==Agen<int>::NODO_NULO)
+    {
+        return Arbol;//NO se ha encontrado el elemento
+    }
+
+    if (Arbol.elemento(n)==cota)
+    {
+        Agen<int>:: nodo nodo_temp;
+        nodo_temp=n;
+        while (nodo_temp!=Agen<int>::NODO_NULO)//Recorremos el arbol a partir del nodo con el elemento x
+        {
+            if ((Arbol.hijoIzqdo(nodo_temp)==Agen<int>::NODO_NULO)&&(Arbol.hermDrcho(Arbol.hijoIzqdo(nodo_temp))==Agen<int>::NODO_NULO)){
+                Arbol.eliminarHijoIzqdo(nodo_temp);
+                Arbol.eliminarHermDrcho(Arbol.hijoIzqdo(nodo_temp));
+            }
+            nodo_temp=Arbol.hermDrcho(nodo_temp);
+        }
+    }
+    return  poda_rec(cota,Arbol.hijoIzqdo(n),Arbol);
+}
+
+Agen<int> poda(int cota,Agen<int>Arbol)
+{
+    return poda_rec(cota,Arbol.raiz(),Arbol);
+}
 
 #endif //EDNL_PRACTICA3_H

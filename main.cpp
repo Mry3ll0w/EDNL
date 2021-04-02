@@ -13,6 +13,6 @@ int main() {
     rellenarAgen(fe, A); // Desde fichero.
     fe.close();
     cout<<grado_arbol(A)<<endl;
-    cout<<altura_nodo(A,A.hijoIzqdo(A.raiz()))<<endl;
+
     return 0;
 }
