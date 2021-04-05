@@ -86,6 +86,9 @@
 		<Unit filename="D:/Proyectos/EDNL/tads/abb.h">
 			<Option target="EDNLv2"/>
 		</Unit>
+		<Unit filename="D:/Proyectos/EDNL/tads/practica4.h">
+			<Option target="EDNLv2"/>
+		</Unit>
 		<Unit filename="D:/Proyectos/EDNL/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
