@@ -15,6 +15,14 @@ tads/agen_E-S.h
 D:/Proyectos/EDNL/tads/agen_E-S.h
 tads/practica3.h
 D:/Proyectos/EDNL/tads/practica3.h
+tads/abb.h
+D:/Proyectos/EDNL/tads/abb.h
+tads/practica4.h
+D:/Proyectos/EDNL/tads/practica4.h
+
+D:/Proyectos/EDNL/tads/abb.h
+cassert
+-
 
 D:/Proyectos/EDNL/tads/agenEnlazado.h
 cassert
@@ -32,9 +40,23 @@ iostream
 fstream
 -
 
+D:/Proyectos/EDNL/tads/arbolbinenla.h
+cassert
+-
+cmath
+-
+
 D:/Proyectos/EDNL/tads/practica3.h
 agenEnlazado.h
 D:/Proyectos/EDNL/tads/agenEnlazado.h
 algorithm
 -
+
+D:/Proyectos/EDNL/tads/practica4.h
+vector
+-
+abb.h
+D:/Proyectos/EDNL/tads/abb.h
+arbolbinenla.h
+D:/Proyectos/EDNL/tads/arbolbinenla.h
 
