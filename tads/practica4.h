@@ -91,4 +91,23 @@ Abb<t> interseccion_arbol(Abb<t>& a1, Abb<t>& a2){
     return temp;
 }
 
+template<typename t>
+void operador_resta(Abb<t>&a1,std::vector<t>parser_vec,typename std::vector<t>::iterator i,Abb<t>& res){
+    if ((!a1.vacio())||(i!=parser_vec.size())){
+        operador_resta(a1.izqdo(),parser_vec,i);
+        res.insertar(a1.elemento()-*i);
+        ++i;
+        operador_resta(a1.drcho(),parser_vec,i);
+    }
+}
+
+template<typename t>
+Abb<t>operador_rombo(Abb<t>&a1, Abb<t>& a2){
+    Abb<t>inter_abb,union_abb,res;
+    inter_abb = interseccion_arbol(a1,a2);
+    union_abb=union_arbol(a1,a2);
+    res = operador_resta(inter_abb,union_abb);
+    return res;
+}
+
 #endif //EDNLV2_PRACTICA4_H
