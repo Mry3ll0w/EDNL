@@ -83,7 +83,16 @@
 		<Unit filename="D:/Proyectos/EDNL/main.cpp">
 			<Option target="EDNLv2"/>
 		</Unit>
+		<Unit filename="D:/Proyectos/EDNL/p2.h">
+			<Option target="EDNLv2"/>
+		</Unit>
 		<Unit filename="D:/Proyectos/EDNL/tads/abb.h">
+			<Option target="EDNLv2"/>
+		</Unit>
+		<Unit filename="D:/Proyectos/EDNL/tads/funciones_abin.h">
+			<Option target="EDNLv2"/>
+		</Unit>
+		<Unit filename="D:/Proyectos/EDNL/tads/p1.h">
 			<Option target="EDNLv2"/>
 		</Unit>
 		<Unit filename="D:/Proyectos/EDNL/tads/practica4.h">

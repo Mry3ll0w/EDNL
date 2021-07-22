@@ -11,8 +11,8 @@ using namespace std;
 template <typename t>
 void preorden(Abin<t>& a,typename Abin<t>::nodo n){
     if(n!=Abin<t>::NODO_NULO){
+        cout<<a.elemento(n)<<endl;//Se procesa antes de recorrer
         preorden(a,a.hijoIzqdoB(n));
-        cout<<a.elemento(n)<<endl;
         preorden(a,a.hijoDrchoB(n));
     }
 }
@@ -30,8 +30,8 @@ template <typename t>
 void postorden_abin(Abin<t>& a, typename Abin<t>::nodo n){
     if (n!=Abin<t>::NODO_NULO){
         postorden_abin(a,a.hijoIzqdoB(n));
-        cout<<a.elemento(n)<<endl;
         postorden_abin(a,a.hijoDrchoB(n));
+        cout<<a.elemento(n)<<endl;
     }
 }
 
