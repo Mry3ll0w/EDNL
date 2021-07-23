@@ -13,13 +13,12 @@ int main() {
     a.insertarHijoIzqdoB(a.raizB(),'c');
     a.insertarHijoIzqdoB(a.hijoIzqdoB(a.raizB()),'d');
 
-    Abin<char>b;
-    b.insertarRaizB('a');
-    b.insertarHijoDrchoB(b.raizB(),'x');
-    b.insertarHijoIzqdoB(b.raizB(),'c');
-    b.insertarHijoIzqdoB(b.hijoIzqdoB(b.raizB()),'d');
+    Abin<string>b;
+    b.insertarRaizB("+");
+    b.insertarHijoDrchoB(b.raizB(),"3");
+    b.insertarHijoIzqdoB(b.raizB(),"4");
 
-    ej2(a);
+    std::cout<<ej3(b)<<std::endl;
 
     return 0;
 }

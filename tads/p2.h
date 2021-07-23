@@ -1,8 +1,10 @@
 //@by MrY3ll0w
 #ifndef EDNLV2_P2_H
 #define EDNLV2_P2_H
+#include <string>
 #include <iostream>
 #include "arbolbinenla.h"
+//Funcion generica para realizar la impresion de los elementos de un arbol binario
 template <class t>
 void print_a(typename Abin<t>::nodo n,Abin<t>&a){
     if(n!=Abin<t>::NODO_NULO){
@@ -12,6 +14,8 @@ void print_a(typename Abin<t>::nodo n,Abin<t>&a){
     }
 
 }
+
+
 /*
  * EJERCICIO 1
  * Dos árboles binarios son similares cuando tienen idéntica estructura de ramificación,
@@ -40,7 +44,7 @@ bool ej1(const Abin<t>& a, const Abin<t>&b){
     return simil_rec(a.raizB(),b.raizB(),a,b);
 }
 
-/**
+/**EJERCICIO 2
  * Para un árbol binario B, podemos construir el árbol binario reflejado B
  * R cambiando los subárboles izquierdo y derecho en cada nodo. Implementa un
  * subprograma que devuelva el árbol binario reflejado de uno dado
@@ -65,4 +69,46 @@ Abin<t> ej2(Abin<t>&a){
     return b;
 }
 
+/*
+ * EJERCICIO 3
+ * El TAD árbol binario puede albergar expresiones matemáticas mediante un árbol de
+ * expresión. Dentro del árbol binario los nodos hojas contendrán los operandos, y el resto
+ * de los nodos los operadores.
+ * a) Define el tipo de los elementos del árbol para que los nodos puedan almacenar
+ * operadores y operandos.
+ * EL tipo de dato mas proclive para esto es un tipo string
+ *
+ * b) Implementa una función que tome un árbol binario de expresión (aritmética) y
+ * devuelva el resultado de la misma. Por simplificar el problema se puede asumir que el
+ * árbol representa una expresión correcta. Los operadores binarios posibles en la expresión
+ * aritmética serán suma, resta, multiplicación y división.
+ */
+double procesar_arbol(typename Abin<std::string>::nodo n,Abin<std::string>&a){
+    if(a.hijoIzqdoB(n)==Abin<std::string>::NODO_NULO && a.hijoDrchoB(n)==Abin<std::string>::NODO_NULO){//FALLABA al no comprobar que es Hoja
+        return std::stof(a.elemento(n)); //Si ha recorrido el arbol devuelve 0
+    }
+    else{
+        if (a.elemento(n)=="+"){
+            return (procesar_arbol(a.hijoIzqdoB(n),a) + procesar_arbol(a.hijoDrchoB(n),a) );
+        }
+        else if(a.elemento(n)=="-"){
+            return (procesar_arbol(a.hijoIzqdoB(n),a) - procesar_arbol(a.hijoDrchoB(n),a) );
+        }
+        else if (a.elemento(n)=="*"){
+            return (procesar_arbol(a.hijoIzqdoB(n),a) * procesar_arbol(a.hijoDrchoB(n),a) );
+        }
+        else if (a.elemento(n)=="/"){
+            return (procesar_arbol(a.hijoIzqdoB(n),a) / procesar_arbol(a.hijoDrchoB(n),a) );
+        }
+    }
+}
+
+double ej3(Abin<std::string>&a){
+    return procesar_arbol(a.raizB(),a);
+}
+
+/*
+ * EJERCICIO 4
+ * preguntar a Dani xdd
+ */
 #endif //EDNLV2_P2_H
