@@ -1,24 +1,12 @@
 #include <iostream>
-
-#include "tads/p2.h"
-
-typedef char tElto;
-// fin de lectura
-using namespace std;
+#include "tads/p3.h"
 
 int main() {
-    Abin<char>a;
-    a.insertarRaizB('a');
-    a.insertarHijoDrchoB(a.raizB(),'b');
-    a.insertarHijoIzqdoB(a.raizB(),'c');
-    a.insertarHijoIzqdoB(a.hijoIzqdoB(a.raizB()),'d');
-
-    Abin<string>b;
-    b.insertarRaizB("+");
-    b.insertarHijoDrchoB(b.raizB(),"3");
-    b.insertarHijoIzqdoB(b.raizB(),"4");
-
-    std::cout<<ej3(b)<<std::endl;
-
+    Agen<char>arbol;
+    arbol.insertarRaiz('a');
+    arbol.insertarHijoIzqdo(arbol.raiz(),'b');
+    arbol.insertarHermDrcho(arbol.hijoIzqdo(arbol.raiz()),'c');
+    arbol.insertarHermDrcho(arbol.hermDrcho(arbol.hijoIzqdo(arbol.raiz())),'d');
+    std::cout<< ej3(arbol)<<std::endl;
     return 0;
 }
