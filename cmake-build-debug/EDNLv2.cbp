@@ -98,6 +98,9 @@
 		<Unit filename="D:/Proyectos/EDNL/tads/p3.h">
 			<Option target="EDNLv2"/>
 		</Unit>
+		<Unit filename="D:/Proyectos/EDNL/tads/p4.h">
+			<Option target="EDNLv2"/>
+		</Unit>
 		<Unit filename="D:/Proyectos/EDNL/tads/practica4.h">
 			<Option target="EDNLv2"/>
 		</Unit>

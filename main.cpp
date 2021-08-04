@@ -1,12 +1,21 @@
 #include <iostream>
-#include "tads/p3.h"
+#include "tads/p4.h"
+#include <vector>
+
+
 
 int main() {
-    Agen<char>arbol;
-    arbol.insertarRaiz('a');
-    arbol.insertarHijoIzqdo(arbol.raiz(),'b');
-    arbol.insertarHermDrcho(arbol.hijoIzqdo(arbol.raiz()),'c');
-    arbol.insertarHermDrcho(arbol.hermDrcho(arbol.hijoIzqdo(arbol.raiz())),'d');
-    std::cout<< ej3(arbol)<<std::endl;
+    Abb<int>a,it;
+    a.insertar(1);
+    a.insertar(2);
+    a.insertar(3);
+    a.insertar(5);
+    a.insertar(4);
+    a.insertar(0);
+    show_abb(a);
+    std::cout <<std::endl;
+
+    a = ej2(a);
+    show_abb(a);
     return 0;
 }

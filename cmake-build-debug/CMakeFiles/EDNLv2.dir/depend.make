@@ -3,5 +3,5 @@
 
 CMakeFiles/EDNLv2.dir/main.cpp.obj: \
  ../main.cpp \
- ../tads/arbolgenenla.h \
- ../tads/p3.h
+ ../tads/abb.h \
+ ../tads/p4.h

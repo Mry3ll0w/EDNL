@@ -9,20 +9,20 @@
 D:/Proyectos/EDNL/main.cpp
 iostream
 -
-tads/p3.h
-D:/Proyectos/EDNL/tads/p3.h
+tads/p4.h
+D:/Proyectos/EDNL/tads/p4.h
+vector
+-
 
-D:/Proyectos/EDNL/tads/arbolgenenla.h
+D:/Proyectos/EDNL/tads/abb.h
 cassert
 -
-iostream
--
 
-D:/Proyectos/EDNL/tads/p3.h
-arbolgenenla.h
-D:/Proyectos/EDNL/tads/arbolgenenla.h
-algorithm
--
+D:/Proyectos/EDNL/tads/p4.h
 iostream
 -
+vector
+-
+abb.h
+D:/Proyectos/EDNL/tads/abb.h
 
