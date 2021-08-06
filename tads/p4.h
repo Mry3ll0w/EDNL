@@ -103,6 +103,73 @@ Abb<T> ej2(const Abb<T>& origen) //Funcion llamada
      equilibrar_abb(final,destino,0,destino.size()-1);
      return final;
  }
+ /**
+  * Dados dos conjuntos representados mediante árboles binarios de búsqueda,
+  * implementa la operación intersección de dos conjuntos, que devuelva como resultado
+  * otro conjunto que sea la intersección de ambos. El resultado debe quedar en un árbol
+  * equilibrado.
+  */
+ template <class T>
+ Abb<T> interseccion_abb(const Abb<T>&a, const Abb<T>&b){
+             Abb<T>final;
+             std::vector<T> elementos_a,elementos_b,destino;
+             abb_a_vector(a,elementos_a);
+             abb_a_vector(b,elementos_b);
+             //Primero pasamos los elementos de los distintos arboles a vectores
+             //Metemos los elementos de a y b que coinciden en el destino
+             for(auto i:elementos_a){
+                 for (auto j:elementos_b) {
+                     if (elementos_a[i]==elementos_b[j]){
+                         destino.push_back(i);
+                     }
+                 }
+             }
+             //Ordenamos los elementos del vector destino
+             destino.sort(destino.begin(), destino.end());
+             //Llamammos al equilibrar_abb
+             equilibrar_abb(final,destino,0,destino.size()-1);
+             return final;
+ }
 
+ /** EJERCICIO 5
+  * A (rombo) B = (a union b) - (a intersection b)
+  * Implementar operacion -
+  */
+  template <class t>
+  Abb<t> operator - (Abb<t>&a, Abb<t>&b){
+        //Arbol final resultado de la operación
+        Abb<t>abb_final;
+        //Pasamos a vector todos los elementos de los abb
+        std::vector<t> va,vb,v_final;
+        abb_a_vector(a,va);
+        abb_a_vector(b,vb);
+        //Hacemos la operacion - (elimina los elementos coincidentes con b del vector a)
+        //Con los elementos de a
+        for(auto i:va){
+            for(auto j:vb){
+                if (va[i]!=vb[j]){
+                    v_final.push_back(va[a]);
+                }
+            }
+        }
+        //Con los elementos de b
+        for(auto i:vb){
+            for(auto j:v_final){
+                if (vb[i]!=v_final[j]){
+                    v_final.push_back(vb[i]);
+                }
+            }
+        }
+        //Metemos los elemtos del vector final en el arbol final
+        for(auto i:v_final){
+            abb_final.insertar(v_final[i]);
+        }
+        return abb_final;
+  }
+
+  template<class t>
+  Abb<t> operador_rombo(Abb<t>&a,Abb<t>&b){
+      return union_abb(a,b)-interseccion_abb(a,b);
+  }
 
 #endif //EDNLV2_P4_H
