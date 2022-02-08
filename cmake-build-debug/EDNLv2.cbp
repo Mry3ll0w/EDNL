@@ -83,6 +83,9 @@
 		<Unit filename="D:/Proyectos/EDNL/main.cpp">
 			<Option target="EDNLv2"/>
 		</Unit>
+		<Unit filename="D:/Proyectos/EDNL/tads/Apo.hpp">
+			<Option target="EDNLv2"/>
+		</Unit>
 		<Unit filename="D:/Proyectos/EDNL/tads/abb.h">
 			<Option target="EDNLv2"/>
 		</Unit>
@@ -99,6 +102,9 @@
 			<Option target="EDNLv2"/>
 		</Unit>
 		<Unit filename="D:/Proyectos/EDNL/tads/p4.h">
+			<Option target="EDNLv2"/>
+		</Unit>
+		<Unit filename="D:/Proyectos/EDNL/tads/p5.h">
 			<Option target="EDNLv2"/>
 		</Unit>
 		<Unit filename="D:/Proyectos/EDNL/tads/practica4.h">
