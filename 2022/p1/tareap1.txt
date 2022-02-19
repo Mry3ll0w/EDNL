@@ -1,0 +1,17 @@
+Dudas en la implementacion de los ejercicios de la practica 1:\
+
+1) Nada destacable, sin ningún problema
+
+2) Nada destacable, sin ningún problema
+
+3) Nada destacable, sin ningún problema
+
+4) Creo que lo he implementado correctamente, aun asi tengo dudas con respecto a la profundidad 
+del arbol, ya que esta puede coincidir con la altura del arbol -1, ya que en ambos casos se debe
+hundir/subir en los niveles del arbol.
+
+5) He realizado todos los ejercicios anteriores con un arbol binario con celdas enlazadas.
+
+6) Realizado sin problemas.
+
+7) No termino de comprender como llegar al nivel antepenultimo, al igual que el concepto de pseudocompleto.

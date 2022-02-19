@@ -28,6 +28,7 @@ int altura_rec(typename Abin<t>::nodo n, Abin<t> &Arbol)
     return 1 + fmax(altura_rec(Arbol.hijoIzqdoB(n), Arbol), altura_rec(Arbol.hijoDrchoB(n), Arbol));
 
 }
+
 template <class t>
 size_t ej2(Abin<t>&a){
     return altura_rec(a.raizB(),a);
