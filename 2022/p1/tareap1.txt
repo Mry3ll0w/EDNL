@@ -1,4 +1,4 @@
-Dudas en la implementacion de los ejercicios de la practica 1:\
+Dudas en la implementacion de los ejercicios de la practica 1:
 
 1) Nada destacable, sin ningún problema
 
@@ -15,3 +15,24 @@ hundir/subir en los niveles del arbol.
 6) Realizado sin problemas.
 
 7) No termino de comprender como llegar al nivel antepenultimo, al igual que el concepto de pseudocompleto.
+
+# ------------------------------------------------------------------------------------------------------------------- #
+Apuntes clase 21/02/22
+
+    Profundidad de un arbol (no un nodo)
+
+    Intentar "blindar el codigo", buscar siempre el peor caso.
+
+    La altura de un nodo depende unicamente del la longitud de la rama más larga del árbol, siendo un árbol
+    nulo de altura 0 al ser la longitud de la rama mas larga 0.
+
+    Iterativa de la profundidad de un nodo, intentar priorizar CLARIDAD sobre OPTIMIZACION.
+
+    ARBOL siempre en mayuscula y nodo en minusculas, los parametros cambiantes se usan colocan al principio
+    y los constantes al final.
+
+    ACCEDER A LOS HIJOS CON LOS INDICES
+
+    
+
+

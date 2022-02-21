@@ -13,15 +13,20 @@ template <class t>
 int altura_arbol(const Abin<t>& a);
 
 template <class t>
-size_t desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol);
+unsigned int desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol);
 
 template <class t>
 bool pseudo_completo(Abin<t> &a, typename Abin<t>::nodo n);
 
+template <class t>
+int profundidad_nodo_iterativa(typename Abin<t>::nodo n,const Abin<t>& a);
+
+template <class t>
+unsigned int desequilibrio_arbol(typename Abin<t>::nodo n, const Abin<t> &A);
+
 int main (){
 
     Abin<int> a;
-
     a.insertarRaizB(1);
     a.insertarHijoDrchoB(a.raizB(),3);
     a.insertarHijoIzqdoB(a.raizB(),2);
@@ -35,16 +40,23 @@ int main (){
 
 /* ------------------------------- EJERCICIO 1 ------------------------------ */
 /*
-*Calcular el numero de nodos de un arbol
+*Calcular el número de nodos de un arbol
 */
 template <class t>
 int cuenta_nodos(const Abin<t>&a,typename Abin<t>::nodo n){
 
-    if(n == a.NODO_NULO ){
+    if(n == Abin<t>::NODO_NULO ){
         return 0;
     }
 
-return cuenta_nodos(a,a.hijoDrchoB(n)) + cuenta_nodos(a,a.hijoIzqdoB(n)) + 1;
+return 1 + cuenta_nodos(a,a.hijoDrchoB(n)) + cuenta_nodos(a,a.hijoIzqdoB(n));
+
+}
+
+template<class t>
+int nodos_arbol(const Abin<t>& a){
+
+    return cuenta_nodos(a,a.raizB());
 
 }
 
@@ -53,8 +65,10 @@ return cuenta_nodos(a,a.hijoDrchoB(n)) + cuenta_nodos(a,a.hijoIzqdoB(n)) + 1;
 template <class t>
 int altura_nodo(const Abin<t>&a, typename Abin<t>::nodo n){
 
-    if(n == a.NODO_NULO ){
-        return -1;
+    if ( n == Abin<t>::NODO_NULO ){
+        
+        return -1;//Por convenio
+
     }
 
     return 1 + std::max(altura_nodo(a,a.hijoDrchoB(n)),altura_nodo(a,a.hijoIzqdoB(n))); 
@@ -68,26 +82,38 @@ int altura_arbol(const Abin<t>& a){
 }
 
 /* ------------------------------- EJERCICIO 3 ------------------------------ */
-//Cuenta la profundiad de un nodo, numero de veces que puede tener pader
+/*
+* Cuenta la profundidad de un nodo, numero de veces que puede tener pader
+*/
 template<class t>
 int profundidad_nodo(const Abin<t>&a, typename Abin<t>::nodo n){
 
     if(n == a.raizB())
         return 0;
 
-    return profundidad_nodo(a,a.padreB(n));
+    return 1 + profundidad_nodo(a,a.padreB(n));
+}
+
+//PROFUNDIDAD IMPLEMENTACION ITERATIVA
+template <class t>
+int profundidad_nodo_iterativa(typename Abin<t>::nodo n,const Abin<t>& a){
+
+    int profundidad = 0;
+
+    while (n != a.raizB())
+    {
+        profundidad ++;
+        n = a.padreB(n);    
+    }
+    
+return profundidad;
 }
 
 /* ------------------------------- EJERCICIO 4 ------------------------------ */
 /*
-*Calcula la profundidad de un arbol, profundidad maxima
+* Calcula la profundidad de un arbol, profundidad maxima, NO ESTA DEFINIDO ya que se usa altura como tal.
+* Ya implementado.
 */
-template <class t>
-int profundidad_arbol(Abin<t>&a){
-
-    return altura_arbol(a)-1;
-
-}
 
 /* ------------------------------- EJERCICIO 5 ------------------------------ */
 //Hecho previamente con enlazados
@@ -97,21 +123,33 @@ int profundidad_arbol(Abin<t>&a){
 /* -------------------------------------------------------------------------- */
 
 //Implemente un algoritmo que calcule el grado de desequilibrio de un arbol, la diferencia
-//entre las alturas de los subarboles
+//entre las alturas de los subarboles del mismo.
+
+//Obtiene las diferencias de altura
 template <typename t>
-size_t difAltura(typename Abin<t>::nodo n, Abin<t>& a){
-    return std::abs(altura_nodo(a,a.hijoIzqdoB(n))-altura_nodo(a,a.hijoDrchoB(n)));
+unsigned int difAltura(typename Abin<t>::nodo n, Abin<t>& A){
+    
+    return std::abs(altura_nodo(A,A.hijoIzqdoB(n)) - altura_nodo(A,A.hijoDrchoB(n)));
+
 }//Obtenemos las alturas
 
 template <class t>
-size_t desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol)
+unsigned int desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol)
 {
     if (n == Abin<t>::NODO_NULO)
     {
         return 0;
     }
-    return fmax(difAltura(n, Arbol), fmax(desequilibrio(Arbol.hijoDrchoB(n), Arbol), desequilibrio(Arbol.hijoIzqdoB(n), Arbol)));
+    return fmax( difAltura (n, Arbol), fmax( desequilibrio (Arbol.hijoDrchoB(n), Arbol), 
+                desequilibrio (Arbol.hijoIzqdoB(n), Arbol) ) );
     //Grado maximo del nodo n y sus dos hijos, siendo el desequilibrio el maximo de los mismos
+}
+
+template <class t>
+unsigned int desequilibrio_arbol(typename Abin<t>::nodo n, const Abin<t> &A){
+
+    return desequilibrio(A.raizB(),A);
+
 }
 
 
@@ -121,7 +159,7 @@ size_t desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol)
 
 //Operador auxiliar que comprueba el numero de hijos del nodo
 template<class t>
-bool comprueba_penultimo(Abin<t>& a,const size_t altura, typename Abin<t>::nodo n,size_t nivel){
+bool comprueba_penultimo(Abin<t>& a,const unsigned int altura, typename Abin<t>::nodo n,unsigned int nivel){
 
     //Primero bajamos hasta el penultimo nivel
     if (nivel == altura -1)
@@ -153,7 +191,7 @@ bool pseudo_completo(Abin<t> &a, typename Abin<t>::nodo n){
     
     //Inicializacion de variables
     bool pseudo ;
-    size_t altura ;
+    unsigned int altura ;
     
     //Obtenemos la altura, ya que el penultimo nivel del arbol estara localizado en la altura - 1
     altura = altura_arbol(a);
