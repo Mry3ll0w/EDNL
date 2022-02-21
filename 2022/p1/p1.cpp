@@ -15,6 +15,9 @@ int altura_arbol(const Abin<t>& a);
 template <class t>
 size_t desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol);
 
+template <class t>
+bool pseudo_completo(Abin<t> &a, typename Abin<t>::nodo n);
+
 int main (){
 
     Abin<int> a;
@@ -24,7 +27,7 @@ int main (){
     a.insertarHijoIzqdoB(a.raizB(),2);
     a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
 
-    std::cout << "Altura arbol==> "<<desequilibrio(a.raizB(),a)<<std::endl;
+    std::cout << "Pseudo completo: "<< pseudo_completo(a,a.raizB())<<std::endl;
    
     return 0;
 }
@@ -115,6 +118,30 @@ size_t desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol)
 /* -------------------------------------------------------------------------- */
 /*                                 EJERCICIO 7                                */
 /* -------------------------------------------------------------------------- */
+
+//Operador auxiliar que comprueba el numero de hijos del nodo
+template<class t>
+bool comprueba_penultimo(Abin<t>& a,const size_t altura, typename Abin<t>::nodo n,size_t nivel){
+
+    //Primero bajamos hasta el penultimo nivel
+    if (nivel == altura -1)
+    {
+        if (
+            a.hijoDrchoB(n)==Abin<t>::NODO_NULO && a.hijoIzqdoB(n)==Abin<t>::NODO_NULO
+            ||
+            a.hijoDrchoB(n)!=Abin<t>::NODO_NULO && a.hijoIzqdoB(n)!=Abin<t>::NODO_NULO
+            )
+        {
+            return true;
+        }
+        else
+            return false;
+        
+    }
+    
+    return comprueba_penultimo(a,altura,a.hijoDrchoB(n),nivel+1)||comprueba_penultimo(a,altura,a.hijoIzqdoB(n),nivel+1);
+}
+
 /*
 * Calcular si un arbol es pseudocompleto, sera pseudocompleto cuando el mismo tenga dos hijos o ninguno.
 * Procedimiento:
@@ -124,11 +151,21 @@ size_t desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol)
 template <class t>
 bool pseudo_completo(Abin<t> &a, typename Abin<t>::nodo n){
     
-    bool pseudo = true;
-
-    //Obtenemos la altura, ya que el penultimo nivel del arbol estara localizado en la altura - 2
+    //Inicializacion de variables
+    bool pseudo ;
+    size_t altura ;
     
-    std::cout<<altura_arbol(a)<<std::endl;
+    //Obtenemos la altura, ya que el penultimo nivel del arbol estara localizado en la altura - 1
+    altura = altura_arbol(a);
+    pseudo = true;
+
+    if(altura < 1){//No sera un pseudo completo, ya que no existe un penultimo nivel
+        pseudo = false;
+    }
+
+    //Llamamos a la funcion comprueba_penultimo
+    pseudo = comprueba_penultimo(a,altura,a.raizB(),0);
     
 
+return pseudo;
 }
