@@ -110,3 +110,25 @@ size_t desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol)
     return fmax(difAltura(n, Arbol), fmax(desequilibrio(Arbol.hijoDrchoB(n), Arbol), desequilibrio(Arbol.hijoIzqdoB(n), Arbol)));
     //Grado maximo del nodo n y sus dos hijos, siendo el desequilibrio el maximo de los mismos
 }
+
+
+/* -------------------------------------------------------------------------- */
+/*                                 EJERCICIO 7                                */
+/* -------------------------------------------------------------------------- */
+/*
+* Calcular si un arbol es pseudocompleto, sera pseudocompleto cuando el mismo tenga dos hijos o ninguno.
+* Procedimiento:
+*   1) LLegar al penultimo nivel
+*   2) Si no tiene hijos o existen al menos 2 hijos
+*/
+template <class t>
+bool pseudo_completo(Abin<t> &a, typename Abin<t>::nodo n){
+    
+    bool pseudo = true;
+
+    //Obtenemos la altura, ya que el penultimo nivel del arbol estara localizado en la altura - 2
+    
+    std::cout<<altura_arbol(a)<<std::endl;
+    
+
+}
