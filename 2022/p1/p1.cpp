@@ -170,7 +170,7 @@ bool comprueba_penultimo(Abin<t>& a,const unsigned int altura, typename Abin<t>:
             a.hijoDrchoB(n)!=Abin<t>::NODO_NULO && a.hijoIzqdoB(n)!=Abin<t>::NODO_NULO
             )
         {
-            return true;
+            return true;  
         }
         else
             return false;
