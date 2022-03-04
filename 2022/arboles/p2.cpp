@@ -1,4 +1,7 @@
 #include <iostream>
+#include <string>
+#include <algorithm>
+#include <stdlib.h>
 #include "arbolbinenla.h"
 
 //Sobrecarga para imprimir arboles
@@ -21,23 +24,21 @@ template <class t>
 bool arboles_similares(const Abin<t>&A, const Abin<t>&B );
 
 template <class t>
-Abin<t> reflejo_arbol(Abin<t>&A,Abin<t>&B);
+Abin<t> reflejo_arbol(Abin<t>&A);
+
+float post_fijo(Abin<std::string>&A);
 
 /* ---------------------------- IMPLEMENTACIONES ---------------------------- */
 
 int main(){
     
-    Abin<int> a,b;
-    a.insertarRaizB(1);
-    a.insertarHijoDrchoB(a.raizB(),3);
-    a.insertarHijoIzqdoB(a.raizB(),2);
-    a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
-
-
-    reflejo_arbol(a,b);
-    imprime_arbol(b,b.raizB());
-    std::cout<<"-----------------------------------------------------------"<<std::endl;
-    imprime_arbol(a,a.raizB());
+    Abin<std::string> a;
+    
+    a.insertarRaizB("x");
+    a.insertarHijoIzqdoB(a.raizB(),"7");
+    a.insertarHijoDrchoB(a.raizB(),"8");
+    
+    std::cout << "Resultado de la operacion: "<< post_fijo(a) << std::endl;
 
     return 0;
 }
@@ -87,29 +88,87 @@ bool arboles_similares(const Abin<t>&A, const Abin<t>&B ){
 */
 
 template <class t>
-void reflejo_arbol_rec(typename Abin<t>::nodo na, typename Abin<t>::nodo nb, Abin<t>&A, Abin<t>&B ){
+void reflejo_arbol_rec(typename Abin<t>::nodo nb, typename Abin<t>::nodo na ,Abin<t>&A ,Abin<t>&B ){
 
-    if (na != Abin<t>::NODO_NULO && nb != Abin<t>::NODO_NULO)
+    if (nb != Abin<t>::NODO_NULO && na!=Abin<t>::NODO_NULO)
     {
         //std::cout<< B.elemento(nb) << std::endl;
         B.elemento(nb) = A.elemento(na);
         //std::cout<< B.elemento(nb) << std::endl;
 
-        reflejo_arbol_rec(A.hijoIzqdoB(na),B.hijoDrchoB(nb),A,B);
-        reflejo_arbol_rec(A.hijoDrchoB(na),B.hijoIzqdoB(nb),A,B);
+        reflejo_arbol_rec(B.hijoDrchoB(nb), A.hijoIzqdoB(na), A, B);
+        reflejo_arbol_rec(B.hijoIzqdoB(nb), A.hijoDrchoB(na),A, B);
     }
     
 }
 
 template <class t>
-Abin<t> reflejo_arbol(Abin<t>&A,Abin<t>&B){
+Abin<t> reflejo_arbol(Abin<t>&A){
     
-    //Abin<t> B(A);
+    Abin<t> B(A);
     
-    reflejo_arbol_rec(A.raizB(),B.raizB(),A,B);
+    reflejo_arbol_rec(B.raizB(),A.raizB(),A,B);
     
     return B;
 
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                 EJERCICIO 3                                */
+/* -------------------------------------------------------------------------- */
 
+/*
+*El TAD árbol binario puede albergar expresiones matemáticas mediante un árbol de 
+*expresión. Dentro del árbol binario los nodos hojas contendrán los operandos, y el resto 
+*de los nodos los operadores.
+*a) Define el tipo de los elementos del árbol para que los nodos puedan almacenar 
+*operadores y operandos.
+*b) Implementa una función que tome un árbol binario de expresión (aritmética) y 
+*devuelva el resultado de la misma. Por simplificar el problema se puede asumir que el 
+*árbol representa una expresión correcta. Los operadores binarios posibles en la expresión 
+*aritmética serán suma, resta, multiplicación y división.
+*/
+
+float procesa_arbol(typename Abin<std::string>::nodo n, Abin<std::string>&A){
+
+    //Debemos controlar que en todo momento se procesen operaciones entre arboles equilibrados
+    //Si no la operacion entre los mismos no será correcta, ya que se opera numero con nodo nulo
+    if (A.hijoDrchoB(n) != Abin<std::string>::NODO_NULO && A.hijoIzqdoB(n)!=Abin<std::string>::NODO_NULO)
+    {
+        
+        //Procesar el caracter que toque, no deja switch asi que usaremos if else ..
+        //Simplemente iremos llamando a la operacion que toque de forma recursiva
+        if (A.elemento(n)=="+")
+        {
+            return procesa_arbol(A.hijoIzqdoB(n),A) + procesa_arbol(A.hijoDrchoB(n),A);
+        }
+        else if (A.elemento(n)=="-"){
+            
+            procesa_arbol(A.hijoIzqdoB(n),A) - procesa_arbol(A.hijoDrchoB(n),A);
+
+        }
+        else if (A.elemento(n)=="*"){
+        
+            procesa_arbol(A.hijoIzqdoB(n),A) * procesa_arbol(A.hijoDrchoB(n),A);
+        
+        }
+        else if(A.elemento(n)=="/"){
+            
+            procesa_arbol(A.hijoIzqdoB(n),A) / procesa_arbol(A.hijoDrchoB(n),A);
+        
+        }
+
+
+    }
+    else {//Caso de que no sea un operador si no un numero
+        return std::stof(A.elemento(n));
+    }
+    
+
+
+}
+
+
+float post_fijo(Abin<std::string>&A){
+    return procesa_arbol(A.raizB(),A);
+}
