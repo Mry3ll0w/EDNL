@@ -1,8 +1,12 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <vector>
 #include <stdlib.h>
+#include <cmath>
+#include <cassert>
 #include "arbolbinenla.h"
+//#include "abin_rel.hpp"
 
 //Sobrecarga para imprimir arboles
 template <class t>
@@ -28,17 +32,15 @@ Abin<t> reflejo_arbol(Abin<t>&A);
 
 float post_fijo(Abin<std::string>&A);
 
+
 /* ---------------------------- IMPLEMENTACIONES ---------------------------- */
 
 int main(){
+   
+   //abin_pos_rel<char> a(' ');
+
+   //a.insertar_nodo_raiz('h');
     
-    Abin<std::string> a;
-    
-    a.insertarRaizB("x");
-    a.insertarHijoIzqdoB(a.raizB(),"7");
-    a.insertarHijoDrchoB(a.raizB(),"8");
-    
-    std::cout << "Resultado de la operacion: "<< post_fijo(a) << std::endl;
 
     return 0;
 }
@@ -59,15 +61,19 @@ bool arboles_similares_rec(typename Abin<t>::nodo na, typename Abin<t>::nodo nb,
     //Caso general 
     if (na == Abin<t>::NODO_NULO && nb == Abin<t>::NODO_NULO)
         return true;
+
     //Procesamiento de la respuesta
-    if(
+    else if(
         (na == Abin<t>::NODO_NULO && nb != Abin<t>::NODO_NULO)
         ||
         (nb == Abin<t>::NODO_NULO && na != Abin<t>::NODO_NULO)
     )
         return false;
 
-    return arboles_similares_rec(A.hijoIzqdoB(na),B.hijoIzqdoB(nb),A,B)&&arboles_similares_rec(A.hijoDrchoB(na),B.hijoDrchoB(nb),A,B);
+    return 
+        arboles_similares_rec(A.hijoIzqdoB(na),B.hijoIzqdoB(nb),A,B) 
+        &&
+        arboles_similares_rec(A.hijoDrchoB(na),B.hijoDrchoB(nb),A,B);
 
 }
 
@@ -172,3 +178,5 @@ float procesa_arbol(typename Abin<std::string>::nodo n, Abin<std::string>&A){
 float post_fijo(Abin<std::string>&A){
     return procesa_arbol(A.raizB(),A);
 }
+
+

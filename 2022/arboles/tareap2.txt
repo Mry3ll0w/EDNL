@@ -1,0 +1,11 @@
+DUDAS PRACTICA 2
+
+1) Sin problema
+
+2) Sin Problema
+
+3) Fallo en C++, ya que aunque consigo hacer el ejercicio pero no soy capaz de realizar la conversion entre caracter
+y número.
+
+4)No consigo entender como localizar la posicion de un nodo concreto.
+

@@ -2,7 +2,7 @@
 #define ABIN_H
 #include <cassert>
 #include <cmath>
-/// THIS IS NOT MY OWN CODE, WAS IMPLEMENTED BY
+
 template <typename T> 
 class Abin {
 	struct celda;   // declaración adelantada privada, celda se usa en parte publica y se implementa abajo

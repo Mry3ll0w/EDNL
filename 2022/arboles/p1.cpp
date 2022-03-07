@@ -129,7 +129,7 @@ return profundidad;
 template <typename t>
 unsigned int difAltura(typename Abin<t>::nodo n, Abin<t>& A){
     
-    return std::abs(altura_nodo(A,A.hijoIzqdoB(n)) - altura_nodo(A,A.hijoDrchoB(n)));
+    return std::abs( altura_nodo(A,A.hijoIzqdoB(n)) - altura_nodo(A,A.hijoDrchoB(n) ) );
 
 }//Obtenemos las alturas
 
@@ -138,7 +138,7 @@ unsigned int desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol)
 {
     if (n == Abin<t>::NODO_NULO)
     {
-        return 0;
+        return 0;// ya que al tener z
     }
     return fmax( difAltura (n, Arbol), fmax( desequilibrio (Arbol.hijoDrchoB(n), Arbol), 
                 desequilibrio (Arbol.hijoIzqdoB(n), Arbol) ) );
@@ -146,9 +146,11 @@ unsigned int desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol)
 }
 
 template <class t>
-unsigned int desequilibrio_arbol(typename Abin<t>::nodo n, const Abin<t> &A){
+unsigned int desequilibrio_arbol(const Abin<t> &A){
 
     return desequilibrio(A.raizB(),A);
+    //NO es el desequilibrio del nodo raiz, si no de sus nodos, es decir no tiene pq coincidir con el
+    //desequilibrio del nodo raiz.
 
 }
 
@@ -187,7 +189,7 @@ bool comprueba_penultimo(Abin<t>& a,const unsigned int altura, typename Abin<t>:
 *   2) Si no tiene hijos o existen al menos 2 hijos
 */
 template <class t>
-bool pseudo_completo(Abin<t> &a, typename Abin<t>::nodo n){
+bool pseudo_completo(Abin<t> &a, typename Abin<t>::nodo n){//CORREGIR
     
     //Inicializacion de variables
     bool pseudo ;
@@ -199,6 +201,9 @@ bool pseudo_completo(Abin<t> &a, typename Abin<t>::nodo n){
 
     if(altura < 1){//No sera un pseudo completo, ya que no existe un penultimo nivel
         pseudo = false;
+    }
+    else if(altura < 1 && a.raizB() == Abin<t>::NODO_NULO){
+        pseudo = true;
     }
 
     //Llamamos a la funcion comprueba_penultimo
