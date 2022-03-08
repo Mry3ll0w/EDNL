@@ -30,8 +30,9 @@ int main (){
     a.insertarRaizB(1);
     a.insertarHijoDrchoB(a.raizB(),3);
     a.insertarHijoIzqdoB(a.raizB(),2);
-    a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
-
+    //a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
+    std::cout << altura_arbol(a) << std::endl;
+    std::cout<<"-----------------------------------------------------------"<<std::endl;
     std::cout << "Pseudo completo: "<< pseudo_completo(a,a.raizB())<<std::endl;
    
     return 0;
@@ -166,6 +167,7 @@ bool comprueba_penultimo(Abin<t>& a,const unsigned int altura, typename Abin<t>:
     //Primero bajamos hasta el penultimo nivel
     if (nivel == altura -1)
     {
+        
         if (
             a.hijoDrchoB(n)==Abin<t>::NODO_NULO && a.hijoIzqdoB(n)==Abin<t>::NODO_NULO
             ||
@@ -179,7 +181,7 @@ bool comprueba_penultimo(Abin<t>& a,const unsigned int altura, typename Abin<t>:
         
     }
     
-    return comprueba_penultimo(a,altura,a.hijoDrchoB(n),nivel+1)||comprueba_penultimo(a,altura,a.hijoIzqdoB(n),nivel+1);
+    return comprueba_penultimo(a,altura,a.hijoDrchoB(n),nivel+1)&&comprueba_penultimo(a,altura,a.hijoIzqdoB(n),nivel+1);
 }
 
 /*
@@ -191,6 +193,10 @@ bool comprueba_penultimo(Abin<t>& a,const unsigned int altura, typename Abin<t>:
 template <class t>
 bool pseudo_completo(Abin<t> &a, typename Abin<t>::nodo n){//CORREGIR
     
+    if(a.raizB() == Abin<t>::NODO_NULO){
+        return true;
+    }
+
     //Inicializacion de variables
     bool pseudo ;
     unsigned int altura ;
@@ -202,9 +208,7 @@ bool pseudo_completo(Abin<t> &a, typename Abin<t>::nodo n){//CORREGIR
     if(altura < 1){//No sera un pseudo completo, ya que no existe un penultimo nivel
         pseudo = false;
     }
-    else if(altura < 1 && a.raizB() == Abin<t>::NODO_NULO){
-        pseudo = true;
-    }
+    
 
     //Llamamos a la funcion comprueba_penultimo
     pseudo = comprueba_penultimo(a,altura,a.raizB(),0);
