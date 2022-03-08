@@ -6,7 +6,7 @@
 #include <cmath>
 #include <cassert>
 #include "arbolbinenla.h"
-//#include "abin_rel.hpp"
+#include "abin_rel.hpp"
 
 //Sobrecarga para imprimir arboles
 template <class t>
@@ -37,10 +37,12 @@ float post_fijo(Abin<std::string>&A);
 
 int main(){
    
-   //abin_pos_rel<char> a(' ');
+    abin_pos_rel<char> a('-',4);
 
-   //a.insertar_nodo_raiz('h');
-    
+    a.insertar_nodo_raiz('h');
+    a.insertar_hijo_der('m','h');
+    a.insertar_hijo_izq('a','h');
+    a.muestra_vec();
 
     return 0;
 }

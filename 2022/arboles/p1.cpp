@@ -29,8 +29,8 @@ int main (){
     Abin<int> a;
     a.insertarRaizB(1);
     a.insertarHijoDrchoB(a.raizB(),3);
-    a.insertarHijoIzqdoB(a.raizB(),2);
-    //a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
+    //a.insertarHijoIzqdoB(a.raizB(),2);
+    a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
     std::cout << altura_arbol(a) << std::endl;
     std::cout<<"-----------------------------------------------------------"<<std::endl;
     std::cout << "Pseudo completo: "<< pseudo_completo(a,a.raizB())<<std::endl;
