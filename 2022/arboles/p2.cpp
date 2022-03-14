@@ -37,16 +37,15 @@ float post_fijo(Abin<std::string>&A);
 
 int main(){
    
-    Abin<int>a;
+    Abin<char>a;
     
-    a.insertarRaizB(1);
-    a.insertarHijoDrchoB(a.raizB(),3);
-    a.insertarHijoIzqdoB(a.raizB(),2);
-    a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
+    a.insertarRaizB('a');
+    a.insertarHijoIzqdoB(a.raizB(),'b');
+    //a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
 
     imprime_arbol(a,a.raizB());
     std::cout<<std::endl<<"-----------------------------------------------------------"<<std::endl;
-    Abin<int>b(reflejo_arbol(a));
+    Abin<char>b(reflejo_arbol(a));
     imprime_arbol(b,b.raizB());
 
     return 0;
@@ -60,6 +59,7 @@ int main(){
 *  es decir, ambos son vacíos, o en caso contrario, tienen subárboles izquierdo y derecho
 *  similares. Implementa un subprograma que determine si dos árboles binarios son similares.
 *  RECORRIDO EN PREORDEN, nos interesa procesar la raiz en primer lugar.
+*  Falla en caso de no tener los nodos ambos nulos , no se modifica la estructura
 */
 
 template <class t>
