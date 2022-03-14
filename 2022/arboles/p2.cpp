@@ -37,12 +37,16 @@ float post_fijo(Abin<std::string>&A);
 
 int main(){
    
-    abin_pos_rel<char> a('-',4);
+    Abin<int>a;
+    a.insertarRaizB(1);
+    a.insertarHijoDrchoB(a.raizB(),3);
+    a.insertarHijoIzqdoB(a.raizB(),2);
+    a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
 
-    a.insertar_nodo_raiz('h');
-    a.insertar_hijo_der('m','h');
-    a.insertar_hijo_izq('a','h');
-    a.muestra_vec();
+    imprime_arbol(a,a.raizB());
+    std::cout<<std::endl<<"-----------------------------------------------------------"<<std::endl;
+    Abin<int>b(reflejo_arbol(a));
+    imprime_arbol(b,b.raizB());
 
     return 0;
 }
@@ -115,7 +119,12 @@ Abin<t> reflejo_arbol(Abin<t>&A){
     
     Abin<t> B(A);
     
-    reflejo_arbol_rec(B.raizB(),A.raizB(),A,B);
+    if (!A.arbolVacioB()){
+    
+        reflejo_arbol_rec(B.raizB(),A.raizB(),A,B);
+    
+    }
+
     
     return B;
 
