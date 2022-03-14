@@ -38,6 +38,7 @@ float post_fijo(Abin<std::string>&A);
 int main(){
    
     Abin<int>a;
+    
     a.insertarRaizB(1);
     a.insertarHijoDrchoB(a.raizB(),3);
     a.insertarHijoIzqdoB(a.raizB(),2);
@@ -117,10 +118,10 @@ void reflejo_arbol_rec(typename Abin<t>::nodo nb, typename Abin<t>::nodo na ,Abi
 template <class t>
 Abin<t> reflejo_arbol(Abin<t>&A){
     
-    Abin<t> B(A);
+    Abin<t> B;
     
     if (!A.arbolVacioB()){
-    
+        B = A;
         reflejo_arbol_rec(B.raizB(),A.raizB(),A,B);
     
     }
@@ -135,21 +136,26 @@ Abin<t> reflejo_arbol(Abin<t>&A){
 /* -------------------------------------------------------------------------- */
 
 /*
-*El TAD árbol binario puede albergar expresiones matemáticas mediante un árbol de 
-*expresión. Dentro del árbol binario los nodos hojas contendrán los operandos, y el resto 
-*de los nodos los operadores.
-*a) Define el tipo de los elementos del árbol para que los nodos puedan almacenar 
-*operadores y operandos.
-*b) Implementa una función que tome un árbol binario de expresión (aritmética) y 
-*devuelva el resultado de la misma. Por simplificar el problema se puede asumir que el 
-*árbol representa una expresión correcta. Los operadores binarios posibles en la expresión 
-*aritmética serán suma, resta, multiplicación y división.
+* El TAD árbol binario puede albergar expresiones matemáticas mediante un árbol de 
+* expresión. Dentro del árbol binario los nodos hojas contendrán los operandos, y el resto 
+* de los nodos los operadores.
+* a) Define el tipo de los elementos del árbol para que los nodos puedan almacenar 
+* operadores y operandos.
+* b) Implementa una función que tome un árbol binario de expresión (aritmética) y 
+* devuelva el resultado de la misma. Por simplificar el problema se puede asumir que el 
+* árbol representa una expresión correcta. Los operadores binarios posibles en la expresión 
+* aritmética serán suma, resta, multiplicación y división.
+
+* Plantear el ejercicio mediante el uso de una estructura 
+
 */
 
 float procesa_arbol(typename Abin<std::string>::nodo n, Abin<std::string>&A){
 
     //Debemos controlar que en todo momento se procesen operaciones entre arboles equilibrados
     //Si no la operacion entre los mismos no será correcta, ya que se opera numero con nodo nulo
+    //No tiene pq tener la doble comprobación, solo necesitamos el hijo izquierdo, ya que la expresion
+    //tiene que tener o ambos hijos vacios o ambos no vacios, en otro caso será incorrecta la expresión
     if (A.hijoDrchoB(n) != Abin<std::string>::NODO_NULO && A.hijoIzqdoB(n)!=Abin<std::string>::NODO_NULO)
     {
         
@@ -170,7 +176,7 @@ float procesa_arbol(typename Abin<std::string>::nodo n, Abin<std::string>&A){
         
         }
         else if(A.elemento(n)=="/"){
-            
+
             procesa_arbol(A.hijoIzqdoB(n),A) / procesa_arbol(A.hijoDrchoB(n),A);
         
         }

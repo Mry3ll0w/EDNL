@@ -51,6 +51,8 @@ public:
     
     }
 
+    int altura_maxima_nodo(t nodo);//IMPLEMENTAR
+
     ~abin_pos_rel(){delete[] arbol;}
 private:
 
@@ -109,3 +111,14 @@ void abin_pos_rel<t>::insertar_hijo_izq(const t& elto,const t& padre){
 
 }
 
+
+
+template<class t>
+int abin_pos_rel<t>::altura_maxima_nodo(t nodo){
+
+    int altura_nodo = arr_size/2;
+    int saltos = 0 ;
+    //contar el numero de saltos de búsqueda dicotómica
+
+
+}
