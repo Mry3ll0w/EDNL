@@ -116,9 +116,32 @@ void abin_pos_rel<t>::insertar_hijo_izq(const t& elto,const t& padre){
 template<class t>
 int abin_pos_rel<t>::altura_maxima_nodo(t nodo){
 
-    int altura_nodo = arr_size/2;
-    int saltos = 0 ;
-    //contar el numero de saltos de búsqueda dicotómica
+    int altura=0,l=0,r=arr_size-1,m;
+    bool found=false;
+    
+    while(l > r && !found){
+        
+        m=(L+r)/2;
 
+        if (arbol[m] < nodo)
+        {
+            l = m+1;
+        }
+        
+        if (arbol[m] > nodo)
+        {
+            
+            r = m-1;
 
+        }
+        
+        if (arbol[m] == nodo)
+        {
+            found=true;
+        }
+        
+        altura++;
+    }
+
+return altura;
 }
