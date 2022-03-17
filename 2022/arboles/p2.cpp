@@ -103,15 +103,21 @@ bool arboles_similares(const Abin<t>&A, const Abin<t>&B ){
 template <class t>
 void reflejo_arbol_rec(typename Abin<t>::nodo nb, typename Abin<t>::nodo na ,Abin<t>&A ,Abin<t>&B ){
 
-    if (nb != Abin<t>::NODO_NULO && na!=Abin<t>::NODO_NULO)
+    //caso hijo con unico nodo (Sin hijos)
+    if (na != Abin<t>::NODO_NULO && A.hijoDrchoB(na)== Abin<t>::NODO_NULO && A.hijoIzqdoB(na)== Abin<t>::NODO_NULO)
     {
-        //std::cout<< B.elemento(nb) << std::endl;
-        B.elemento(nb) = A.elemento(na);
-        //std::cout<< B.elemento(nb) << std::endl;
 
-        reflejo_arbol_rec(B.hijoDrchoB(nb), A.hijoIzqdoB(na), A, B);
-        reflejo_arbol_rec(B.hijoIzqdoB(nb), A.hijoDrchoB(na),A, B);
+    }//caso hijo derecho no nulo e hijo izquierdo nulo
+    else if (na != Abin<t>::NODO_NULO && A.hijoIzqdoB(na)== Abin<t>::NODO_NULO && A.hijoDrchoB(na)!= Abin<t>::NODO_NULO){
+
+    }//caso hijo izquierdo no nulo e hijo derecho nulo
+    else if(na != Abin<t>::NODO_NULO && A.hijoDrchoB(na)== Abin<t>::NODO_NULO && 
+        A.hijoIzqdoB(na) != Abin<t>::NODO_NULO)
+    {
+        B.insertarHijoDrchoB(A.elemento(na));
     }
+    
+
     
 }
 
@@ -121,7 +127,8 @@ Abin<t> reflejo_arbol(Abin<t>&A){
     Abin<t> B;
     
     if (!A.arbolVacioB()){
-        B = A;
+
+        B.insertarRaizB(A.elemento(A.raizB()));
         reflejo_arbol_rec(B.raizB(),A.raizB(),A,B);
     
     }
