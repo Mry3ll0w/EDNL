@@ -41,9 +41,13 @@ int antecesores (typename Abin<t>::nodo n , const Abin<t>&A)
 template <class t>
 int nostalgicos_rec(typename Abin<t>::nodo n , const Abin<t>&A)
 {
-    if (n != Abin<t>::NODO_NULO)
+    if (n == Abin<t>::NODO_NULO)//Caso base nodo nulo
     {
-        
+        return 0; 
+
+    }
+    else//Caso general
+    {
         int pasado = antecesores(n,A);
         int futuro = num_nodos(n,A) -1 ;//ya que debemos eliminar la raiz, para solo tener en cuenta los descendientes
 
@@ -56,8 +60,6 @@ int nostalgicos_rec(typename Abin<t>::nodo n , const Abin<t>&A)
             //El 0 es redundante pero deja más claro que no aumentamos el número de nodos nostalgicos
             return 0 + nostalgicos_rec(A.hijoIzqdoB(n),A) + nostalgicos_rec(A.hijoDrchoB(n),A);
         }
-        
-
     }
     
     
@@ -66,7 +68,8 @@ int nostalgicos_rec(typename Abin<t>::nodo n , const Abin<t>&A)
 
 //Calcula el numero de nodos nostalgicos que existen en un árbol binario dado
 template<class t>
-int nodos_nostalgicos(const Abin<t>&A){
+int nodos_nostalgicos(const Abin<t>&A)
+{
 
     return nostalgicos_rec(A.raizB(),A);
 

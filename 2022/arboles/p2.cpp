@@ -101,19 +101,19 @@ bool arboles_similares(const Abin<t>&A, const Abin<t>&B ){
 */
 
 template <class t>
-void reflejo_arbol_rec(typename Abin<t>::nodo nb, typename Abin<t>::nodo na ,Abin<t>&A ,Abin<t>&B ){
+void reflejo_arbol_rec(typename Abin<t>::nodo na, typename Abin<t>::nodo nb ,Abin<t>&A ,Abin<t>&B ){
 
     if (A.hijoIzqdoB(na) != Abin<t>::NODO_NULO)//Insertamos los hijos izquierdos en los derechos
     {
         B.insertarHijoDrchoB(nb,A.elemento(A.hijoIzqdoB(na)));
 
-        reflejo_arbol_rec(B.hijoDrchoB(nb),A.hijoIzqdoB(na),A,B);
+        reflejo_arbol_rec(A.hijoIzqdoB(na),B.hijoDrchoB(nb),A,B);
     }
     
     if (A.hijoDrchoB(na) != Abin<t>::NODO_NULO)
     {
         B.insertarHijoIzqdoB(nb,A.elemento(A.hijoDrchoB(na)));
-        reflejo_arbol_rec(B.hijoIzqdoB(nb),A.hijoDrchoB(na),A,B);
+        reflejo_arbol_rec(A.hijoDrchoB(na),B.hijoIzqdoB(nb),A,B);
     }
     
     
@@ -127,7 +127,7 @@ Abin<t> reflejo_arbol(Abin<t>&A){
     if (!A.arbolVacioB()){
 
         B.insertarRaizB(A.elemento(A.raizB()));
-        reflejo_arbol_rec(B.raizB(),A.raizB(),A,B);
+        reflejo_arbol_rec(A.raizB(),B.raizB(),A,B);
     
     }
 

@@ -2,6 +2,11 @@
 #include "arbolbinenla.h"
 using namespace std;//Avoid using std:: ....
 
+template<class t>
+typename Abin<t>::NODO_NULO NULO;//No escribir toda la llamada 
+
+
+
 int main(){
     
 return 0;
@@ -20,33 +25,33 @@ solo nos quedaría comprobar si el otro hijo tiene solamente un hijo, para que l
 
 //hay que restarle uno al conteo ya que mete la raiz y ademas restarle 2 ya que se cuentan los nietos solo
 template<class t>
-bool es_verde(typename Abin<t>::nodo n, const Abin<t>&a){
+bool tiene_3_nietos(typename Abin<t>::nodo n, const Abin<t>&A){
 
-    typename Abin<t>::NODO_NULO NULO;
+    
 
     //Tenemos que comprobar en primer caso si tiene 2 descendientes directos 
     if 
     (
         //Comprobamos que al menos uno de los hijos tenga un descendiente
-        a.hijoDrchoB(n) != NULO && a.hijoDrchoB(n) != NULO 
+        A.hijoDrchoB(n) = NULO && A.hijoDrchoB(n) = NULO 
         &&
         //Comprobacion nietos
         (
 
             //1) Hijo izquierdo
             (
-                a.hijoIzqdoB(a.hijoIzqdoB(n)) !=  NULO && a.hijoDrchoB(a.hijoIzqdoB(n)) == NULO 
-                || 
-                a.hijoIzqdoB(a.hijoIzqdoB(n)) ==  NULO && a.hijoDrchoB(a.hijoIzqdoB(n)) != NULO
+                A.hijoIzqdoB(A.hjoIzqdoB(n))!=  NULO && A.hijoDrchoB(A.hjoIzqdoB(n))== NULO 
+                ||
+                A.hijoIzqdoB(A.hjoIzqdoB(n))==  NULO && A.hijoDrchoB(A.hjoIzqdoB(n))!= NULO
             )
         
             ||
 
             //2) Hijo Derecho
             (
-                a.hijoDrchoB(a.hijoDrchoB(n)) == NULO && a.hijoIzqdoB(a.hijoDrchoB(n)) != NULO
+                A.hijoDrchoB(A.hjoDrchoB(n))== NULO && A.hijoIzqdoB(A.hjoDrchoB(n))!= NULO
                 ||
-                a.hijoDrchoB(a.hijoDrchoB(n)) != NULO && a.hijoIzqdoB(a.hijoDrchoB(n)) == NULO
+                A.hijoDrchoB(A.hjoDrchoB(n))!= NULO && A.hijoIzqdoB(A.hjoDrchoB(n))== NULO
             
             )
         
@@ -63,20 +68,32 @@ bool es_verde(typename Abin<t>::nodo n, const Abin<t>&a){
 
 //simplemente recorremos el arbol que nos den, para asi comprobar cualquier nodo dado
 template<class t>
-int cuenta_verdes(const Abin<t>&a, typename Abin<t>::nodo n){
+int cuenta_3_nietos_rec(typename Abin<t>::nodo n,const Abin<t>&A){
 
-    if ( n != Abin<t>::NODO_NULO )
+    if ( n == NULO )//Base 
     {
-        
-        if (es_verde(a, n))
+    
+        return 0;
+
+    }
+    else//general
+    {
+
+        if (tiene_3_nietos(n,A))
         {
-            return 1 + cuenta_verdes(a, a.hijoIzqdoB(n)) + cuenta_verdes(a, a.hijoDrchoB(n));
+            return 1 + cuenta_3_nietos(A.hijoIzqdoB(n),A) + cuenta_3_nietos(A.hijoDrchoB(n),A);
         }
         else
-            return cuenta_verdes(a, a.hijoIzqdoB(n)) + cuenta_verdes(a, a.hijoDrchoB(n));
+            return cuenta_3_nietos(A.hijoIzqdoB(n),A) + cuenta_3_nietos(A.hijoDrchoB(n),A);
         
-
     }
     
 
+}
+
+
+template <class t> 
+int numero_3_nietos(const Abin<t>&A)
+{
+    return cuenta_3_nietos_rec(A.raizB(),A);
 }
