@@ -69,7 +69,7 @@ bool arboles_similares_rec(typename Abin<t>::nodo na, typename Abin<t>::nodo nb,
     if (na == Abin<t>::NODO_NULO && nb == Abin<t>::NODO_NULO)
         return true;
 
-    //Procesamiento de la respuesta
+    //Procesamiento del arbol
     else if(
         (na == Abin<t>::NODO_NULO && nb != Abin<t>::NODO_NULO)
         ||
@@ -113,6 +113,7 @@ void reflejo_arbol_rec(typename Abin<t>::nodo na, typename Abin<t>::nodo nb ,Abi
     if (A.hijoDrchoB(na) != Abin<t>::NODO_NULO)
     {
         B.insertarHijoIzqdoB(nb,A.elemento(A.hijoDrchoB(na)));
+        
         reflejo_arbol_rec(A.hijoDrchoB(na),B.hijoIzqdoB(nb),A,B);
     }
     

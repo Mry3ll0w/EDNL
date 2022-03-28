@@ -15,8 +15,8 @@ int altura_arbol(const Abin<t>& a);
 template <class t>
 unsigned int desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol);
 
-template <class t>
-bool pseudo_completo(Abin<t> &a, typename Abin<t>::nodo n);
+template<class t>
+bool pseudocompleto(Abin<t>&a);
 
 template <class t>
 int profundidad_nodo_iterativa(typename Abin<t>::nodo n,const Abin<t>& a);
@@ -33,7 +33,7 @@ int main (){
     a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
     std::cout << altura_arbol(a) << std::endl;
     std::cout<<"-----------------------------------------------------------"<<std::endl;
-    std::cout << "Pseudo completo: "<< pseudo_completo(a,a.raizB())<<std::endl;
+    std::cout << "Pseudo completo: "<< pseudocompleto(a)<<std::endl;
    
     return 0;
 }
@@ -49,6 +49,7 @@ int cuenta_nodos(const Abin<t>&a,typename Abin<t>::nodo n){
     if(n == Abin<t>::NODO_NULO ){
         return 0;
     }
+    std::cout<<a.elemento(n)<<std::endl;
 
 return 1 + cuenta_nodos(a,a.hijoDrchoB(n)) + cuenta_nodos(a,a.hijoIzqdoB(n));
 
@@ -186,6 +187,11 @@ bool pseudocompleto_rec(typename Abin<t>::nodo n, Abin<t> &A)
 }
 
 template<class t>
-bool pseudocompleto(const Abin<t>&a){
+bool pseudocompleto(Abin<t>&A){
+    if (A.arbolVacioB())
+    {
+        return true;
+    }
+    
     return pseudocompleto_rec(A.raizB(),A);
 }
