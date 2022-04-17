@@ -5,7 +5,7 @@
 int main()
 {
 
-    Abb<int>A;
+    Abb<int>A,B,C,D;
     A.insertar(7);
     A.insertar(5);
     A.insertar(12);
@@ -15,15 +15,13 @@ int main()
     A.insertar(11);
     A.insertar(10);
 
-    std::list<int> l;
-    l=elementos_abb(A, l);
-    l.sort();
-    for (auto i : l) {
-        std::cout << i << ", ";
-    }
-    std::cout << std::endl;
-    imprime_arbol(A);
+    B.insertar(4);
+    B.insertar(8);
+    B.insertar(11);
+    B.insertar(68);
     
+    
+    imprime_arbol(rombo(A,B));
     return 0;
 }
 

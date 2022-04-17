@@ -1,2 +1,3 @@
 C:\Users\anton\OneDrive\Escritorio\EDNL\2022\Practicas_arboles_v_studio\arboles\x64\Debug\arboles.exe
 C:\Users\anton\Desktop\EDNL\2022\Practicas_arboles_v_studio\arboles\x64\Debug\arboles.exe
+D:\Proyectos\EDNL\2022\Practicas_arboles_v_studio\arboles\x64\Debug\arboles.exe

@@ -1,5 +1,5 @@
 ﻿  arboles.cpp
-C:\Users\anton\Desktop\EDNL\2022\Practicas_arboles_v_studio\arboles\Apo.h(30,1): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
-C:\Users\anton\Desktop\EDNL\2022\Practicas_arboles_v_studio\arboles\Apo.h(30): message : al compilar la función del miembro clase plantilla "Apo<int>::Apo(size_t)"
-C:\Users\anton\Desktop\EDNL\2022\Practicas_arboles_v_studio\arboles\Apo.h(132): message : Vea la referencia a la creación de una instancia de clase plantilla "Apo<int>" que se está compilando
-  arboles.vcxproj -> C:\Users\anton\Desktop\EDNL\2022\Practicas_arboles_v_studio\arboles\x64\Debug\arboles.exe
+D:\Proyectos\EDNL\2022\Practicas_arboles_v_studio\arboles\Apo.h(30,1): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+D:\Proyectos\EDNL\2022\Practicas_arboles_v_studio\arboles\Apo.h(30): message : al compilar la función del miembro clase plantilla "Apo<int>::Apo(size_t)"
+D:\Proyectos\EDNL\2022\Practicas_arboles_v_studio\arboles\Apo.h(132): message : Vea la referencia a la creación de una instancia de clase plantilla "Apo<int>" que se está compilando
+  arboles.vcxproj -> D:\Proyectos\EDNL\2022\Practicas_arboles_v_studio\arboles\x64\Debug\arboles.exe
