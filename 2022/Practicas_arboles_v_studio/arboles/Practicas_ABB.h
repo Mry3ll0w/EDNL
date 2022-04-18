@@ -151,7 +151,8 @@ Abb<t> operator - (const Abb<t>& A, const Abb<t>& B) {
 }
 
 template <class t> 
-Abb<t> rombo(Abb<t> &A, Abb<t>&B){
+Abb<t> rombo(Abb<t> &A, Abb<t>&B)
+{
 
 	return union_arboles(A, B) - interseccion(A, B);
 
