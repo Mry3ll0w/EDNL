@@ -5,13 +5,11 @@
 #include "pracitcas_apo.h"
 int main()
 {
-    Agen<int> a;
-    a.insertarRaiz(1);
-    a.insertarHijoIzqdo(a.raiz(), 2);
-    a.insertarHermDrcho(a.hijoIzqdo(a.raiz()), 3);
-    a.insertarHijoIzqdo(a.hijoIzqdo(a.raiz()), 4);
-    
-    std::cout << ternario_rec(a,a.raiz()) << std::endl;
+    std::vector<std::vector<char>>m(4,std::vector<char>(4));
+
+    std::cout<<n_saltos(m)<<std::endl;
+
+    std::cout << n_cuadrantes(m) << std::endl;
 
     return 0;
 }
