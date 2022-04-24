@@ -146,6 +146,7 @@
     <ClInclude Include="abin_enla.h" />
     <ClInclude Include="Agen.h" />
     <ClInclude Include="Apo.h" />
+    <ClInclude Include="practicas_agen.h" />
     <ClInclude Include="pracitcas_apo.h" />
     <ClInclude Include="Practicas_ABB.h" />
   </ItemGroup>

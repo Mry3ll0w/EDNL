@@ -105,7 +105,7 @@ int n_cuadrantes(std::vector<std::vector<t>> V)
 template <class t>
 typename Agen<t>::nodo color_cuadrante(std::vector<std::vector<t>> V, int f_inicio, int c_inicio,Agen<t>A, typename Agen<t>::nodo n) 
 {
-	Agen<t>::nodo nodo;
+	typename Agen<t>::nodo nodo;
 	//Color blanco
 	if 
 	(

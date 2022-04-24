@@ -1,16 +1,16 @@
 #include <iostream>
-#include "abb.h"
-#include "Apo.h"
-#include "Practicas_ABB.h"
-#include "pracitcas_apo.h"
+#include "practicas_agen.h"
+
 int main()
 {
-    std::vector<std::vector<char>>m(4,std::vector<char>(4));
-
-    std::cout<<n_saltos(m)<<std::endl;
-
-    std::cout << n_cuadrantes(m) << std::endl;
-
+    Agen<int>A;
+    A.insertarRaiz(1);
+    A.insertarHijoIzqdo(A.raiz(), 2);
+    A.insertarHermDrcho(A.hijoIzqdo(A.raiz()), 3);
+    A.insertarHermDrcho(A.hijoIzqdo(A.raiz()), 4);
+    A.insertarHermDrcho(A.hijoIzqdo(A.raiz()), 5);
+    
+    std::cout << desequilibrio_agen(A) << std::endl;
     return 0;
 }
 
