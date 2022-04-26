@@ -8,14 +8,23 @@ t maximo_rec(Abb<t>A);
 template<class t>
 t minimo_rec(Abb<t>A);
 
+template<class t>
+void infimo_rec(Abb<t>A, t& infimo, const t x);
+
+template<class t>
+void supremo_rec(Abb<t>A,const t x,  t& supremo);
+
+template <class t>
+void infimo_supremo(Abb<t>& A,  t& x);
+
 int main(){
     Abb<int> a;
     a.insertar(12);
     a.insertar(7);
     a.insertar(123);
     a.insertar(1);
-
-    std::cout<<minimo_rec(a)<<std::endl;
+    int x =7;
+    infimo_supremo(a,x);
 
 return 0;
 }
@@ -51,7 +60,7 @@ t minimo_rec(Abb<t>A){
 //se define el inifimo de un numero como el numero <= x
 //ej 4 5 6 12 23, si x = 6 el infimo es el mayor de los menores, inf = 5
 template<class t>
-void infimo_rec(Abb<t>A, t& infimo, const t x){
+void infimo_rec(Abb<t>A, t& infimo, t x){
 
     if(!A.vacio()){
         
@@ -68,7 +77,7 @@ void infimo_rec(Abb<t>A, t& infimo, const t x){
         }
         
         infimo_rec(A.izqdo(),infimo,x);   
-        infimo_rec(A.drcho(),infimo,x);   
+        infimo_rec(A.drcho(),infimo,x); 
     }
 
 }
@@ -95,18 +104,18 @@ void supremo_rec(Abb<t>A,const t x,  t& supremo){
 }
 
 template <class t>
-void infimo_supremo(Abb<t> &A, const t& x){
+void infimo_supremo(Abb<t>& A, t& x){
 
     t infimo=std::numeric_limits<t>::max();
     t supremo= std::numeric_limits<t>::min();
 
-    infimo_rec(A,x);
-    supremo_rec(A,x);
+    infimo_rec(A,infimo,x);
+    supremo_rec(A,supremo,x);
 
     //si supremo/minimo no han variado su valor devuelve el maximo/minimo del arbol
     if (infimo == std::numeric_limits<t>::max())
     {
-        infimo = minimo_rec(A),
+        infimo = minimo_rec(A);
     }
     else if(supremo == std::numeric_limits<t>::min()){
         supremo = maximo_rec(A);
