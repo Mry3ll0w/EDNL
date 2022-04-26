@@ -1,6 +1,26 @@
 #include<iostream>
 #include "Agen.h"
 
+template<class t>
+void imprime_arbol(Agen<t> A, typename Agen<t>::nodo n) {
+	if (n != Agen<t>::NODO_NULO)
+	{
+		std::cout  << std::endl;
+
+		auto h_der = n;
+
+		while (h_der != Agen<t>::NODO_NULO)
+		{
+			std::cout << A.elemento(h_der) << ", ";
+			h_der = A.hermDrcho(h_der);
+		}
+		std::cout << std::endl;
+
+		imprime_arbol(A, A.hijoIzqdo(n));
+	}
+	
+}
+
 //Ejercicio 1:
 /*
 Implementa un subprograma que dado un árbol general nos calcule su grado.
@@ -127,4 +147,42 @@ int desequilibrio_agen(Agen<t> A)
 /*
 Dado un árbol general de enteros A y un entero x, implementa un subprograma que realice
 la poda de A a partir de x. Se asume que no hay elementos repetidos en A.
+Para hacer la poda haremos:
+	1) Copiaremos el arbol hasta llegar al elemento buscado
+	2) Devolvemos el arbol copia
 */
+
+
+
+/*	Especificacion
+* Recibe un arbol A (origen) y un arbol B (pasandole
+*/
+Agen<int>poda_rec(int cota, typename Agen<int>::nodo n, Agen<int>Arbol)
+{
+	if (n == Agen<int>::NODO_NULO)
+	{
+		return Arbol;//NO se ha encontrado el elemento
+	}
+
+	//Si coincide con la cota podamos e arbol
+	if (Arbol.elemento(n) == cota)
+	{
+		Agen<int>::nodo nodo_temp;
+		nodo_temp = n;
+		while (nodo_temp != Agen<int>::NODO_NULO)//Recorremos el arbol a partir del nodo con el elemento x
+		{
+			if ((Arbol.hijoIzqdo(nodo_temp) == Agen<int>::NODO_NULO) && (Arbol.hermDrcho(Arbol.hijoIzqdo(nodo_temp)) == Agen<int>::NODO_NULO)) {
+				Arbol.eliminarHijoIzqdo(nodo_temp);
+				Arbol.eliminarHermDrcho(Arbol.hijoIzqdo(nodo_temp));
+			}
+			nodo_temp = Arbol.hermDrcho(nodo_temp);
+		}
+	}
+
+	return  poda_rec(cota, Arbol.hijoIzqdo(n), Arbol);
+}
+
+Agen<int> poda(int cota, Agen<int>Arbol)
+{
+	return poda_rec(cota, Arbol.raiz(), Arbol);
+}
