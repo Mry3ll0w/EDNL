@@ -35,7 +35,7 @@
     <ClInclude Include="Agen.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="pracitcas_apo.h">
+    <ClInclude Include="practicas_apo.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="practicas_agen.h">

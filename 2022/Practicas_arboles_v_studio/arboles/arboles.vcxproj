@@ -147,7 +147,7 @@
     <ClInclude Include="Agen.h" />
     <ClInclude Include="Apo.h" />
     <ClInclude Include="practicas_agen.h" />
-    <ClInclude Include="pracitcas_apo.h" />
+    <ClInclude Include="practicas_apo.h" />
     <ClInclude Include="Practicas_ABB.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
