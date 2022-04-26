@@ -4,6 +4,9 @@
 template<class t>
 t maximo_rec(Abb<t>A);
 
+template<class t>
+t minimo_rec(Abb<t>A);
+
 int main(){
     Abb<int> a;
     a.insertar(12);
@@ -11,7 +14,7 @@ int main(){
     a.insertar(123);
     a.insertar(1);
 
-    std::cout<<maximo_rec(a)<<std::endl;
+    std::cout<<minimo_rec(a)<<std::endl;
 
 return 0;
 }
@@ -41,5 +44,5 @@ t minimo_rec(Abb<t>A){
         return A.elemento();
     }
 
-    return minimo_rec(A.izqdo()));
+    return minimo_rec(A.izqdo());
 }
