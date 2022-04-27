@@ -11,22 +11,22 @@ if(!arbol.vacio()){
     }
     if(arbol.elemento()>x){
         
-        if(arbol.elemento()>max)
+        if(arbol.elemento() > max)
             max=arbol.elemento();
 
-        if(sup>arbol.elemento()){
+        if(sup > arbol.elemento()){
             sup=arbol.elemento();
         }
 
         supremo_rec(arbol.izqdo(),x,sup,max);
         supremo_rec(arbol.drcho(),x,sup,max);
     }
-        if(arbol.elemento()<x){
-            if(arbol.elemento()>max)
-                max=arbol.elemento();
+    if(arbol.elemento()<x){
+        if(arbol.elemento()>max)
+            max=arbol.elemento();
 
-            supremo_rec(arbol.izqdo(),x,sup,max);
-        }
+        supremo_rec(arbol.izqdo(),x,sup,max);
+    }
 }
 }
 
@@ -90,7 +90,7 @@ arbol.insertar(8);
 arbol.insertar(9);
 // equilibrar(arbol);
 int x=4;
-cout<<"El supremo es "<<supremo(arbol,x);
+cout<<"El supremo es "<<supremo(arbol,x)<<endl;
 cout<<"El infimo es: "<<infimo(arbol,x)<<endl;
 
 return 0;
