@@ -56,6 +56,38 @@ void elementos_abb(Abb<t> A,std::vector<t>& v) {
 
 }
 
+template <typename T>
+void equilibrar_rec(Abb<T>& A, std::vector<T> v, int ini, int tam) {
+	if (tam < 2)//a veces por la division entera el tamaño se pasa como 0 en vez de 1
+		A.insertar(v[ini]);
+	else {
+		int k = ini + tam / 2;//el punto medio es la mitad del tamaño más el inicio
+		A.insertar(v[k]);
+		if (ini >= 0)
+			equilibrar_rec(A, v, ini, (int)(tam / 2) - 1);//vamos a la parte izquierda con el inicio donde ante
+		if (ini < v.size())                                       //y el tamaño es la mitad
+			equilibrar_rec(A, v, k + 1, (int)(tam / 2) - 1);//vamos a la derecha y el inicio esta just
+																	// a la derecha del punto medio
+	}
+
+}
+
+
+template<class t>
+Abb<t> equilibrar_abb(const Abb<t>& INPUT) {
+
+	Abb<t>A = INPUT;
+	std::vector<t> v;
+	//Primero obtenemos los elementos ordenados del arbol, de forma ordenada
+	elementos_abb(A, v);
+
+	//Tras esto llamamos al equilibrio del arbol
+	equilibrar_rec(A, v, 0, v.size());
+
+	return A;
+
+}
+
 
 /*
 Dados dos conjuntos representados mediante árboles binarios de búsqueda,
@@ -63,6 +95,8 @@ implementa la operación unión de dos conjuntos que devuelva como resultado otr
 conjunto que sea la unión de ambos, representado por un ABB equilibrado.
 	NO SE HACER EL EQUILIBRIO
 */
+
+
 template<class t>
 void conjunto_rec(const Abb<t>& A,const Abb<t>& B, Abb<t>&R) {
 
