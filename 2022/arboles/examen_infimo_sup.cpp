@@ -1,125 +1,97 @@
 #include <iostream>
-#include <limits>
 #include "abb.h"
+using namespace std;//Avoid using std:: ....
 
-template<class t>
-t maximo_rec(Abb<t>A);
+//cabeceras wuolah
+template<class T>
+void supremo_rec(const Abb<T>& arbol,T& x, T& sup,T& max){
+if(!arbol.vacio()){
+    if(arbol.elemento()==x){
+        sup = x;
+    }
+    if(arbol.elemento()>x){
+        
+        if(arbol.elemento() > max)
+            max=arbol.elemento();
 
-template<class t>
-t minimo_rec(Abb<t>A);
+        if(sup > arbol.elemento()){
+            sup=arbol.elemento();
+        }
 
-template<class t>
-void infimo_rec(Abb<t>A, t& infimo, const t x);
+        supremo_rec(arbol.izqdo(),x,sup,max);
+        supremo_rec(arbol.drcho(),x,sup,max);
+    }
+    if(arbol.elemento()<x){
+        if(arbol.elemento()>max)
+            max=arbol.elemento();
 
-template<class t>
-void supremo_rec(Abb<t>A,const t x,  t& supremo);
+        supremo_rec(arbol.izqdo(),x,sup,max);
+    }
+}
+}
 
-template <class t>
-void infimo_supremo(Abb<t>& A,  t& x);
+template<class T>
+T supremo(Abb<T>& arbol,T & x){
+    T sup=9999;
+    T max=arbol.elemento();
+    supremo_rec(arbol,x,sup,max);
+
+    if(sup==9999)
+        return max;
+    else
+        return sup;
+}
+
+template<class T>
+void infimo_rec(const Abb<T>& arbol,T& x, T& inf,T& min){
+    if(!arbol.vacio()){
+        if(arbol.elemento()==x){
+            inf = x;
+        }
+        if(arbol.elemento()<x){
+            if(arbol.elemento()<min)
+                min=arbol.elemento();
+                if(inf<arbol.elemento()){
+                    inf=arbol.elemento();
+                    //cout<<"Cambio de infimo,vale:"<<inf<<endl;
+                }
+                infimo_rec(arbol.izqdo(),x,inf,min);
+                infimo_rec(arbol.drcho(),x,inf,min);
+        }
+        if(arbol.elemento()>x){
+            if(arbol.elemento()<min)
+                min=arbol.elemento();
+        infimo_rec(arbol.izqdo(),x,inf,min);
+        }
+    }
+}
+
+template<class T>
+T infimo(Abb<T>& arbol,T & x){
+    T inf=-1;
+    T min=arbol.elemento();
+    infimo_rec(arbol,x,inf,min);
+    if(inf==-1){
+        return min;
+    }
+    else
+        return inf;
+}
+
 
 int main(){
-    Abb<int> a;
-    a.insertar(12);
-    a.insertar(7);
-    a.insertar(123);
-    a.insertar(1);
-    int x =7;
-    infimo_supremo(a,x);
+Abb<int> arbol;
+arbol.insertar(5);
+
+arbol.insertar(1);
+arbol.insertar(3);
+arbol.insertar(2);
+arbol.insertar(8);
+arbol.insertar(9);
+// equilibrar(arbol);
+int x=4;
+cout<<"El supremo es "<<supremo(arbol,x)<<endl;
+cout<<"El infimo es: "<<infimo(arbol,x)<<endl;
 
 return 0;
-}
-
-//Nos piden encontrar el infimo y el supremo, en caso de no existir se deben devolver el elemento
-//minimo para el infimo y el maximo para el supremo
-
-//Para obtener el maximo deberemos acudir al elemento mas a la derecha, ya que por propiedad de los Abb
-//el elemento hoja mas a la derecha será el mas grande del arbol
-template<class t>
-t maximo_rec(Abb<t>A){
-
-    if (A.drcho().vacio())//Bajamos hasta que se llegue a una hoja por la derecha
-    {
-        return A.elemento();//Devolvemos el maximo
-    }
-    
-    return maximo_rec(A.drcho());
-}
-
-//Se realiza de forma análoga al maximo, solo que en este caso debemos observar únicamente la rama izquierda
-template<class t>
-t minimo_rec(Abb<t>A){
-    //Bajamos hasta una hoja
-    if (A.izqdo().vacio())
-    {
-        return A.elemento();
-    }
-
-    return minimo_rec(A.izqdo());
-}
-
-//se define el inifimo de un numero como el numero <= x
-//ej 4 5 6 12 23, si x = 6 el infimo es el mayor de los menores, inf = 5
-template<class t>
-void infimo_rec(Abb<t>A, t& infimo, t x){
-
-    if(!A.vacio()){
-        
-        if (A.elemento() == x )
-        {
-            infimo=x;
-        }
-        else if(A.elemento() < x){
-            
-            if(infimo < A.elemento()){
-                infimo = A.elemento();
-            }
-
-        }
-        
-        infimo_rec(A.izqdo(),infimo,x);   
-        infimo_rec(A.drcho(),infimo,x); 
-    }
-
-}
-
-template<class t>
-void supremo_rec(Abb<t>A,const t x,  t& supremo){
-    if(!A.vacio()){
-        
-        if (A.elemento() == x )
-        {
-            supremo=x;
-        }
-        else if(A.elemento() > x){
-            
-            if(supremo > A.elemento()){
-                supremo = A.elemento();
-            }
-
-        }
-        
-        infimo_rec(A.izqdo(),supremo,x);   
-        infimo_rec(A.drcho(),supremo,x);   
-    }
-}
-
-template <class t>
-void infimo_supremo(Abb<t>& A, t& x){
-
-    t infimo=std::numeric_limits<t>::max();
-    t supremo= std::numeric_limits<t>::min();
-
-    infimo_rec(A,infimo,x);
-    supremo_rec(A,supremo,x);
-
-    //si supremo/minimo no han variado su valor devuelve el maximo/minimo del arbol
-    if (infimo == std::numeric_limits<t>::max())
-    {
-        infimo = minimo_rec(A);
-    }
-    else if(supremo == std::numeric_limits<t>::min()){
-        supremo = maximo_rec(A);
-    }
-
-    std::cout<<"El infimo: "<<infimo<<"\t Supremo: "<<supremo<<std::endl;    
 }
