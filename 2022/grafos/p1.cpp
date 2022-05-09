@@ -4,6 +4,8 @@
 #include "lib/alg_grafoPMC.h"
 #include "lib/grafoPMC.h"
 
+typedef unsigned int tCoste;//para evitar usar unsigned int
+
 template<class tCoste>
 vector<tCoste> DijkstraInv(const GrafoP<tCoste>& G,
                         typename GrafoP<tCoste>::vertice destino,
@@ -17,7 +19,7 @@ GrafoP<unsigned int>::vertice pseudocentro(GrafoP<unsigned int>& G);
 int main(){
 
    
-   typedef unsigned int tCoste;
+   
 
    std::cout << "Valor coste infinito: " << GrafoP<tCoste>::INFINITO << std::endl << std::endl;
 
@@ -140,35 +142,77 @@ Definiremos el pseudocentro de un grafo conexo como el nodo del mismo que
 minimiza la suma de las distancias mínimas a sus dos nodos más alejados. Definiremos 
 el diámetro del grafo como la suma de las distancias mínimas a los dos nodos más 
 alejados del pseudocentro del grafo. 
- Dado un grafo conexo representado mediante matriz de costes, implementa un 
+Dado un grafo conexo representado mediante matriz de costes, implementa un 
 subprograma que devuelva la longitud de su diámetro.
 */
 
-GrafoP<unsigned int>::vertice pseudocentro(GrafoP<unsigned int>& G){
+//Recibe el nodo origen y el resultado de aplicar Dijkstra al nodo
+int pseudocentro(std::vector<std::pair<tCoste,std::vector<tCoste>>> vertices){
+
+   tCoste max = GrafoP<tCoste>::INFINITO * -1;
+   
+   //Coste, [origen, destino]
+   std::vector<std::pair<tCoste,std::pair<tCoste,tCoste>>> maximos;
+
+   for (auto i : vertices){
+      
+      int origen = i.first;
+
+      int max = GrafoP<tCoste>::INFINITO * -1;
+      int destino=0, destino_iterator = 0;
+
+      for(auto j : i.second){
+         
+         if (max < j)
+         {
+            max = j;
+            destino = destino_iterator;
+         }
+         ++destino_iterator;
+
+      }
+
+      maximos.push_back(std::make_pair(max,std::make_pair(origen,destino)));//los maximos contienen el origen y el 
+
+   }
+
+   //Obtenemos los minimos dentro de los maximos
+   
+
+}
+
+GrafoP<tCoste>::vertice pseudocentro(GrafoP<tCoste>& G){
 
    //obtenemos la lista de vertices
    int vertices = G.numVert();
-
+   std::vector<std::pair<tCoste,std::vector<tCoste>>> res_dijkstra;
    for(size_t i = 0; i < vertices;++i){
 
          //Imprimo Dijkstra 
-         std::vector<GrafoP<unsigned int>::vertice> P(G.numVert(), 0);
-   
+         std::vector<GrafoP<tCoste>::vertice> P(G.numVert(), 0);
+         
+         std::cout<<"Vertice origen: "<<i<<std::endl;
 
-         std::vector<unsigned int> costes = Dijkstra(G, i, P);
+         std::vector<tCoste> costes = Dijkstra(G, i, P);
 
          std::cout << "El resultado de Dijkstra es:" << std::endl;
          std::cout << "Coste\t|\tVértice" << std::endl;
    
          for( int i = 0; i < G.numVert(); ++i )
-            if( costes[i] != GrafoP<unsigned int>::INFINITO )
+            if( costes[i] != GrafoP<tCoste>::INFINITO )
                std::cout << costes[i] << "\t\t|\t" << P[i] << std::endl;
             else
                std::cout << "INF\t\t|\t" << P[i] << std::endl;
    
          std::cout<<std::endl<<"-----------------------------------------------------------"<<std::endl;
-         
 
+         //Obtengo los maximos de Dijkstra, es decir el elemento mas lejano != de INFINITO
+         //Ya que tenemos que elegir el mas pequeño de los mas alejados
+
+         //metemos el vector de origen y el resultado del mismo
+         res_dijkstra.push_back(std::make_pair(i,costes));
    }
+
+   //Obtenemos el pseudocentro 
 
 }
