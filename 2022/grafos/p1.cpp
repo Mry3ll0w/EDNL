@@ -12,6 +12,8 @@ vector<tCoste> DijkstraInv(const GrafoP<tCoste>& G,
 template <class tCoste>
 std::vector<int> custom_reverse_Dijkstra(std::vector<tCoste> P,const int& Origen, const int Destino);
 
+GrafoP<unsigned int>::vertice pseudocentro(GrafoP<unsigned int>& G);
+
 int main(){
 
    
@@ -47,6 +49,11 @@ int main(){
       std::cout<< i << ", ";
    }
    std::cout<<std::endl<<"-----------------------------------------------------------"<<std::endl;
+
+   std::cout<<std::endl<<"-----------------------------------------------------------"<<std::endl;
+   std::cout << "DIJSTRA A TODO EL GRAFO"<<std::endl;
+   pseudocentro(G);
+
 return 0;   
 }
 
@@ -136,3 +143,32 @@ alejados del pseudocentro del grafo.
  Dado un grafo conexo representado mediante matriz de costes, implementa un 
 subprograma que devuelva la longitud de su diámetro.
 */
+
+GrafoP<unsigned int>::vertice pseudocentro(GrafoP<unsigned int>& G){
+
+   //obtenemos la lista de vertices
+   int vertices = G.numVert();
+
+   for(size_t i = 0; i < vertices;++i){
+
+         //Imprimo Dijkstra 
+         std::vector<GrafoP<unsigned int>::vertice> P(G.numVert(), 0);
+   
+
+         std::vector<unsigned int> costes = Dijkstra(G, i, P);
+
+         std::cout << "El resultado de Dijkstra es:" << std::endl;
+         std::cout << "Coste\t|\tVértice" << std::endl;
+   
+         for( int i = 0; i < G.numVert(); ++i )
+            if( costes[i] != GrafoP<unsigned int>::INFINITO )
+               std::cout << costes[i] << "\t\t|\t" << P[i] << std::endl;
+            else
+               std::cout << "INF\t\t|\t" << P[i] << std::endl;
+   
+         std::cout<<std::endl<<"-----------------------------------------------------------"<<std::endl;
+         
+
+   }
+
+}
