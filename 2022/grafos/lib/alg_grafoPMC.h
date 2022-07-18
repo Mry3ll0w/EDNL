@@ -82,6 +82,8 @@ template <typename tCoste> tCoste suma(tCoste x, tCoste y)
       return x + y;
 }
 
+//Calcula los costes de ir desde un nodo origen al resto de nodos del Grafo 
+//Almacena el resultado del mismo en D
 template <typename tCoste>
 vector<tCoste> Dijkstra(const GrafoP<tCoste>& G,
                         typename GrafoP<tCoste>::vertice origen,

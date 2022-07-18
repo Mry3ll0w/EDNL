@@ -3,7 +3,7 @@
 #include <iostream>
 #include <numeric>
 
-#include "alg_grafoPMC.hpp"
+#include "lib/alg_grafoPMC.h"
 
 // Precondición: asumimos que existe un camino de origen a cualquier
 // ciudad del grafo y de vuelta.
