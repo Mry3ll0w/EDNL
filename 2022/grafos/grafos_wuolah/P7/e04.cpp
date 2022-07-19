@@ -1,4 +1,4 @@
-#include "alg_grafoPMC.hpp"
+#include "lib/alg_grafoPMC.h"
 
 template <typename tCoste>
 tCoste distribuir_carga(typename GrafoP<tCoste>::vertice capital,
