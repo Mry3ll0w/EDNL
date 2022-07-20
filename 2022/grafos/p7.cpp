@@ -4,6 +4,7 @@
 #include "lib/alg_grafoPMC.h"
 #include <numeric>
 #include <cmath>
+#include<string.h>
 
 using namespace std;
 
@@ -242,7 +243,7 @@ double repartir_carga(GrafoP<tCoste> & G, typename GrafoP<tCoste>::vertice capit
     auto coste_caminos = Floyd(G,P);
 
     double coste_total = 0.00;
-
+    typedef typename GrafoP<tCoste>::vertice vertice;
     //Recorremos los costes de la capital, para hallar los costes de ida y vuelta
     for(vertice i = 0; i < G.numVert(); i++){
 
@@ -255,6 +256,115 @@ double repartir_carga(GrafoP<tCoste> & G, typename GrafoP<tCoste>::vertice capit
     }   
 
 return coste_total;
+
+}
+
+/*
+
+Se dispone de tres grafos que representan la matriz de costes para viajes en un 
+determinado país pero por diferentes medios de transporte, por supuesto todos los grafos 
+tendrán el mismo número de nodos. El primer grafo representa los costes de ir por 
+carretera, el segundo en tren y el tercero en avión. Dado un viajero que dispone de una 
+determinada cantidad de dinero, que es alérgico a uno de los tres medios de transporte, y 
+que sale de una ciudad determinada, implementar un subprograma que determine las 
+ciudades a las que podría llegar nuestro infatigable viajero
+
+*/
+template<class tCoste>
+matriz<tCoste> viaje(GrafoP<tCoste>& avion, GrafoP<tCoste>& coche, GrafoP<tCoste> & tren, double dinero, string& alergico){
+
+    typedef typename GrafoP<tCoste>::vertice vertice;
+    //Primero vemos a que transporte es alergico
+    GrafoP<tCoste> g1,g2;
+    //Aplicamos Floyd al resto de los grafos para ver desde donde podemos ir con cada medio
+    if (alergico == "avion")
+    {
+        g1 = Floyd(tren,g1);
+        g2 = Floyd(coche,g2); 
+    }
+    else if(alergico == "tren"){
+        g1 = Floyd(avion,g1);
+        g2 = Floyd(coche,g2);
+    }
+    else{
+        g1 = Floyd(avion,g1);
+        g2 = Floyd(tren,g2);
+    }
+    int N = g1.numVert();
+    
+    //Una vez aplicado Floyd simplemente recorremos la matriz para ver si es posible viajar de un punto A -> B
+    GrafoP<tCoste> res(N);
+    int dinero_it =dinero;
+    for (vertice i = 0; i < N; i++)
+    {
+        dinero_it =dinero;
+        for (vertice j = 0; j < N; j++)
+        {
+            //Comprobamos cual es el minimo entre las opciones disponibles y lo restamos del dinero disp
+            int coste = min(g1[i][j],g2[i][j]);
+            if((dinero_it - coste) > 0){
+                res[i][j]=coste;
+            }
+        }
+        
+    }
+    
+    return res;
+
+}
+
+/*Ejercicio 6
+
+Al dueño de una agencia de transportes se le plantea la siguiente situación. La 
+agencia de viajes ofrece distintas trayectorias combinadas entre N ciudades españolas 
+utilizando tren y autobús. Se dispone de dos grafos que representan los costes (matriz de 
+costes) de viajar entre diferentes ciudades, por un lado en tren, y por otro en autobús 
+(por supuesto entre las ciudades que tengan línea directa entre ellas). Además coincide 
+que los taxis de toda España se encuentran en estos momentos en huelga general, lo que 
+implica que sólo se podrá cambiar de transporte en una ciudad determinada en la que, 
+por casualidad, las estaciones de tren y autobús están unidas.
+
+Implementa una función que calcule la tarifa mínima (matriz de costes mínimos) de 
+viajar entre cualesquiera de las N ciudades disponiendo del grafo de costes en autobús, 
+del grafo de costes en tren, y de la ciudad que tiene las estaciones unidas. 
+
+*/
+
+template<class tCoste>
+matriz<tCoste> tarifa_minima(GrafoP<tCoste> & tren, GrafoP<tCoste>& autobus, GrafoP<bool>unidas){
+
+    typedef typename GrafoP<tCoste>::vertice vertice;
+
+    int N = tren.numVert();
+    
+    matriz<tCoste> P;
+    
+    GrafoP<tCoste> ftren(tren.numVert()), fautobus(tren.numVert()), tarifa{tren.numVert()};
+
+    //Floyd para hallar los costes minimos
+    ftren = Floyd(tren,P);
+    fautobus = Floyd(autobus,P);
+
+    //Hallamos el coste de la tarifa minima
+    for(vertice i = 0; i < N; i++){
+        
+        for (vertice j = 0; j < N; j++)
+        {
+            if (unidas[i][j]==true)//Si estan unidas cogemos el minimo entre el tren o el autobus
+            {
+                tarifa[i][j]=min(ftren[i][j],fautobus[i][j]);
+            }
+            else if(ftren[i][j] == GrafoP<tCoste>::INFINITO){
+                tarifa[i][j] = fautobus[i][j]; 
+            }
+            else{ //No tiene estacion de autobus
+                tarifa[i][j]=ftren[i][j];
+            }
+        }
+        
+    }
+
+    return tarifa;
 
 }
 
