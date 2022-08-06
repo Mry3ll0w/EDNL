@@ -48,6 +48,78 @@ int grado_arbol_rec(typename Agen<t>::nodo n, Agen<t>&A)
 return grado;    
 }
 
+/**
+ * @brief Calcula la profundidad de un nodo, dado un Arbol y un nodo del mismo
+ * @param typename Agen<T>::nodo n,const Agen<T>& A
+ * @return profundidad(int)
+ */
+template <class T>
+int profundidad_nodo(typename Agen<T>::nodo n, const Agen<T>& A){
+    if(n == A.raiz())
+        return -1;
+    return 1 + profundidad_nodo(A.padre(n), A);
+}
+
+
+
+/**
+ * @brief Algoritmo para calcular la altura del subarbol de un nodo concreto
+ * @param typename Agen<T>::nodo n, const Agen<T>& A
+ * @return int altura
+ */
+template <class T>
+int altura_subarbol(typename Agen<T>::nodo n, const Agen<T>& A){
+
+    unsigned altura = 0;
+    
+    int max = 0;
+    typename Agen<T>::nodo aux = Agen<T>::NODO_NULO;
+    
+    if( n != Agen<T>::NODO_NULO )
+        aux = A.hijoIzqdo(n);
+    
+    while( aux != Agen<T>::NODO_NULO )
+    {
+        max = std::max(max, 1 + altura_subarbol(aux,A));
+        aux = A.hermDrcho(aux);
+    }
+
+    return max;
+}
+
+/**
+ * @brief Calcula el grado de desequilibrio de un arbol dado un Arbol A y un Nodo del mismo
+ * @param const typename Agen<T>::nodo& n,const Agen<T>& A
+ * @return int
+ */
+template<typename T> 
+int desequilibrioAgenRec(const Agen<T>& A,const typename Agen<T>::nodo& n)
+{
+    if( n == Agen<T>::NODO_NULO || A.hijoIzqdo(A.raiz()) == Agen<T>::NODO_NULO )
+        return 0;
+    else
+    {
+        int min = altura_subarbol(A.raiz(),A);//Mete el maximo como desequilibrio
+        typename Agen<T>::nodo aux = A.hijoIzqdo(n);//Itera en aux primero los nodos izq
+
+        //Recorre y hace la altura de los hermanos derechos
+        while( A.hermDrcho(aux) != Agen<T>::NODO_NULO )
+        {   
+            min = std::min(min, altura_subarbol(aux,A));
+            aux = A.hermDrcho(aux);
+        }
+        return std::abs(altura_subarbol(A.raiz(),A) - min);
+    }
+}
+
+/**
+ * @brief Poda del sub arbol cuya raiz sea igual al elemento dado e
+ */
+template <class T>
+void poda_rec(typename Agen<T>::nodo na, typename Agen<T>::nodo nb, Agen<T> A, Agen<T>& B){
+    
+}
+
 
 int main(){
     Agen<int> A;
@@ -60,6 +132,7 @@ int main(){
         A.insertarHermDrcho(A.hijoIzqdo(A.hermDrcho(A.hijoIzqdo(A.raiz()))), 5 + i);
     }
 
-    cout<< grado_arbol_rec(A.raiz(), A)<<endl;
+    cout<< desequilibrioAgenRec(A, A.raiz()) <<endl;
+
 return 0;
 }
