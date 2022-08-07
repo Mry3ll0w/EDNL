@@ -2,6 +2,23 @@
 #include "Agen.h"
 using namespace std;//Avoid using std:: ....
 
+template <typename T>
+void postordenAgen(typename Agen<T>::nodo n, const Agen<T>& A,
+    void (*procesar)(typename Agen<T>::nodo, const Agen<T>&))
+// Recorrido en postorden del subárbol cuya raíz es el nodo n
+// perteneciente al árbol A. Cada nodo visitado se procesa mediante // la función procesar().
+{
+    if (n != Agen<T>::NODO_NULO) {
+
+    typename Agen<T>::nodo hijo = A.hijoIzqdo(n); //Comenzamos con el hijo izq
+
+        while (hijo != Agen<T>::NODO_NULO) {//Procesamos los hermanos derechos
+            postordenAgen(hijo, A, procesar);
+            hijo = A.hermDrcho(hijo);
+        }
+            procesar(n, A);
+    }
+}
 //Dado un arbol general que nos calcule su grado
 
 template <class t>
@@ -68,7 +85,7 @@ int profundidad_nodo(typename Agen<T>::nodo n, const Agen<T>& A){
  * @return int altura
  */
 template <class T>
-int altura_subarbol(typename Agen<T>::nodo n, const Agen<T>& A){
+int altura_subarbol(typename Agen<T>::nodo& n, Agen<T>& A){
 
     unsigned altura = 0;
     
@@ -113,11 +130,63 @@ int desequilibrioAgenRec(const Agen<T>& A,const typename Agen<T>::nodo& n)
 }
 
 /**
- * @brief Poda del sub arbol cuya raiz sea igual al elemento dado e
+ * @brief Busca el elemento de tipo T dentro de un arbol general, el tipo T debe tener 
+ * sobrecargado el operador de comparacion.
+ * @param typename Agen<T>::nodo n, const Agen<T> A, const T& e
+ * @return typename Agen<T>::nodo n
  */
 template <class T>
-void poda_rec(typename Agen<T>::nodo na, typename Agen<T>::nodo nb, Agen<T> A, Agen<T>& B){
+void buscar_elemento_Agen(typename Agen<T>::nodo n, typename Agen<T>::nodo& no, const Agen<T>& A, const T& e){
     
+    if (n != Agen<T>::NODO_NULO) { 
+
+        auto h_der = n;
+        while (h_der != Agen<T>::NODO_NULO) {
+            cout<< A.elemento(h_der)<<endl;
+            if(A.elemento(n) == e){
+                no = h_der;
+                //n = Agen<T>::NODO_NULO;
+                //h_der = Agen<T>::NODO_NULO;
+            }
+            
+            h_der = A.hermDrcho(h_der);
+        }
+        buscar_elemento_Agen(A.hijoIzqdo(n),no,A,e);
+    }
+
+    
+}
+
+/**
+ * @brief Elimina el subarbol que se encuentra tras el arbol dado, 
+ * no y n_it comienzan con el mismo valor 
+ * @param Agen<T>::nodo& n, Agen<T>&A 
+ */
+template<class T>
+void poda_sub_arbol(typename Agen<T>::nodo n, Agen<T>&A){
+    //Procesamos todo el arbol menos la raiz de sub arbol
+    if (n != Agen<T>::NODO_NULO) {
+    //Comenzamos con el hijo izq
+    while(A.hijoIzqdo(n) != Agen<T>::NODO_NULO )
+        {
+            poda_sub_arbol(A.hijoIzqdo(n),A);
+            A.eliminarHijoIzqdo(n);
+        }
+        //Si eliminamos los hijos izquierdos estos eliminan todos los derechos, ya que 
+        //todos los derechos cuelgan del izquierdo
+    }
+}
+
+/**
+ * @brief Poda del sub arbol cuya raiz sea igual al elemento dado e
+ * @param typename Agen<T>::nodo na, typename Agen<T>::nodo nb, Agen<T> A, T e
+ * @return void
+ */
+template <class T>
+void poda_rec(typename Agen<T>::nodo n, Agen<T>& A, T e){
+    typename Agen<T>::nodo no = Agen<T>::NODO_NULO;
+    buscar_elemento_Agen(A.raiz(),no,A,e);
+    cout<< A.elemento(no)<<endl;
 }
 
 
@@ -131,8 +200,8 @@ int main(){
     for(size_t i = 0; i < 4 ; i++ ){
         A.insertarHermDrcho(A.hijoIzqdo(A.hermDrcho(A.hijoIzqdo(A.raiz()))), 5 + i);
     }
-
-    cout<< desequilibrioAgenRec(A, A.raiz()) <<endl;
-
+    typename Agen<int>::nodo n = A.raiz();
+    poda_sub_arbol(A.raiz(),A);
+    poda_rec(A.raiz(),A,3);
 return 0;
 }
