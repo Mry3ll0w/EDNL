@@ -1,6 +1,7 @@
 #include <iostream>
 #include "abb.h"
 #include <vector>
+#include <fstream>
 #include <set>
 
 using namespace std;//Avoid using std:: ....
@@ -15,6 +16,9 @@ Abb<T> equilibra_arbol(const Abb<T>& A);
 template<class T>
 Abb<T> union_abb(const Abb<T>& A, const Abb<T>&B);
 
+template<class T>
+Abb<T> interseccion(const Abb<T>& A , const Abb<T>& B);
+
 //Main
 int main(){
     vector<int> v = {3,4,5,6,234,71};
@@ -27,8 +31,7 @@ int main(){
     }
 
     B.insertar(13);
-
-    union_abb(A,B);
+    interseccion(A,B);
     
 
 return 0;
@@ -139,25 +142,72 @@ Abb<T> union_abb(const Abb<T>& A, const Abb<T>&B){
  */
 template<class T>
 Abb<T> interseccion(const Abb<T>& A , const Abb<T>& B){
-    vector<T> va,vb;
+    vector<T> va;
     set<T> C;
     Abb<T> R;
     
     abb_to_vector(A,va);
-    abb_to_vector(B,vb);
-
     //Hallamos los elementos que coinciden, la interseccion sin repeticion
+    //cout<< t.elemento()<<endl;
     for ( auto i : va){
-        for(auto j : vb){
-            if( i == j)
-                C.emplace(i);
+        //Para ver si existe este elemento podremos usar la operacion buscar del Abb
+        if (!B.buscar(i).vacio())
+        {
+            C.emplace(i);
         }
+        
     }
-
-    for ( auto i : C)
+    
+    for ( auto i : C){
         R.insertar(i);
+    }
+        
+    cout<<endl;
     
     return equilibra_arbol(R);
 
 }
+
+/**
+ * @brief Nos indica que el elemento dado pertenece al abb dado
+ * @author Mry3ll0w
+ * @return True si pertenece al conjunto A y false si no pertenece
+ */
+template <class T>
+bool pertenece(const Abb<T>& A, T& e){
+    return !(A.buscar().vacio);
+}
+
+/**
+ * @brief Implementa el operador rombo para conjuntos definido como A rombo B = (A union B) - (A inter B). 
+ * La implementación del operador rombo debe realizarse utilizando obligatoriamente la operación 
+ * Pertenece, que nos indica si un elemento dado pertenece o no a un conjunto. 
+ * La representación del tipo Conjunto debe ser tal que la operación de pertenencia 
+ * esté en el caso promedio en O(log n).
+ * 
+ * 
+ */
+template <class T>
+Abb<T> rombo (const Abb<T>& A, const Abb<T>& B){
+    
+    vector<T> Resultado;
+    Abb<T> A_union_B, A_inter_B,R;
+    
+    A_union_B = union_abb(A,B);
+    A_inter_B = interseccion(A,B);
+
+    //Pasamos a vector todos los elementos de la interseccion
+    abb_to_vector(A_union_B, Resultado);
+
+    //Hacemos la funcion del operador de Resta
+    for(auto i : Resultado){
+        
+        //Si no pertenecen lo metemos en el abb final
+        if(!pertenece(A_inter_B, i))
+            R.insertar(i);
+            
+    }
+
+    return R;    
+} 
 
