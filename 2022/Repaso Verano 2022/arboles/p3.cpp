@@ -136,26 +136,21 @@ int desequilibrioAgenRec(const Agen<T>& A,const typename Agen<T>::nodo& n)
  * @return typename Agen<T>::nodo n
  */
 template <class T>
-void buscar_elemento_Agen(typename Agen<T>::nodo n, typename Agen<T>::nodo& no, const Agen<T>& A, const T& e){
-    
-    if (n != Agen<T>::NODO_NULO) { 
-
-        auto h_der = n;
-        while (h_der != Agen<T>::NODO_NULO) {
-            cout<< A.elemento(h_der)<<endl;
-            if(A.elemento(n) == e){
-                no = h_der;
-                //n = Agen<T>::NODO_NULO;
-                //h_der = Agen<T>::NODO_NULO;
-            }
-            
-            h_der = A.hermDrcho(h_der);
+typename Agen<T>::nodo buscarEltoAgenRec(const Agen<T>& A, const T& x, const typename Agen<T>::nodo& n)
+{
+    if( n == Agen<T>::NODO_NULO )
+        return Agen<T>::NODO_NULO;
+    else
+        if( A.elemento(n) == x )
+            return n;
+        else
+        {
+            typename Agen<T>::nodo aux = buscarEltoAgenRec(A, x, A.hijoIzqdo(n));
+            if( aux != Agen<T>::NODO_NULO && A.elemento(aux) == x ) return aux;
+            else return buscarEltoAgenRec(A, x, A.hermDrcho(n));
         }
-        buscar_elemento_Agen(A.hijoIzqdo(n),no,A,e);
-    }
-
-    
 }
+
 
 /**
  * @brief Elimina el subarbol que se encuentra tras el arbol dado, 
@@ -184,9 +179,8 @@ void poda_sub_arbol(typename Agen<T>::nodo n, Agen<T>&A){
  */
 template <class T>
 void poda_rec(typename Agen<T>::nodo n, Agen<T>& A, T e){
-    typename Agen<T>::nodo no = Agen<T>::NODO_NULO;
-    buscar_elemento_Agen(A.raiz(),no,A,e);
-    cout<< A.elemento(no)<<endl;
+
+    cout<< A.elemento(buscarEltoAgenRec(A, 3, A.raiz()))<<endl;
 }
 
 

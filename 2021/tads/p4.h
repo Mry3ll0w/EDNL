@@ -5,7 +5,7 @@
 #include <vector>
 #include "abb.h"
 /*
- * COMO RECORRER ELEMENTOS DE UN ARBOL VACIO
+ * COMO RECORRER ELEMENTOS DE UN ARBOL Binario de busqueda
  */
 template <class t>
 void show_abb(const Abb<t>&a){
