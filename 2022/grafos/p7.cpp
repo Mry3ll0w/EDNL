@@ -30,7 +30,8 @@ en vez de la matriz de costes mínimos, la matriz de costes "maximos".
 // INF, sino el valor que no sea INF (puesto que INF representa ausencia de
 // arista, pero de a y b sabemos que uno de ellos sí existe arista... por lo que
 // deberíamos de tomarlo)
-template <typename tCoste> tCoste max_inf(tCoste a, tCoste b)
+template <typename tCoste> 
+tCoste max_inf(tCoste a, tCoste b)
 {
   static const tCoste INF = GrafoP<tCoste>::INFINITO;
   if (a == INF && b == INF)
