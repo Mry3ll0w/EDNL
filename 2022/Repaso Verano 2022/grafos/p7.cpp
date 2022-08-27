@@ -145,7 +145,9 @@ pair<int, vector<typename GrafoP<T>::vertice>> ej7(
     //Al tratarse de un origen destino ==> Dijkstra
 
     //Mejores costesd de ir en tren solo y mejores costes de ir solo en bus
-    GrafoP<T> d_bus, d_tren, c1_destino_tren, c1_destino_bus, d_c1_bus, ori_c1_bus, c1_origen_Bus;
+    GrafoP<T> d_bus, d_tren, 
+    c1_destino_tren, d_c1_tren, ori_c1_tren, c1_ori_tren,
+    c1_destino_bus, d_c1_bus, ori_c1_bus, c1_origen_Bus;
     vector<T> P;
     //Costes desde origen hasta destino directo
     d_bus = Dijkstra(Bus, Origen, P);//Cuanto vale coste directo desde o --> d
@@ -168,7 +170,7 @@ pair<int, vector<typename GrafoP<T>::vertice>> ej7(
     T CostesMinimosBus_cambio1 = c1_destino_bus[Destino] + destino_bus_c1[Cambio1] + ori_c1_bus[Cambio1] + c1_origen_Bus[Origen];
 
 
-    //
+    //igual con tren y devolvemos el minimo
 
 
 }
