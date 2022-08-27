@@ -71,6 +71,7 @@ return Destinos_Visitables;
 }
 
 /**ENUNCIADO PROBLEMA 6
+ * 
  * Al dueño de una agencia de transportes se le plantea la siguiente situación. 
  * La agencia de viajes ofrece distintas trayectorias combinadas entre N ciudades 
  * españolas utilizando tren y autobús. 
@@ -86,10 +87,13 @@ return Destinos_Visitables;
  * Implementa una función que calcule la tarifa mínima (matriz de costes mínimos) 
  * de viajar entre cualesquiera de las N ciudades disponiendo del grafo de costes 
  * en autobús, del grafo de costes en tren, y de la ciudad que tiene las estaciones unidas.
+ * 
  */
 
 template<class T>
-matriz<T> ej6(const GrafoP<T> & Tren, const GrafoP<T>& Bus, const typename GrafoP<T>::vertice Cambio){
+matriz<T> ej6(const GrafoP<T> & Tren, const GrafoP<T>& Bus, 
+    const typename GrafoP<T>::vertice Cambio
+){
 
     //Primero calculamos cuanto sale viajar como minimo usando únicamente bus
     vector<typename GrafoP<T>::vertice> P;
@@ -141,10 +145,30 @@ pair<int, vector<typename GrafoP<T>::vertice>> ej7(
     //Al tratarse de un origen destino ==> Dijkstra
 
     //Mejores costesd de ir en tren solo y mejores costes de ir solo en bus
-    GrafoP<T> d_bus, d_tren;
+    GrafoP<T> d_bus, d_tren, c1_destino_tren, c1_destino_bus, d_c1_bus, ori_c1_bus, c1_origen_Bus;
     vector<T> P;
-    d_bus = Dijkstra(Bus, Origen, P);
-    d_tren = Dijkstra(Tren, Origen, P);
+    //Costes desde origen hasta destino directo
+    d_bus = Dijkstra(Bus, Origen, P);//Cuanto vale coste directo desde o --> d
+    d_tren = Dijkstra(Tren, Origen, P);        // Cuanto vale coste directo desde o --> d
+
+    //Costes con los cambios
+    c1_destino_bus = Dijkstra(Bus, Cambio1, P);//Coste desde C1 hasta D
+    
+    auto destino_bus_c1 = Dijkstra(Bus, Destino, P);//Costede desde D hasta C
+
+
+    //Costes desde c1 hasta d usando bus
+    c1_destino_bus = Dijkstra(Bus, Cambio1, P);
+    destino_bus_c1 = Dijkstra(Bus,Cambio1, P);
+
+    ori_c1_bus = Dijkstra(Bus, Cambio1, P);
+    c1_origen_Bus = Dijkstra(Bus, Cambio1, P);
+
+    //Coste minimo de ir en bus con el cambio 1 nada mas
+    T CostesMinimosBus_cambio1 = c1_destino_bus[Destino] + destino_bus_c1[Cambio1] + ori_c1_bus[Cambio1] + c1_origen_Bus[Origen];
+
+
+    //
 
 
 }

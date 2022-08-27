@@ -31,11 +31,15 @@ Particion tombuctu(const std::vector<Coord> &ciudades, const Grafo &G,
   matriz<vertice> P(N);
   costes = Floyd(Gc, P);
 
-  Particion particion(N);
+  Particion particion(N);//1 2 3 4 5 .. 
 
   for (vertice i = 0; i < N; i++)
     for (vertice j = 0; j < N; j++)
-      if (costes[i][j] != INF && particion.encontrar(i) != particion.encontrar(j))
+      if (
+        costes[i][j] != INF //No hay infinto existe un camino ==> Pertenece a una isla
+        && 
+        particion.encontrar(i) != particion.encontrar(j)//Esta ya en esa isla ??
+      )
         particion.unir(i, j);
 
   return particion;
