@@ -26,7 +26,7 @@ matriz<tCoste> tarifa_minima(typename GrafoP<tCoste>::vertice cambio,
       tarifa[i][j] = std::min({
           tren_floyd[i][j],
           autobus_floyd[i][j],
-          suma(autobus_floyd[i][cambio], tren_floyd[cambio][j]),
+          suma(autobus_floyd[i][cambio], tren_floyd[cambio][j]),//Para que sirve esa suma
           suma(tren_floyd[i][cambio], autobus_floyd[cambio][j]),
       });
 
