@@ -175,6 +175,125 @@ pair<int, vector<typename GrafoP<T>::vertice>> ej7(
 
 }
 
+/**
+ * “UN SOLO TRANSBORDO, POR FAVOR”. Este es el título que reza en tu flamante compañía de viajes.
+ * Tu publicidad explica, por supuesto, que ofreces viajes combinados de TREN y/o AUTOBÚS 
+ * (es decir, viajes en tren, en autobús, o usando ambos), entre N ciudades del país, 
+ * en todos tus viajes COMO MÁXIMO 
+ * se hará un solo transbordo (cambio de medio de transporte). 
+ * Te explica que quiere viajar entre dos ciudades, Origen y Destino, y quiere saber cuánto 
+ * le costará.
+ * 
+ * Para responder a esa pregunta dispones de dos grafos de costes directos 
+ * (matriz de costes) de viajar entre las N ciudades del país, 
+ * un grafo con los costes de viajar en tren y otro en autobús.
+ * 
+ * Implementa un subprograma que calcule la tarifa mínima en estas condiciones. 
+ * 
+ */
+template<class T>
+T ej8(const GrafoP<T> & Tren, const GrafoP<T>& Bus, const size_t & N,
+    const typename GrafoP<T>::vertice Origen, const typename GrafoP<T>::vertice Destino
+){
+
+    //Calculamos cuanto vale ir directamente desde origen a destino directamente
+    vector<GrafoP<T>::vertice>> P;
+    auto O_D_Bus = Dijkstra(Bus, Origen, P);
+    auto O_D_Tren = Dijkstra(Tren, Origen,P);
+
+    //Hacemos Dijkstra para obtener el desde el destino al resto para comprobar donde hacer el 
+    //cambio si lo hacemos
+
+    auto D_Bus_resto = Dijkstra(Bus, Destino, P);
+    auto D_Tren_resto = Dijkstra(Tren, Destino, P);
+
+
+    //Calculamos el minimo y donde hacer el salto con transbordos
+    T Tarifa_minima_con_cambio = 999999;
+    for(size_t i = 0; i < N; ++i){
+
+        Tarifa_minima_con_cambio = min(
+            (O_D_Bus[i] + D_Tren_resto[i]),
+            (O_D_Tren[i] + D_Bus_resto[i]),
+            Tarifa_minima_con_cambio
+        )
+
+    }
+    
+    //Tras tener la tarifa minima con el cambio comprobaremos cual es el minimo
+    //Sin cambios tren / bus o realizando un único cambio
+    return min(Tarifa_minima_con_cambio, O_D_Bus[Destino], O_D_Tren[Destino]);
+    //Ya que el cambio no es obligatorio que sea realizadoº
+}
+
+/**
+ * Ejercicio 9 :
+ * Se dispone de dos grafos que representan la matriz de costes para viajes en un 
+ * determinado país, pero por diferentes medios de transporte (tren y autobús, por ejemplo). 
+ * Por supuesto ambos grafos tendrán el mismo número de nodos, N. 
+ * Dados:
+ *  ambos grafos, 
+ *  una ciudad de origen, 
+ * una ciudad de destino y 
+ * el coste del taxi para cambiar de una 
+ * estación a otra dentro de cualquier ciudad (se supone constante e igual para todas las 
+ * ciudades), 
+ * 
+ * Implementa un subprograma que calcule el camino y el coste mínimo para ir de 
+ * la ciudad origen a la ciudad destino.
+ */
+template <class T>
+T ej9(const GrafoP<T> & G1, const GrafoP<T> & G2, T Coste_Taxi, const int& N,
+    const typename GrafoP<T>::vertice& Origen, const typename GrafoP<T>::vertice& Destino
+)
+{
+
+    //Creamos un SuperGrafo para unificar los dos
+    GrafoP<T> SuperGrafo(N);
+
+    for(size_t i = 0; i < N+N ; ++i){
+
+        //Costes del taxi añadidos en la unión
+        SuperGrafo[i+N][i] = Coste_Taxi;
+        SuperGrafo[i][i+N] = Coste_Taxi;
+
+        for (size_t j = 0; j < N+N; j++)
+        {
+            if(i < N && j < N){
+                SuperGrafo[i][j] = G1[i][j];
+            }
+            else if (
+                i >= N && i <= G1.numVert() + G2.numVert() &&
+                && j <= G1.numVert() + G2.numVert() &&
+                j >= N)
+            {
+                SuperGrafo[i][j] = G2[i - G1.numVert()][j-G2.numVert()];
+            }
+
+            //Sumamos Costes donde coinciden ambos (es decir existe un salto)
+            //Añadimos los costes del taxi en la diagonal principal
+            
+        }
+        
+        
+
+    }
+
+    //Aplicamos Floyd para obtener costes minimos
+    vector<GrafoP<T>::vertice> P;
+    auto F_SuperGrafo = Floyd(SuperGrafo, P);
+
+    return min(
+        F_SuperGrafo[Origen][Destino],//Ir en unicamente en tren
+        F_SuperGrafo[Origen+N][Destino], //Salir en autobus y llegar en tren
+        F_SuperGrafo[Origen][Destino + N],//Salir en tren y llegar en autobus
+        F_SuperGrafo[Origen + N][Destino + N]//Unicamente en Bus
+    );
+
+}
+
+
+
 int main()
 {
 
