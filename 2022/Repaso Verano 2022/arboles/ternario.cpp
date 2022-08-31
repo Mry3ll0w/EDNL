@@ -39,9 +39,9 @@ void es_ternario_rec(typename Agen<T>::nodo n, bool &ternario, const Agen<T> &A)
             h_iz = A.hermDrcho(h_iz);
         }
 
-        cout <<"Elemento "<<A.elemento(n)<<endl;
+        //cout <<"Elemento "<<A.elemento(n)<<endl;
         size_t nivel = cuenta_nodos_nivel(A.hijoIzqdo(n), A);
-        cout <<nivel<<endl;
+        //cout <<nivel<<endl;
 
         if (nivel != 3)
             ternario = false;
@@ -56,7 +56,9 @@ void es_ternario_rec(typename Agen<T>::nodo n, bool &ternario, const Agen<T> &A)
  */
 template <class T>
 bool es_ternario(const Agen<T> &A){
+    
     bool t = true;
+
     if(A.arbolVacio())
         return false;
     else{
@@ -64,6 +66,11 @@ bool es_ternario(const Agen<T> &A){
         return t;
     }
 }
+
+
+
+
+
 
 int main()
 {
@@ -74,6 +81,16 @@ int main()
     A.insertarHermDrcho(A.hijoIzqdo(A.raiz()),4);
     A.insertarHijoIzqdo(A.hermDrcho(A.hijoIzqdo(A.raiz())),5);
     A.insertarHermDrcho(A.hijoIzqdo(A.hermDrcho(A.hijoIzqdo(A.raiz()))), 6);
+    A.insertarHermDrcho(A.hijoIzqdo(A.hermDrcho(A.hijoIzqdo(A.raiz()))), 7);
+
+    /**
+     *                  1
+     * 
+     *  2               3           4
+     *                              
+     *              5   6   7     8 
+     */
+
     
     cout<<es_ternario(A)<<endl;;
 

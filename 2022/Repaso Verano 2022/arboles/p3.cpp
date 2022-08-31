@@ -87,7 +87,7 @@ int profundidad_nodo(typename Agen<T>::nodo n, const Agen<T>& A){
 template <class T>
 int altura_subarbol(typename Agen<T>::nodo& n, Agen<T>& A){
 
-    unsigned altura = 0;
+    
     
     int max = 0;
     typename Agen<T>::nodo aux = Agen<T>::NODO_NULO;

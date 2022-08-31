@@ -270,8 +270,6 @@ T ej9(const GrafoP<T> & G1, const GrafoP<T> & G2, T Coste_Taxi, const int& N,
                 SuperGrafo[i][j] = G2[i - G1.numVert()][j-G2.numVert()];
             }
 
-            //Sumamos Costes donde coinciden ambos (es decir existe un salto)
-            //Añadimos los costes del taxi en la diagonal principal
             
         }
         
