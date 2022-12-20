@@ -20,7 +20,7 @@ int cuenta_hijos(typename Abin<T>::nodo n, const Abin<T> &A){
         return -1;
     }
     else
-        return 1 + cuenta_hijos(A.hijoDrchoB(n),A) + cuenta_hijos(A.hijoIzqdoB(n),A);
+        return 1 + cuenta_hijos(A.hijoDrcho(n),A) + cuenta_hijos(A.hijoIzqdo(n),A);
 
 }
 
@@ -32,10 +32,10 @@ int cuenta_hijos(typename Abin<T>::nodo n, const Abin<T> &A){
 template <class T>
 int cuenta_antecesores(typename Abin<T>::nodo n, const Abin<T> &A){
 
-    if(n == A.raizB())
+    if(n == A.raiz())
         return -1;
     else
-        return 1 + cuenta_antecesores(A.hijoDrchoB(n),A) + cuenta_antecesores(A.hijoIzqdoB(n),A);
+        return 1 + cuenta_antecesores(A.hijoDrcho(n),A) + cuenta_antecesores(A.hijoIzqdo(n),A);
 }
 
 /**
@@ -62,8 +62,8 @@ void nostalgicos_rec(typename Abin<T>::nodo n, const Abin<T> &A, int& n_nostalgi
         if(es_nostalgico(n,A))
             n_nostalgicos ++;
         
-        nostalgicos_rec(A.hijoDrchoB(n),A, n_nostalgicos);
-        nostalgicos_rec(A.hijoIzqdoB(n),A,n_nostalgicos);
+        nostalgicos_rec(A.hijoDrcho(n),A, n_nostalgicos);
+        nostalgicos_rec(A.hijoIzqdo(n),A,n_nostalgicos);
     }
 
 }
@@ -76,11 +76,11 @@ void nostalgicos_rec(typename Abin<T>::nodo n, const Abin<T> &A, int& n_nostalgi
 template <class T>
 int nostalgicos(const Abin<T> &A){
     
-    if(A.arbolVacioB())
+    if(A.arbolVacio())
         return 0;
     else{
         int n = 0;
-        nostalgicos_rec(A.raizB(), A,n);
+        nostalgicos_rec(A.raiz(), A,n);
         return n;
     }
 }

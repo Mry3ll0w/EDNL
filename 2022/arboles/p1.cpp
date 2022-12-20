@@ -27,10 +27,10 @@ unsigned int desequilibrio_arbol(typename Abin<t>::nodo n, const Abin<t> &A);
 int main (){
 
     Abin<int> a;
-    a.insertarRaizB(1);
-    a.insertarHijoDrchoB(a.raizB(),3);
-    //a.insertarHijoIzqdoB(a.raizB(),2);
-    a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
+    a.insertarraiz(1);
+    a.insertarhijoDrcho(a.raiz(),3);
+    //a.insertarhijoIzqdo(a.raiz(),2);
+    a.insertarhijoDrcho(a.hijoDrcho(a.raiz()),4);
     std::cout << altura_arbol(a) << std::endl;
     std::cout<<"-----------------------------------------------------------"<<std::endl;
     std::cout << "Pseudo completo: "<< pseudocompleto(a)<<std::endl;
@@ -51,14 +51,14 @@ int cuenta_nodos(const Abin<t>&a,typename Abin<t>::nodo n){
     }
     std::cout<<a.elemento(n)<<std::endl;
 
-return 1 + cuenta_nodos(a,a.hijoDrchoB(n)) + cuenta_nodos(a,a.hijoIzqdoB(n));
+return 1 + cuenta_nodos(a,a.hijoDrcho(n)) + cuenta_nodos(a,a.hijoIzqdo(n));
 
 }
 
 template<class t>
 int nodos_arbol(const Abin<t>& a){
 
-    return cuenta_nodos(a,a.raizB());
+    return cuenta_nodos(a,a.raiz());
 
 }
 
@@ -73,14 +73,14 @@ int altura_nodo(const Abin<t>&a, typename Abin<t>::nodo n){
 
     }
 
-    return 1 + std::max(altura_nodo(a,a.hijoDrchoB(n)),altura_nodo(a,a.hijoIzqdoB(n))); 
+    return 1 + std::max(altura_nodo(a,a.hijoDrcho(n)),altura_nodo(a,a.hijoIzqdo(n))); 
 
 }
 
 //Calcula la altura de un nodo
 template <class t>
 int altura_arbol(const Abin<t>& a){
-    return altura_nodo(a,a.raizB());
+    return altura_nodo(a,a.raiz());
 }
 
 /* ------------------------------- EJERCICIO 3 ------------------------------ */
@@ -90,10 +90,10 @@ int altura_arbol(const Abin<t>& a){
 template<class t>
 int profundidad_nodo(const Abin<t>&a, typename Abin<t>::nodo n){
 
-    if(n == a.raizB())
+    if(n == a.raiz())
         return 0;
 
-    return 1 + profundidad_nodo(a,a.padreB(n));
+    return 1 + profundidad_nodo(a,a.padre(n));
 }
 
 //PROFUNDIDAD IMPLEMENTACION ITERATIVA
@@ -102,10 +102,10 @@ int profundidad_nodo_iterativa(typename Abin<t>::nodo n,const Abin<t>& a){
 
     int profundidad = 0;
 
-    while (n != a.raizB())
+    while (n != a.raiz())
     {
         profundidad ++;
-        n = a.padreB(n);    
+        n = a.padre(n);    
     }
     
 return profundidad;
@@ -131,7 +131,7 @@ return profundidad;
 template <typename t>
 unsigned int difAltura(typename Abin<t>::nodo n, Abin<t>& A){
     
-    return std::abs( altura_nodo(A,A.hijoIzqdoB(n)) - altura_nodo(A,A.hijoDrchoB(n) ) );
+    return std::abs( altura_nodo(A,A.hijoIzqdo(n)) - altura_nodo(A,A.hijoDrcho(n) ) );
 
 }//Obtenemos las alturas
 
@@ -142,15 +142,15 @@ unsigned int desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol)
     {
         return 0;// ya que al tener z
     }
-    return fmax( difAltura (n, Arbol), fmax( desequilibrio (Arbol.hijoDrchoB(n), Arbol), 
-                desequilibrio (Arbol.hijoIzqdoB(n), Arbol) ) );
+    return fmax( difAltura (n, Arbol), fmax( desequilibrio (Arbol.hijoDrcho(n), Arbol), 
+                desequilibrio (Arbol.hijoIzqdo(n), Arbol) ) );
     //Grado maximo del nodo n y sus dos hijos, siendo el desequilibrio el maximo de los mismos
 }
 
 template <class t>
 unsigned int desequilibrio_arbol(const Abin<t> &A){
 
-    return desequilibrio(A.raizB(),A);
+    return desequilibrio(A.raiz(),A);
     //NO es el desequilibrio del nodo raiz, si no de sus nodos, es decir no tiene pq coincidir con el
     //desequilibrio del nodo raiz.
 
@@ -166,20 +166,20 @@ bool pseudocompleto_rec(typename Abin<t>::nodo n, Abin<t> &A)
 {
     if (1 == altura_nodo(n,A))//Si la altura llega a 1 estamos en el penultimo nivel
     {
-        return A.hijoDrchoB(n) != Abin<t>::NODO_NULO && A.hijoIzqdoB(n) != Abin<t>::NODO_NULO;
+        return A.hijoDrcho(n) != Abin<t>::NODO_NULO && A.hijoIzqdo(n) != Abin<t>::NODO_NULO;
     }
     else
     {
-        if (altura_nodo(A.hijoIzqdoB(n),A) > altura_nodo(A.hijoDrchoB(n),A))
+        if (altura_nodo(A.hijoIzqdo(n),A) > altura_nodo(A.hijoDrcho(n),A))
         {
-            return pseudocompleto_rec(A.hijoIzqdoB(n),A);
+            return pseudocompleto_rec(A.hijoIzqdo(n),A);
         }
-        else if(altura_nodo(A.hijoIzqdoB(n),A) < altura_nodo(A.hijoDrchoB(n),A))
+        else if(altura_nodo(A.hijoIzqdo(n),A) < altura_nodo(A.hijoDrcho(n),A))
         {
-            return pseudocompleto_rec(A.hijoDrchoB(n),A);
+            return pseudocompleto_rec(A.hijoDrcho(n),A);
         }   
         else{
-            return pseudocompleto_rec(A.hijoIzqdoB(n),A) && pseudocompleto_rec(A.hijoDrchoB(n),A);
+            return pseudocompleto_rec(A.hijoIzqdo(n),A) && pseudocompleto_rec(A.hijoDrcho(n),A);
         }
         
     }
@@ -188,10 +188,10 @@ bool pseudocompleto_rec(typename Abin<t>::nodo n, Abin<t> &A)
 
 template<class t>
 bool pseudocompleto(Abin<t>&A){
-    if (A.arbolVacioB())
+    if (A.arbolVacio())
     {
         return true;
     }
     
-    return pseudocompleto_rec(A.raizB(),A);
+    return pseudocompleto_rec(A.raiz(),A);
 }

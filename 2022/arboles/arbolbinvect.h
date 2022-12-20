@@ -16,24 +16,24 @@ public:
     // Que sería equivalente a Abinv a(23);
     // Al poner explicit sólo puede hacerse de la segunda manera.
 
-    void insertarRaizB(const T& e);
-    void insertarHijoIzqdoB(nodo n, const T& e);
-    void insertarHijoDrchoB(nodo n, const T& e);
+    void insertarraiz(const T& e);
+    void insertarhijoIzqdo(nodo n, const T& e);
+    void insertarhijoDrcho(nodo n, const T& e);
 
-    void eliminarRaizB();
-    void eliminarHijoIzqdoB(nodo n);
-    void eliminarHijoDrchoB(nodo n);
+    void eliminarraiz();
+    void eliminarhijoIzqdo(nodo n);
+    void eliminarhijoDrcho(nodo n);
 
     ~Abinv();
 
-    bool arbolVacioB() const;
+    bool arbolVacio() const;
     const T& elemento(nodo n) const;	// Lectura
     T& elemento(nodo n);				// Lectura/escritura
 
-    nodo raizB() const;
-    nodo padreB(nodo n) const;
-    nodo hijoIzqdoB(nodo n) const;
-    nodo hijoDrchoB(nodo n) const;
+    nodo raiz() const;
+    nodo padre(nodo n) const;
+    nodo hijoIzqdo(nodo n) const;
+    nodo hijoDrcho(nodo n) const;
 
     unsigned profundidad(nodo n);
     int altura(nodo n);
@@ -70,7 +70,7 @@ inline Abinv<T>::Abinv(std::size_t maxNodos):
 {}
 
 template <typename T>
-void Abinv<T>::insertarRaizB(const T& e){
+void Abinv<T>::insertarraiz(const T& e){
     assert(numNodos == 0);	// Arbol vacio
 
     numNodos = 1;
@@ -81,7 +81,7 @@ void Abinv<T>::insertarRaizB(const T& e){
 }
 
 template <typename T>
-void Abinv<T>::insertarHijoIzqdoB(Abinv::nodo n, const T& e){
+void Abinv<T>::insertarhijoIzqdo(Abinv::nodo n, const T& e){
     assert(n >= 0 && n < numNodos);		// nodo valido
     assert(nodos[n].izquierdo == NODO_NULO); //No tenga hijo izquierdo.
     assert(numNodos < maxNodos); //Arbol no lleno.
@@ -95,7 +95,7 @@ void Abinv<T>::insertarHijoIzqdoB(Abinv::nodo n, const T& e){
 }
 
 template <typename T>
-void Abinv<T>::insertarHijoDrchoB(Abinv::nodo n, const T& e){
+void Abinv<T>::insertarhijoDrcho(Abinv::nodo n, const T& e){
     assert(n >= 0 && n < numNodos);		// nodo valido
     assert(nodos[n].derecho == NODO_NULO); // No tiene hijo derecho
     assert(numNodos < maxNodos); // Arbol no lleno
@@ -109,7 +109,7 @@ void Abinv<T>::insertarHijoDrchoB(Abinv::nodo n, const T& e){
 }
 
 template <typename T>
-void Abinv<T>::eliminarHijoIzqdoB(Abinv::nodo n){
+void Abinv<T>::eliminarhijoIzqdo(Abinv::nodo n){
     assert(n >= 0 && n < numNodos); //nodo válido
     nodo hijo = nodos[n].izquierdo;
 
@@ -144,7 +144,7 @@ void Abinv<T>::eliminarHijoIzqdoB(Abinv::nodo n){
 }
 
 template <typename T>
-void Abinv<T>::eliminarHijoDrchoB(Abinv::nodo n){
+void Abinv<T>::eliminarhijoDrcho(Abinv::nodo n){
     assert(n >= 0 && n < numNodos);
     nodo hijo = nodos[n].derecho;
 
@@ -179,7 +179,7 @@ void Abinv<T>::eliminarHijoDrchoB(Abinv::nodo n){
 }
 
 template <typename T>
-inline void Abinv<T>::eliminarRaizB(){
+inline void Abinv<T>::eliminarraiz(){
     assert(numNodos == 1); //Comprobamos que solo queda el nodo raíz
     numNodos = 0;
 }
@@ -192,7 +192,7 @@ inline Abinv<T>::~Abinv(){
 }
 
 template <typename T>
-inline bool Abinv<T>::arbolVacioB() const{
+inline bool Abinv<T>::arbolVacio() const{
     return (numNodos == 0);
 }
 
@@ -209,24 +209,24 @@ inline T& Abinv<T>::elemento(Abinv::nodo n){
 }
 
 template <typename T>
-inline typename Abinv<T>::nodo Abinv<T>::raizB() const{
+inline typename Abinv<T>::nodo Abinv<T>::raiz() const{
     return (numNodos > 0) ? 0 : NODO_NULO;
 }
 
 template <typename T>
-inline typename Abinv<T>::nodo Abinv<T>:: padreB(Abinv::nodo n) const{
+inline typename Abinv<T>::nodo Abinv<T>:: padre(Abinv::nodo n) const{
     assert(n >= 0 && n < numNodos);
     return nodos[n].padre;
 }
 
 template <typename T>
-inline typename Abinv<T>::nodo Abinv<T>::hijoIzqdoB(Abinv::nodo n) const{
+inline typename Abinv<T>::nodo Abinv<T>::hijoIzqdo(Abinv::nodo n) const{
     assert(n >= 0 && n < numNodos);
     return nodos[n].izquierdo;
 }
 
 template <typename T>
-inline typename Abinv<T>::nodo Abinv<T>::hijoDrchoB(Abinv::nodo n)const{
+inline typename Abinv<T>::nodo Abinv<T>::hijoDrcho(Abinv::nodo n)const{
     return nodos[n].derecho;
 }
 

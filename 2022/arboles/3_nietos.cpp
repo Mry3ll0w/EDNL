@@ -15,7 +15,7 @@ return 0;
 template <class t>
 int cuenta_nietos(typename Abin<t>::nodo n, const Abin<t>&A){
     if(n != Abin<t>::NODO_NULO)
-        return 1 + cuenta_nietos(A.hijoIzqdoB(n),A)+cuenta_nietos(A.hijoDrchoB(n),A);
+        return 1 + cuenta_nietos(A.hijoIzqdo(n),A)+cuenta_nietos(A.hijoDrcho(n),A);
     else
         return 0;
 }
@@ -45,10 +45,10 @@ int cuenta_3_nietos_rec(typename Abin<t>::nodo n,const Abin<t>&A)
 
         if (cuenta_hijos(n,A)==3)
         {
-            return 1 + cuenta_3_nietos(A.hijoIzqdoB(n),A) + cuenta_3_nietos(A.hijoDrchoB(n),A);
+            return 1 + cuenta_3_nietos(A.hijoIzqdo(n),A) + cuenta_3_nietos(A.hijoDrcho(n),A);
         }
         else
-            return cuenta_3_nietos(A.hijoIzqdoB(n),A) + cuenta_3_nietos(A.hijoDrchoB(n),A);
+            return cuenta_3_nietos(A.hijoIzqdo(n),A) + cuenta_3_nietos(A.hijoDrcho(n),A);
         
     }
     
@@ -59,5 +59,5 @@ int cuenta_3_nietos_rec(typename Abin<t>::nodo n,const Abin<t>&A)
 template <class t> 
 int numero_3_nietos(const Abin<t>&A)
 {
-    return cuenta_3_nietos_rec(A.raizB(),A);
+    return cuenta_3_nietos_rec(A.raiz(),A);
 }

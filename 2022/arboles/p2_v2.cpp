@@ -7,11 +7,11 @@ bool similares(Abin<t>&A, Abin<t>&B);
 
 int main(){
     Abin<int> a,b;
-    a.insertarRaizB(1);
-    b.insertarRaizB(1);
+    a.insertarraiz(1);
+    b.insertarraiz(1);
 
-    a.insertarHijoDrchoB(a.raizB(),2);
-    b.insertarHijoDrchoB(b.raizB(),2);
+    a.insertarhijoDrcho(a.raiz(),2);
+    b.insertarhijoDrcho(b.raiz(),2);
 
     std::cout<< similares(a,b)<<std::endl;
 
@@ -28,9 +28,9 @@ bool similares_rec(typename Abin<t>::nodo na, typename Abin<t>::nodo nb, Abin<t>
     //Caso distinción estructural de los hijos derechos de ambos árboles
     if 
     (
-        (A.hijoDrchoB(na) != Abin<t>::NODO_NULO && B.hijoDrchoB(nb) == Abin<t>::NODO_NULO)
+        (A.hijoDrcho(na) != Abin<t>::NODO_NULO && B.hijoDrcho(nb) == Abin<t>::NODO_NULO)
         ||
-        (A.hijoDrchoB(na) == Abin<t>::NODO_NULO && B.hijoDrchoB(nb) != Abin<t>::NODO_NULO)    
+        (A.hijoDrcho(na) == Abin<t>::NODO_NULO && B.hijoDrcho(nb) != Abin<t>::NODO_NULO)    
     )
     {
         return false;
@@ -39,16 +39,16 @@ bool similares_rec(typename Abin<t>::nodo na, typename Abin<t>::nodo nb, Abin<t>
     //Caso distinción estructural de los hijos izquierdos
     else if
     (
-        (A.hijoIzqdoB(na) != Abin<t>::NODO_NULO && B.hijoDrchoB(nb)==Abin<t>::NODO_NULO)
+        (A.hijoIzqdo(na) != Abin<t>::NODO_NULO && B.hijoDrcho(nb)==Abin<t>::NODO_NULO)
         ||
-        (A.hijoIzqdoB(na) == Abin<t>::NODO_NULO && B.hijoDrchoB(nb)!=Abin<t>::NODO_NULO)
+        (A.hijoIzqdo(na) == Abin<t>::NODO_NULO && B.hijoDrcho(nb)!=Abin<t>::NODO_NULO)
     )
     {
         return false;
     }
     else{
 
-        return similares_rec(A.hijoIzqdoB(na), B.hijoIzqdoB(na),A,B)&& similares_rec(A.hijoDrchoB(na),B.hijoDrchoB(na),A,B);
+        return similares_rec(A.hijoIzqdo(na), B.hijoIzqdo(na),A,B)&& similares_rec(A.hijoDrcho(na),B.hijoDrcho(na),A,B);
 
     }
     
@@ -57,5 +57,5 @@ bool similares_rec(typename Abin<t>::nodo na, typename Abin<t>::nodo nb, Abin<t>
 template<class t>
 bool similares(Abin<t>&A, Abin<t>&B)
 {
-    return similares_rec(A.raizB(),B.raizB(),A,B);
+    return similares_rec(A.raiz(),B.raiz(),A,B);
 }

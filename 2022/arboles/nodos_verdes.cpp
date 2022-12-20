@@ -33,25 +33,25 @@ bool tiene_3_nietos(typename Abin<t>::nodo n, const Abin<t>&A){
     if 
     (
         //Comprobamos que al menos uno de los hijos tenga un descendiente
-        A.hijoDrchoB(n) = NULO && A.hijoDrchoB(n) = NULO 
+        A.hijoDrcho(n) = NULO && A.hijoDrcho(n) = NULO 
         &&
         //Comprobacion nietos
         (
 
             //1) Hijo izquierdo
             (
-                A.hijoIzqdoB(A.hjoIzqdoB(n))!=  NULO && A.hijoDrchoB(A.hjoIzqdoB(n))== NULO 
+                A.hijoIzqdo(A.hjoIzqdoB(n))!=  NULO && A.hijoDrcho(A.hjoIzqdoB(n))== NULO 
                 ||
-                A.hijoIzqdoB(A.hjoIzqdoB(n))==  NULO && A.hijoDrchoB(A.hjoIzqdoB(n))!= NULO
+                A.hijoIzqdo(A.hjoIzqdoB(n))==  NULO && A.hijoDrcho(A.hjoIzqdoB(n))!= NULO
             )
         
             ||
 
             //2) Hijo Derecho
             (
-                A.hijoDrchoB(A.hjoDrchoB(n))== NULO && A.hijoIzqdoB(A.hjoDrchoB(n))!= NULO
+                A.hijoDrcho(A.hjoDrchoB(n))== NULO && A.hijoIzqdo(A.hjoDrchoB(n))!= NULO
                 ||
-                A.hijoDrchoB(A.hjoDrchoB(n))!= NULO && A.hijoIzqdoB(A.hjoDrchoB(n))== NULO
+                A.hijoDrcho(A.hjoDrchoB(n))!= NULO && A.hijoIzqdo(A.hjoDrchoB(n))== NULO
             
             )
         
@@ -81,10 +81,10 @@ int cuenta_3_nietos_rec(typename Abin<t>::nodo n,const Abin<t>&A){
 
         if (tiene_3_nietos(n,A))
         {
-            return 1 + cuenta_3_nietos(A.hijoIzqdoB(n),A) + cuenta_3_nietos(A.hijoDrchoB(n),A);
+            return 1 + cuenta_3_nietos(A.hijoIzqdo(n),A) + cuenta_3_nietos(A.hijoDrcho(n),A);
         }
         else
-            return cuenta_3_nietos(A.hijoIzqdoB(n),A) + cuenta_3_nietos(A.hijoDrchoB(n),A);
+            return cuenta_3_nietos(A.hijoIzqdo(n),A) + cuenta_3_nietos(A.hijoDrcho(n),A);
         
     }
     
@@ -95,5 +95,5 @@ int cuenta_3_nietos_rec(typename Abin<t>::nodo n,const Abin<t>&A){
 template <class t> 
 int numero_3_nietos(const Abin<t>&A)
 {
-    return cuenta_3_nietos_rec(A.raizB(),A);
+    return cuenta_3_nietos_rec(A.raiz(),A);
 }

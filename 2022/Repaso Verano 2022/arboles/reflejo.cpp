@@ -19,25 +19,25 @@ template <class T>
 int reflejado_rec(const Abin<T>& A, typename Abin<T>::nodo ni, typename Abin<T>::nodo nd){
     
     if(
-        A.hijoIzqdoB(na) == Abin<T>::NODO_NULO
+        A.hijoIzqdo(na) == Abin<T>::NODO_NULO
         && 
-        A.hijoDrchoB(na) == Abin<T>::NODO_NULO
+        A.hijoDrcho(na) == Abin<T>::NODO_NULO
     ){
         return -2;
     }
     //Caso General
     if(
-        A.elemento(A.hijoDrchoB(ni))== A.elemento(A.hijoIzqdoB(nd))
+        A.elemento(A.hijoDrcho(ni))== A.elemento(A.hijoIzqdo(nd))
         ||
-        A.elemento(A.hijoIzqdoB(ni)) == A.elemento(A.hijoDrchoB(nd))
+        A.elemento(A.hijoIzqdo(ni)) == A.elemento(A.hijoDrcho(nd))
     ){
-        return 2 + reflejado_rec(A, A.hijoDrchoB(ni),A.hijoIzqdoB(nd)) +
-            reflejado_rec(A, A.hijoIzqdoB(ni), A.hijoDrchoB(nd));
+        return 2 + reflejado_rec(A, A.hijoDrcho(ni),A.hijoIzqdo(nd)) +
+            reflejado_rec(A, A.hijoIzqdo(ni), A.hijoDrcho(nd));
     }
     else{
         //No se cumple el reflejo, llamamos al hundimiento en el árbol
-        return 0 + reflejado_rec(A, A.hijoDrchoB(ni),A.hijoIzqdoB(nd)) +
-            reflejado_rec(A, A.hijoIzqdoB(ni), A.hijoDrchoB(nd));
+        return 0 + reflejado_rec(A, A.hijoDrcho(ni),A.hijoIzqdo(nd)) +
+            reflejado_rec(A, A.hijoIzqdo(ni), A.hijoDrcho(nd));
     }    
 
 }
@@ -49,13 +49,13 @@ int reflejado(const Abin<T> & A){
     //Inicialmente le pasamos al nodo izq y nodo der, para tratar los 
     //subarboles de forma independiente
     if(
-        A.hijoDrchoB(A.raizB()) != Abin<T>::NODO_NULO 
+        A.hijoDrcho(A.raiz()) != Abin<T>::NODO_NULO 
         &&
-        A.hijoDrchoB(A.raizB()) != Abin<T>::NODO_NULO
+        A.hijoDrcho(A.raiz()) != Abin<T>::NODO_NULO
         &&
-        !A.arbolVacioB()
+        !A.arbolVacio()
     ){
-        return reflejado_rec(A, A.raizB(), A.raizB());
+        return reflejado_rec(A, A.raiz(), A.raiz());
     }
     else
         return 0;

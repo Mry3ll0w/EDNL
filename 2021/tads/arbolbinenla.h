@@ -10,20 +10,20 @@ public:
 	typedef celda* nodo;
 	static const nodo NODO_NULO;
 	Abin(); // constructor
-	void insertarRaizB(const T& e);
-	void insertarHijoIzqdoB(nodo n, const T& e);
-	void insertarHijoDrchoB(nodo n, const T& e);
-	void eliminarHijoIzqdoB(nodo n);
-	void eliminarHijoDrchoB(nodo n);
-	void eliminarRaizB();
+	void insertarraiz(const T& e);
+	void insertarhijoIzqdo(nodo n, const T& e);
+	void insertarhijoDrcho(nodo n, const T& e);
+	void eliminarhijoIzqdo(nodo n);
+	void eliminarhijoDrcho(nodo n);
+	void eliminarraiz();
 	~Abin(); // destructor
-	bool arbolVacioB() const;
+	bool arbolVacio() const;
 	const T& elemento(nodo n) const; // acceso a elto, lectura
 	T& elemento(nodo n);  // acceso a elto, lectura/escritura
-	nodo raizB() const;
-	nodo padreB(nodo n) const;
-	nodo hijoIzqdoB(nodo n) const;
-	nodo hijoDrchoB(nodo n) const;
+	nodo raiz() const;
+	nodo padre(nodo n) const;
+	nodo hijoIzqdo(nodo n) const;
+	nodo hijoDrcho(nodo n) const;
     int altura_mia(nodo n)const;//ta bien
 	int profundidad_nodo(nodo n)const;//handmade
 	int profundidad_arbol(Abin<T>)const;
@@ -66,14 +66,14 @@ template <typename T>
 inline Abin<T>::Abin() : r(NODO_NULO) {}
 
 template <typename T>
-inline void Abin<T>::insertarRaizB (const T& e)
+inline void Abin<T>::insertarraiz (const T& e)
 {
 	assert(r == NODO_NULO);  // árbol vacío
 	r = new celda(e);
 }
 
 template <typename T>
-inline void Abin<T>::insertarHijoIzqdoB(Abin<T>::nodo n,const T& e){
+inline void Abin<T>::insertarhijoIzqdo(Abin<T>::nodo n,const T& e){
 	assert(n != NODO_NULO);
 	assert(n->hizq == NODO_NULO);  // no existe hijo
 
@@ -81,14 +81,14 @@ inline void Abin<T>::insertarHijoIzqdoB(Abin<T>::nodo n,const T& e){
 }
 
 template <typename T> inline
-void Abin<T>::insertarHijoDrchoB(Abin<T>::nodo n, const T& e){
+void Abin<T>::insertarhijoDrcho(Abin<T>::nodo n, const T& e){
 	assert(n != NODO_NULO);
 	assert(n->hder == NODO_NULO); // no existe hijo
 	n->hder = new celda(e, n);
 }
 
 template <typename T>
-inline void Abin<T>::eliminarHijoIzqdoB(Abin<T>::nodo n){
+inline void Abin<T>::eliminarhijoIzqdo(Abin<T>::nodo n){
 	assert(n != NODO_NULO);
 	assert(n->hizq != NODO_NULO); // existe hijo izqdo.
 	assert(n->hizq->hizq == NODO_NULO && // hijo izqdo. 
@@ -99,7 +99,7 @@ inline void Abin<T>::eliminarHijoIzqdoB(Abin<T>::nodo n){
 }
 
 template <typename T>
-inline void Abin<T>::eliminarHijoDrchoB(Abin<T>::nodo n){
+inline void Abin<T>::eliminarhijoDrcho(Abin<T>::nodo n){
 	assert(n != NODO_NULO);
 	assert(n->hder != NODO_NULO); // existe hijo drcho.
 	assert(n->hder->hizq == NODO_NULO && // hijo drcho.
@@ -110,7 +110,7 @@ inline void Abin<T>::eliminarHijoDrchoB(Abin<T>::nodo n){
 }
 
 template <typename T>
-inline void Abin<T>::eliminarRaizB(){
+inline void Abin<T>::eliminarraiz(){
 	assert(r != NODO_NULO); // árbol no vacío
 	assert(r->hizq == NODO_NULO &&
 		   r->hder == NODO_NULO); // la raíz es hoja
@@ -122,7 +122,7 @@ inline void Abin<T>::eliminarRaizB(){
 template <typename T> 
 inline Abin<T>::~Abin(){destruirNodos(r);}
 
-template <typename T> inline bool Abin<T>::arbolVacioB() const{ return (r == NODO_NULO); }
+template <typename T> inline bool Abin<T>::arbolVacio() const{ return (r == NODO_NULO); }
 
 template <typename T>
 inline const T& Abin<T>::elemento(Abin<T>::nodo n) const{
@@ -137,24 +137,24 @@ inline T& Abin<T>::elemento(Abin<T>::nodo n){
 }
 
 template <typename T>
-inline typename Abin<T>::nodo Abin<T>::raizB() const{
+inline typename Abin<T>::nodo Abin<T>::raiz() const{
 	return r;
 }
 
 template <typename T> inline
-typename Abin<T>::nodo Abin<T>::padreB(Abin<T>::nodo n) const{
+typename Abin<T>::nodo Abin<T>::padre(Abin<T>::nodo n) const{
 	assert(n != NODO_NULO);
 	return n->padre;
 }
 
 template <typename T> inline
-typename Abin<T>::nodo Abin<T>::hijoIzqdoB(Abin<T>::nodo n) const{
+typename Abin<T>::nodo Abin<T>::hijoIzqdo(Abin<T>::nodo n) const{
 	assert(n != NODO_NULO);
 	return n->hizq;
 }
 
 template <typename T> inline
-typename Abin<T>::nodo Abin<T>::hijoDrchoB(Abin<T>::nodo n) const{
+typename Abin<T>::nodo Abin<T>::hijoDrcho(Abin<T>::nodo n) const{
 	assert(n != NODO_NULO);
 	return n->hder;
 }
@@ -205,7 +205,7 @@ typename Abin<T>::nodo Abin<T>::copiar(Abin<T>::nodo n){
 
 template<typename T>
 unsigned Abin<T>::node_counter()const {
-    return node_counter_final(raizB());
+    return node_counter_final(raiz());
 }
 
 template<typename T>
@@ -235,7 +235,7 @@ int Abin<T>::altura_mia(nodo n) const {
 
 template<typename T>
 int Abin<T>::profundidad_arbol(Abin<T>a) const {
-    return a.profundidad_nodo(a.raizB());//Calcula la altura del nodo raiz
+    return a.profundidad_nodo(a.raiz());//Calcula la altura del nodo raiz
 }
 
 template<typename T>

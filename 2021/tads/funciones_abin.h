@@ -12,25 +12,25 @@ template <typename t>
 void preorden(Abin<t>& a,typename Abin<t>::nodo n){
     if(n!=Abin<t>::NODO_NULO){
         cout<<a.elemento(n)<<endl;//Se procesa antes de recorrer
-        preorden(a,a.hijoIzqdoB(n));
-        preorden(a,a.hijoDrchoB(n));
+        preorden(a,a.hijoIzqdo(n));
+        preorden(a,a.hijoDrcho(n));
     }
 }
 
 template <typename t>
 void inorden_abin(Abin<t>& a,typename Abin<t>::nodo  n){
     if (n!=Abin<t>::NODO_NULO){
-        inorden_abin(a,a.hijoIzqdoB(n));
+        inorden_abin(a,a.hijoIzqdo(n));
         cout<<a.elemento(n)<<endl;
-        inorden_abin(a,a.hijoDrchoB(n));
+        inorden_abin(a,a.hijoDrcho(n));
     }
 }
 
 template <typename t>
 void postorden_abin(Abin<t>& a, typename Abin<t>::nodo n){
     if (n!=Abin<t>::NODO_NULO){
-        postorden_abin(a,a.hijoIzqdoB(n));
-        postorden_abin(a,a.hijoDrchoB(n));
+        postorden_abin(a,a.hijoIzqdo(n));
+        postorden_abin(a,a.hijoDrcho(n));
         cout<<a.elemento(n)<<endl;
     }
 }

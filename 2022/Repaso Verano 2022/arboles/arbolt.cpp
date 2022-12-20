@@ -25,8 +25,8 @@ void cuenta_nodos_impares(Abin<int>::nodo n, int &n_impares, const Abin<int> &A)
             // Es impar
             n_impares++;
         }
-        cuenta_nodos_impares(A.hijoIzqdoB(n), n_impares, A);
-        cuenta_nodos_impares(A.hijoDrchoB(n), n_impares, A);
+        cuenta_nodos_impares(A.hijoIzqdo(n), n_impares, A);
+        cuenta_nodos_impares(A.hijoDrcho(n), n_impares, A);
     }
 }
 
@@ -38,7 +38,7 @@ void cuenta_nodos_impares(Abin<int>::nodo n, int &n_impares, const Abin<int> &A)
  */
 bool es_arbol_t(const Abin<int>&A){
 
-    if(A.arbolVacioB()){
+    if(A.arbolVacio()){
         return false;//Un arbol vacio no es un tipo T segun el enunciado
     }
     else{//No es vacio, por tanto puede ser un tipo T
@@ -46,8 +46,8 @@ bool es_arbol_t(const Abin<int>&A){
         int impares_sub_derecho, impares_sub_izquierdo;
         impares_sub_derecho = impares_sub_derecho = 0;
 
-        cuenta_nodos_impares(A.hijoDrchoB(A.raizB()),impares_sub_derecho,A);
-        cuenta_nodos_impares(A.hijoIzqdoB(A.raizB()), impares_sub_izquierdo, A);
+        cuenta_nodos_impares(A.hijoDrcho(A.raiz()),impares_sub_derecho,A);
+        cuenta_nodos_impares(A.hijoIzqdo(A.raiz()), impares_sub_izquierdo, A);
 
         return impares_sub_derecho == impares_sub_izquierdo;
 

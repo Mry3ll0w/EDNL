@@ -14,19 +14,19 @@ int main(){
 bool valor_verdad_rec(const Abin<string>& A, typename Abin<string>::nodo n){
 
     if(
-        A.hijoIzqdoB(n) != Abin<string>::NODO_NULO
+        A.hijoIzqdo(n) != Abin<string>::NODO_NULO
     )
     {
 
         if (A.elemento(n) == "¬"){
-            return !A.hijoIzqdoB(n);
+            return !A.hijoIzqdo(n);
         }
         else if (A.elemento(n) == "AND"){
-            return valor_verdad_rec(A, A.hijoIzqdoB(n)) && valor_verdad_rec(A, A.hijoDrchoB(n));
+            return valor_verdad_rec(A, A.hijoIzqdo(n)) && valor_verdad_rec(A, A.hijoDrcho(n));
         }
         else if(A.elemento(n) == "OR"){
             return 
-                valor_verdad_rec(A, A.hijoDrchoB(n)) || valor_verdad_rec(A, A.hijoIzqdoB(n));
+                valor_verdad_rec(A, A.hijoDrcho(n)) || valor_verdad_rec(A, A.hijoIzqdo(n));
         }
         else if(A.elemento(n) == "True"){
             return true;
@@ -43,5 +43,5 @@ bool valor_verdad_rec(const Abin<string>& A, typename Abin<string>::nodo n){
 }
 
 bool valor_verdad(const Abin<string>& A){
-    return valor_verdad_rec(A, A.raizB());
+    return valor_verdad_rec(A, A.raiz());
 }

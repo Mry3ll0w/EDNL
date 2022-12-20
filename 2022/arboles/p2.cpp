@@ -15,8 +15,8 @@ void imprime_arbol(const Abin<t>&A, typename Abin<t>::nodo n){
     if (n != Abin<t>::NODO_NULO)
     {
         std::cout << A.elemento(n)<<", ";
-        imprime_arbol(A,A.hijoIzqdoB(n));
-        imprime_arbol(A,A.hijoDrchoB(n));
+        imprime_arbol(A,A.hijoIzqdo(n));
+        imprime_arbol(A,A.hijoDrcho(n));
     }
 }
 
@@ -39,14 +39,14 @@ int main(){
    
     Abin<char>a;
     
-    a.insertarRaizB('a');
-    a.insertarHijoIzqdoB(a.raizB(),'b');
-    //a.insertarHijoDrchoB(a.hijoDrchoB(a.raizB()),4);
+    a.insertarraiz('a');
+    a.insertarhijoIzqdo(a.raiz(),'b');
+    //a.insertarhijoDrcho(a.hijoDrcho(a.raiz()),4);
 
-    imprime_arbol(a,a.raizB());
+    imprime_arbol(a,a.raiz());
     std::cout<<std::endl<<"-----------------------------------------------------------"<<std::endl;
     Abin<char>b(reflejo_arbol(a));
-    imprime_arbol(b,b.raizB());
+    imprime_arbol(b,b.raiz());
 
     return 0;
 }
@@ -78,16 +78,16 @@ bool arboles_similares_rec(typename Abin<t>::nodo na, typename Abin<t>::nodo nb,
         return false;
 
     return 
-        arboles_similares_rec(A.hijoIzqdoB(na),B.hijoIzqdoB(nb),A,B) 
+        arboles_similares_rec(A.hijoIzqdo(na),B.hijoIzqdo(nb),A,B) 
         &&
-        arboles_similares_rec(A.hijoDrchoB(na),B.hijoDrchoB(nb),A,B);
+        arboles_similares_rec(A.hijoDrcho(na),B.hijoDrcho(nb),A,B);
 
 }
 
 template <class t>
 bool arboles_similares(const Abin<t>&A, const Abin<t>&B ){
 
-    return arboles_similares_rec(A.raizB(),B.raizB(),A,B);
+    return arboles_similares_rec(A.raiz(),B.raiz(),A,B);
     
 }
 
@@ -103,18 +103,18 @@ bool arboles_similares(const Abin<t>&A, const Abin<t>&B ){
 template <class t>
 void reflejo_arbol_rec(typename Abin<t>::nodo na, typename Abin<t>::nodo nb ,Abin<t>&A ,Abin<t>&B ){
 
-    if (A.hijoIzqdoB(na) != Abin<t>::NODO_NULO)//Insertamos los hijos izquierdos en los derechos
+    if (A.hijoIzqdo(na) != Abin<t>::NODO_NULO)//Insertamos los hijos izquierdos en los derechos
     {
-        B.insertarHijoDrchoB(nb,A.elemento(A.hijoIzqdoB(na)));
+        B.insertarhijoDrcho(nb,A.elemento(A.hijoIzqdo(na)));
 
-        reflejo_arbol_rec(A.hijoIzqdoB(na),B.hijoDrchoB(nb),A,B);
+        reflejo_arbol_rec(A.hijoIzqdo(na),B.hijoDrcho(nb),A,B);
     }
     
-    if (A.hijoDrchoB(na) != Abin<t>::NODO_NULO)
+    if (A.hijoDrcho(na) != Abin<t>::NODO_NULO)
     {
-        B.insertarHijoIzqdoB(nb,A.elemento(A.hijoDrchoB(na)));
+        B.insertarhijoIzqdo(nb,A.elemento(A.hijoDrcho(na)));
         
-        reflejo_arbol_rec(A.hijoDrchoB(na),B.hijoIzqdoB(nb),A,B);
+        reflejo_arbol_rec(A.hijoDrcho(na),B.hijoIzqdo(nb),A,B);
     }
     
     
@@ -125,10 +125,10 @@ Abin<t> reflejo_arbol(Abin<t>&A){
     
     Abin<t> B;
     
-    if (!A.arbolVacioB()){
+    if (!A.arbolVacio()){
 
-        B.insertarRaizB(A.elemento(A.raizB()));
-        reflejo_arbol_rec(A.raizB(),B.raizB(),A,B);
+        B.insertarraiz(A.elemento(A.raiz()));
+        reflejo_arbol_rec(A.raiz(),B.raiz(),A,B);
     
     }
 
@@ -162,28 +162,28 @@ float procesa_arbol(typename Abin<std::string>::nodo n, Abin<std::string>&A){
     //Si no la operacion entre los mismos no será correcta, ya que se opera numero con nodo nulo
     //No tiene pq tener la doble comprobación, solo necesitamos el hijo izquierdo, ya que la expresion
     //tiene que tener o ambos hijos vacios o ambos no vacios, en otro caso será incorrecta la expresión
-    if (A.hijoDrchoB(n) != Abin<std::string>::NODO_NULO && A.hijoIzqdoB(n)!=Abin<std::string>::NODO_NULO)
+    if (A.hijoDrcho(n) != Abin<std::string>::NODO_NULO && A.hijoIzqdo(n)!=Abin<std::string>::NODO_NULO)
     {
         
         //Procesar el caracter que toque, no deja switch asi que usaremos if else ..
         //Simplemente iremos llamando a la operacion que toque de forma recursiva
         if (A.elemento(n)=="+")
         {
-            return procesa_arbol(A.hijoIzqdoB(n),A) + procesa_arbol(A.hijoDrchoB(n),A);
+            return procesa_arbol(A.hijoIzqdo(n),A) + procesa_arbol(A.hijoDrcho(n),A);
         }
         else if (A.elemento(n)=="-"){
             
-            procesa_arbol(A.hijoIzqdoB(n),A) - procesa_arbol(A.hijoDrchoB(n),A);
+            procesa_arbol(A.hijoIzqdo(n),A) - procesa_arbol(A.hijoDrcho(n),A);
 
         }
         else if (A.elemento(n)=="*"){
         
-            procesa_arbol(A.hijoIzqdoB(n),A) * procesa_arbol(A.hijoDrchoB(n),A);
+            procesa_arbol(A.hijoIzqdo(n),A) * procesa_arbol(A.hijoDrcho(n),A);
         
         }
         else if(A.elemento(n)=="/"){
 
-            procesa_arbol(A.hijoIzqdoB(n),A) / procesa_arbol(A.hijoDrchoB(n),A);
+            procesa_arbol(A.hijoIzqdo(n),A) / procesa_arbol(A.hijoDrcho(n),A);
         
         }
 
@@ -199,7 +199,7 @@ float procesa_arbol(typename Abin<std::string>::nodo n, Abin<std::string>&A){
 
 
 float post_fijo(Abin<std::string>&A){
-    return procesa_arbol(A.raizB(),A);
+    return procesa_arbol(A.raiz(),A);
 }
 
 

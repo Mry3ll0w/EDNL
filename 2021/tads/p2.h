@@ -8,9 +8,9 @@
 template <class t>
 void print_a(typename Abin<t>::nodo n,Abin<t>&a){
     if(n!=Abin<t>::NODO_NULO){
-        print_a(a.hijoIzqdoB(n),a);
+        print_a(a.hijoIzqdo(n),a);
         std::cout<<"Elementos= "<<a.elemento(n)<<std::endl;
-        print_a(a.hijoDrchoB(n),a);
+        print_a(a.hijoDrcho(n),a);
     }
 
 }
@@ -35,13 +35,13 @@ bool simil_rec(typename Abin<t>::nodo na, typename Abin<t>::nodo nb, const Abin<
     if (na == Abin<t>::NODO_NULO || nb == Abin<t>::NODO_NULO) {
         return false;
     }
-    return simil_rec(a.hijoDrchoB(na),b.hijoDrchoB(nb),a,b)&&simil_rec(a.hijoIzqdoB(na),b.hijoIzqdoB(nb),a,b);
+    return simil_rec(a.hijoDrcho(na),b.hijoDrcho(nb),a,b)&&simil_rec(a.hijoIzqdo(na),b.hijoIzqdo(nb),a,b);
     //FALLABA YA QUE SIEMPRE DA TRUE AL FINAL, SE NECESITA COMPROBAR TODOS LOS CASOS
 }
 
 template <class t>
 bool ej1(const Abin<t>& a, const Abin<t>&b){
-    return simil_rec(a.raizB(),b.raizB(),a,b);
+    return simil_rec(a.raiz(),b.raiz(),a,b);
 }
 
 /**EJERCICIO 2
@@ -53,19 +53,19 @@ template <class t>
 void reflejo_arbol(typename Abin<t>::nodo n1,typename Abin<t>::nodo n2,Abin<t>& a,Abin<t>&b){
     if (n1 != Abin<t>::NODO_NULO && n2 !=Abin<t>::NODO_NULO){//Cuando se recorra el arbol se acaba la ejecucion
         //Inversion de los lados ya que n1 primero tiene lado izquierdo de a y lado derecho de b
-        reflejo_arbol(a.hijoIzqdoB(n1),b.hijoDrchoB(n2),a,b);
+        reflejo_arbol(a.hijoIzqdo(n1),b.hijoDrcho(n2),a,b);
         b.elemento(n2)=a.elemento(n1);
-        reflejo_arbol(a.hijoDrchoB(n1),b.hijoIzqdoB(n2),a,b);
+        reflejo_arbol(a.hijoDrcho(n1),b.hijoIzqdo(n2),a,b);
     }
 }
 
 template <class t>
 Abin<t> ej2(Abin<t>&a){
     Abin<t>b(a);
-    reflejo_arbol(a.raizB(),b.raizB(),a,b);
-    print_a(a.raizB(),a);
+    reflejo_arbol(a.raiz(),b.raiz(),a,b);
+    print_a(a.raiz(),a);
     std::cout<<"Segundo arbol"<<std::endl<<std::endl;
-    print_a(b.raizB(),b);
+    print_a(b.raiz(),b);
     return b;
 }
 
@@ -84,27 +84,27 @@ Abin<t> ej2(Abin<t>&a){
  * aritmética serán suma, resta, multiplicación y división.
  */
 double procesar_arbol(typename Abin<std::string>::nodo n,Abin<std::string>&a){
-    if(a.hijoIzqdoB(n)==Abin<std::string>::NODO_NULO && a.hijoDrchoB(n)==Abin<std::string>::NODO_NULO){//FALLABA al no comprobar que es Hoja
+    if(a.hijoIzqdo(n)==Abin<std::string>::NODO_NULO && a.hijoDrcho(n)==Abin<std::string>::NODO_NULO){//FALLABA al no comprobar que es Hoja
         return std::stof(a.elemento(n)); //Si ha recorrido el arbol devuelve 0
     }
     else{
         if (a.elemento(n)=="+"){
-            return (procesar_arbol(a.hijoIzqdoB(n),a) + procesar_arbol(a.hijoDrchoB(n),a) );
+            return (procesar_arbol(a.hijoIzqdo(n),a) + procesar_arbol(a.hijoDrcho(n),a) );
         }
         else if(a.elemento(n)=="-"){
-            return (procesar_arbol(a.hijoIzqdoB(n),a) - procesar_arbol(a.hijoDrchoB(n),a) );
+            return (procesar_arbol(a.hijoIzqdo(n),a) - procesar_arbol(a.hijoDrcho(n),a) );
         }
         else if (a.elemento(n)=="*"){
-            return (procesar_arbol(a.hijoIzqdoB(n),a) * procesar_arbol(a.hijoDrchoB(n),a) );
+            return (procesar_arbol(a.hijoIzqdo(n),a) * procesar_arbol(a.hijoDrcho(n),a) );
         }
         else if (a.elemento(n)=="/"){
-            return (procesar_arbol(a.hijoIzqdoB(n),a) / procesar_arbol(a.hijoDrchoB(n),a) );
+            return (procesar_arbol(a.hijoIzqdo(n),a) / procesar_arbol(a.hijoDrcho(n),a) );
         }
     }
 }
 
 double ej3(Abin<std::string>&a){
-    return procesar_arbol(a.raizB(),a);
+    return procesar_arbol(a.raiz(),a);
 }
 
 /*

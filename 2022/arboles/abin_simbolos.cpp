@@ -19,9 +19,9 @@ int main(){
 
     Abin<expresion>a;
     
-    a.insertarRaizB(Y);
-    a.insertarHijoDrchoB(a.raizB(),s1);
-    a.insertarHijoDrchoB(a.raizB(),s2);
+    a.insertarraiz(Y);
+    a.insertarhijoDrcho(a.raiz(),s1);
+    a.insertarhijoDrcho(a.raiz(),s2);
 
     std::cout << procesa_expression(a) << std::endl;
 
@@ -37,19 +37,19 @@ return 0;
 //Recibe un arbol con una expresion CORRECTA para evaluar
 bool procesa_expresion_rec(typename Abin<expresion>::nodo n, Abin<expresion>& a){
     
-    if (a.hijoIzqdoB(n)!=Abin<expresion>::NODO_NULO){
+    if (a.hijoIzqdo(n)!=Abin<expresion>::NODO_NULO){
         //Evaluar las expresiones
         if (a.elemento(n).expr == "&&")
         {
-            return procesa_expresion_rec(a.hijoIzqdoB(n),a) and procesa_expresion_rec(a.hijoDrchoB(n),a);
+            return procesa_expresion_rec(a.hijoIzqdo(n),a) and procesa_expresion_rec(a.hijoDrcho(n),a);
         }
         else if (a.elemento(n).expr == "||")
         {
-            return procesa_expresion_rec(a.hijoIzqdoB(n),a) or procesa_expresion_rec(a.hijoDrchoB(n),a);
+            return procesa_expresion_rec(a.hijoIzqdo(n),a) or procesa_expresion_rec(a.hijoDrcho(n),a);
         }
         else if (a.elemento(n).expr == "NO")
         {
-            return not procesa_expresion_rec(a.hijoIzqdoB(n),a);//Asumimos que la negacion solo se aplicará al hijo izquierdo
+            return not procesa_expresion_rec(a.hijoIzqdo(n),a);//Asumimos que la negacion solo se aplicará al hijo izquierdo
         }
     
     }
@@ -61,5 +61,5 @@ bool procesa_expresion_rec(typename Abin<expresion>::nodo n, Abin<expresion>& a)
 }
 
 bool procesa_expression(Abin<expresion>& a){
-    return procesa_expresion_rec(a.raizB(),a);
+    return procesa_expresion_rec(a.raiz(),a);
 }

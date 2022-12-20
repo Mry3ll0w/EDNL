@@ -14,8 +14,8 @@ using namespace std;
 template <typename t>
 bool similares(Abin<t> &a, Abin<t> &b, typename Abin<t>::nodo n1, typename Abin<t>::nodo n2){
     if (n1!=Abin<t>::NODO_NULO && n2!=Abin<t>::NODO_NULO){
-        similares(a,b,a.hijoIzqdoB(n1),b.hijoIzqdoB(n2));
-        similares(a,b,a.hijoDrchoB(n1),b.hijoDrchoB(n2));
+        similares(a,b,a.hijoIzqdo(n1),b.hijoIzqdo(n2));
+        similares(a,b,a.hijoDrcho(n1),b.hijoDrcho(n2));
     }
     if (n1==Abin<t>::NODO_NULO && n2==Abin<t>::NODO_NULO)
         return true;
@@ -27,11 +27,11 @@ template <typename t>
 void reflejo(Abin<t>& a,typename Abin<t>::nodo n){
     int parser_element;
     if (n!=Abin<t>::NODO_NULO){
-        reflejo(a,a.hijoIzqdoB(n));
-        parser_element=a.elemento(a.hijoIzqdoB(n));
-        a.insertarHijoDrchoB(a.hijoIzqdoB(n),a.elemento(a.hijoDrchoB(n)));
-        a.insertarHijoIzqdoB(a.hijoIzqdoB(n),parser_element);
-        reflejo(a,a.hijoDrchoB(n));
+        reflejo(a,a.hijoIzqdo(n));
+        parser_element=a.elemento(a.hijoIzqdo(n));
+        a.insertarhijoDrcho(a.hijoIzqdo(n),a.elemento(a.hijoDrcho(n)));
+        a.insertarhijoIzqdo(a.hijoIzqdo(n),parser_element);
+        reflejo(a,a.hijoDrcho(n));
     }
 
 }
@@ -42,25 +42,25 @@ float evaluar_llamada_rec(Abin<string>a,Abin<string>::nodo n){
     }
     else{
         if (a.elemento(n)=="+"){
-            return (evaluar_llamada_rec(a,a.hijoIzqdoB(n))+evaluar_llamada_rec(a,a.hijoDrchoB(n)));
+            return (evaluar_llamada_rec(a,a.hijoIzqdo(n))+evaluar_llamada_rec(a,a.hijoDrcho(n)));
         }
         else if (a.elemento(n)=="-"){
-            return (evaluar_llamada_rec(a,a.hijoIzqdoB(n))-evaluar_llamada_rec(a,a.hijoDrchoB(n)));
+            return (evaluar_llamada_rec(a,a.hijoIzqdo(n))-evaluar_llamada_rec(a,a.hijoDrcho(n)));
         }
         else if (a.elemento(n)=="*"){
-            return (evaluar_llamada_rec(a,a.hijoIzqdoB(n))*evaluar_llamada_rec(a,a.hijoDrchoB(n)));
+            return (evaluar_llamada_rec(a,a.hijoIzqdo(n))*evaluar_llamada_rec(a,a.hijoDrcho(n)));
         }
         else{
-            return (evaluar_llamada_rec(a,a.hijoIzqdoB(n))/evaluar_llamada_rec(a,a.hijoDrchoB(n)));
+            return (evaluar_llamada_rec(a,a.hijoIzqdo(n))/evaluar_llamada_rec(a,a.hijoDrcho(n)));
         }
     }
 }
 float Evaluar_llamada(Abin<string>a){//EJERCICIO3
-    if (a.arbolVacioB()){
+    if (a.arbolVacio()){
         return 0;
     }
     else
-        return evaluar_llamada_rec(a,a.raizB());
+        return evaluar_llamada_rec(a,a.raiz());
 }
 
 #endif //EDNL_PRACTICA2_H

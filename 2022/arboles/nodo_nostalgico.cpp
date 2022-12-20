@@ -21,7 +21,7 @@ template<class t>
 int num_nodos(typename Abin<t>::nodo n, const Abin<t>&A)
 {
     if(n != Abin<t>::NODO_NULO){
-        return 1 + num_nodos(A.hijoIzqdoB(n),A) + num_nodos(A.hijoDrchoB(n),A);
+        return 1 + num_nodos(A.hijoIzqdo(n),A) + num_nodos(A.hijoDrcho(n),A);
     }
 
 }
@@ -34,7 +34,7 @@ int antecesores (typename Abin<t>::nodo n , const Abin<t>&A)
         return -1 ;
     }
     
-    return 1 + antecesores(A.padreB(n),A);
+    return 1 + antecesores(A.padre(n),A);
 }
 
 
@@ -53,12 +53,12 @@ int nostalgicos_rec(typename Abin<t>::nodo n , const Abin<t>&A)
 
         if ( pasado > futuro )
         {
-            return 1 + nostalgicos_rec(A.hijoIzqdoB(n),A) + nostalgicos_rec(A.hijoDrchoB(n),A);
+            return 1 + nostalgicos_rec(A.hijoIzqdo(n),A) + nostalgicos_rec(A.hijoDrcho(n),A);
         }
         else
         {
             //El 0 es redundante pero deja más claro que no aumentamos el número de nodos nostalgicos
-            return 0 + nostalgicos_rec(A.hijoIzqdoB(n),A) + nostalgicos_rec(A.hijoDrchoB(n),A);
+            return 0 + nostalgicos_rec(A.hijoIzqdo(n),A) + nostalgicos_rec(A.hijoDrcho(n),A);
         }
     }
     
@@ -71,6 +71,6 @@ template<class t>
 int nodos_nostalgicos(const Abin<t>&A)
 {
 
-    return nostalgicos_rec(A.raizB(),A);
+    return nostalgicos_rec(A.raiz(),A);
 
 }
