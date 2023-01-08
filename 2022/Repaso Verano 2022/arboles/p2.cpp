@@ -83,7 +83,7 @@ Abin<T> reflejo_arbol(const Abin<T>& A){
     Abin<T> B;
     if(!A.arbolVacio()){
 
-        B.insertarraiz(A.elemento(A.raiz()));
+        B.insertaRaiz(A.elemento(A.raiz()));
         reflejo_rec(A,B,A.raiz(), B.raiz());
     
     }

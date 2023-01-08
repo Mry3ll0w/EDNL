@@ -29,7 +29,7 @@ public:
 
     // Pre: El árbol está vacío.
     // Post: Inserta el nodo raíz de A cuyo contenido será e.
-    void insertarRaiz(const T& e);
+    void insertaRaiz(const T& e);
 
     // Pre: n es un nodo del árbol.
     // Post: Inserta el elemento e como hijo iquierdo del nodo n. Si ya existe
@@ -111,7 +111,7 @@ template <typename T>
 inline Agen<T>::Agen(): r(NODO_NULO) {}
 
 template <typename T>
-inline void Agen<T>::insertarRaiz(const T& e)
+inline void Agen<T>::insertaRaiz(const T& e)
 {
     assert(r == NODO_NULO);	// Árbol vacío
 

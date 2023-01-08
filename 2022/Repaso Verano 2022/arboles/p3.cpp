@@ -186,7 +186,7 @@ void poda_rec(typename Agen<T>::nodo n, Agen<T>& A, T e){
 
 int main(){
     Agen<int> A;
-    A.insertarRaiz(1);
+    A.insertaRaiz(1);
     A.insertarHijoIzqdo(A.raiz(), 2);
     A.insertarHermDrcho(A.hijoIzqdo(A.raiz()), 3);
     A.insertarHijoIzqdo(A.hermDrcho(A.hijoIzqdo(A.raiz())), 4);

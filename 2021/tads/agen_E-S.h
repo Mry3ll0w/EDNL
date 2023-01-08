@@ -13,17 +13,17 @@ using std::endl;
 
 template <typename T>
 void rellenarAgen(Agen<T>& A, const T& fin)
-// Pre: A está vacío.
-// Post: Rellena el árbol A con la estructura y elementos
-//       leídos en preorden de la entrada estándar, usando
+// Pre: A estï¿½ vacï¿½o.
+// Post: Rellena el ï¿½rbol A con la estructura y elementos
+//       leï¿½dos en preorden de la entrada estï¿½ndar, usando
 //       fin como elemento especial para introducir nodos nulos.
 {
    T e;
 
    assert(A.arbolVacio());
-   cout << "Raíz (Fin = " << fin << "): "; cin >> e;
+   cout << "Raï¿½z (Fin = " << fin << "): "; cin >> e;
    if (e != fin) {
-      A.insertarRaiz(e);
+      A.insertaRaiz(e);
       rellenarDescendientes(A.raiz(), A, fin);
    }
 }
@@ -31,7 +31,7 @@ void rellenarAgen(Agen<T>& A, const T& fin)
 template <typename T>
 void rellenarDescendientes(typename Agen<T>::nodo n, Agen<T>& A, const T& fin)
 // Pre: n es un nodo hoja de A.
-// Post: Lee de la entrada estándar y en preorden los descendientes de n,
+// Post: Lee de la entrada estï¿½ndar y en preorden los descendientes de n,
 //       usando fin para introducir nodos nulos.
 {
    T ehi, ehd;
@@ -60,9 +60,9 @@ void rellenarDescendientes(typename Agen<T>::nodo n, Agen<T>& A, const T& fin)
 
 template <typename T>
 void rellenarAgen(istream& is, Agen<T>& A)
-// Pre: A está vacío.
+// Pre: A estï¿½ vacï¿½o.
 // Post: Extrae los nodos de A del flujo de entrada is,
-//       que contendrá el elemento especial que denota
+//       que contendrï¿½ el elemento especial que denota
 //       un nodo nulo seguido de los elementos en preorden,
 //       incluyendo los correspondientes a nodos nulos.
 {
@@ -70,7 +70,7 @@ void rellenarAgen(istream& is, Agen<T>& A)
 
    assert(A.arbolVacio());
    if (is >> fin && is >> e && e != fin) {
-      A.insertarRaiz(e);
+      A.insertaRaiz(e);
       rellenarDescendientes(is, A.raiz(), A, fin);
    }
 }
@@ -98,7 +98,7 @@ void rellenarDescendientes(istream& is, typename Agen<T>::nodo n, Agen<T>& A, co
 
 template <typename T>
 void imprimirAgen(const Agen<T>& A)
-// Post: Muestra los nodos de A en la salida estándar
+// Post: Muestra los nodos de A en la salida estï¿½ndar
 {
    if (!A.arbolVacio())
    {
@@ -112,7 +112,7 @@ void imprimirAgen(const Agen<T>& A)
 
 template <typename T>
 void imprimirDescendientes(typename Agen<T>::nodo n, const Agen<T>& A)
-// Post: Muestra los descendientes de n en la salida estándar.
+// Post: Muestra los descendientes de n en la salida estï¿½ndar.
 {
    if (A.hijoIzqdo(n) != Agen<T>::NODO_NULO)
    {

@@ -99,7 +99,7 @@ double& densidad(const Agen<T>& A){
 int main()
 {
     Agen<int> A;
-    A.insertarRaiz(1);
+    A.insertaRaiz(1);
     A.insertarHijoIzqdo(A.raiz(), 2);
     A.insertarHermDrcho(A.hijoIzqdo(A.raiz()), 3);
     A.insertarHermDrcho(A.hijoIzqdo(A.raiz()), 4);

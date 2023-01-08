@@ -10,7 +10,7 @@ public:
 	typedef celda* nodo;
 	static const nodo NODO_NULO;
 	Abin(); // constructor
-	void insertarraiz(const T& e);
+	void insertaRaiz(const T& e);
 	void insertarhijoIzqdo(nodo n, const T& e);
 	void insertarhijoDrcho(nodo n, const T& e);
 	void eliminarhijoIzqdo(nodo n);
@@ -66,7 +66,7 @@ template <typename T>
 inline Abin<T>::Abin() : r(NODO_NULO) {}
 
 template <typename T>
-inline void Abin<T>::insertarraiz(const T& e)
+inline void Abin<T>::insertaRaiz(const T& e)
 {
 	assert(r == NODO_NULO);  // �rbol vac�o
 	r = new celda(e);

@@ -5,7 +5,7 @@ int main()
 {
 
     Agen<char> A;
-    A.insertarRaiz('M');
+    A.insertaRaiz('M');
     A.insertarHijoIzqdo(A.raiz(), 'B');
     A.insertarHermDrcho(A.hijoIzqdo(A.raiz()), 'N');
     A.insertarHermDrcho(A.hermDrcho(A.hijoIzqdo(A.raiz())), 'B');

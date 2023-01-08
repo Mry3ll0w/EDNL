@@ -19,7 +19,7 @@ int main(){
 
     Abin<expresion>a;
     
-    a.insertarraiz(Y);
+    a.insertaRaiz(Y);
     a.insertarhijoDrcho(a.raiz(),s1);
     a.insertarhijoDrcho(a.raiz(),s2);
 

@@ -39,7 +39,7 @@ int main(){
    
     Abin<char>a;
     
-    a.insertarraiz('a');
+    a.insertaRaiz('a');
     a.insertarhijoIzqdo(a.raiz(),'b');
     //a.insertarhijoDrcho(a.hijoDrcho(a.raiz()),4);
 
@@ -127,7 +127,7 @@ Abin<t> reflejo_arbol(Abin<t>&A){
     
     if (!A.arbolVacio()){
 
-        B.insertarraiz(A.elemento(A.raiz()));
+        B.insertaRaiz(A.elemento(A.raiz()));
         reflejo_arbol_rec(A.raiz(),B.raiz(),A,B);
     
     }

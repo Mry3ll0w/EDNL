@@ -16,7 +16,7 @@ public:
     // Que sería equivalente a Abinv a(23);
     // Al poner explicit sólo puede hacerse de la segunda manera.
 
-    void insertarraiz(const T& e);
+    void insertaRaiz(const T& e);
     void insertarhijoIzqdo(nodo n, const T& e);
     void insertarhijoDrcho(nodo n, const T& e);
 
@@ -70,7 +70,7 @@ inline Abinv<T>::Abinv(std::size_t maxNodos):
 {}
 
 template <typename T>
-void Abinv<T>::insertarraiz(const T& e){
+void Abinv<T>::insertaRaiz(const T& e){
     assert(numNodos == 0);	// Arbol vacio
 
     numNodos = 1;

@@ -5,18 +5,18 @@
 #include <iostream>
 
 /*/
- * Definición:
+ * Definiciï¿½n:
  *
- * Un árbol general se define como un árbol cuyos nodos son de cualquier grado, es
- * decir, pueden tener un número cualquiera de hijos. Los hijos de un nodo están
+ * Un ï¿½rbol general se define como un ï¿½rbol cuyos nodos son de cualquier grado, es
+ * decir, pueden tener un nï¿½mero cualquiera de hijos. Los hijos de un nodo estï¿½n
  * ordenados de izquierda a derecha, de tal forma que el primer hijo de un nodo se
- * llama hijo izquierdo, el segundo es el hermano derecho de éste, el tercero es el
- * hermano derecho del segundo y así sucesivamente.
+ * llama hijo izquierdo, el segundo es el hermano derecho de ï¿½ste, el tercero es el
+ * hermano derecho del segundo y asï¿½ sucesivamente.
 /*/
 
 template <typename T> class Agen {
 
-    /* Declaración adelantada privada */
+    /* Declaraciï¿½n adelantada privada */
     struct celda;
 
 public:
@@ -24,56 +24,56 @@ public:
     typedef celda* nodo;
     static const nodo NODO_NULO;
 
-    // Post: Construye un árbol vacío.
+    // Post: Construye un ï¿½rbol vacï¿½o.
     explicit Agen();
 
-    // Pre: El árbol está vacío.
-    // Post: Inserta el nodo raíz de A cuyo contenido será e.
-    void insertarRaiz(const T& e);
+    // Pre: El ï¿½rbol estï¿½ vacï¿½o.
+    // Post: Inserta el nodo raï¿½z de A cuyo contenido serï¿½ e.
+    void insertaRaiz(const T& e);
 
-    // Pre: n es un nodo del árbol.
+    // Pre: n es un nodo del ï¿½rbol.
     // Post: Inserta el elemento e como hijo iquierdo del nodo n. Si ya existe
-    //		 hijo izquierdo, éste se convierte en el hermano derecho del nuevo nodo
+    //		 hijo izquierdo, ï¿½ste se convierte en el hermano derecho del nuevo nodo
     void insertarHijoIzqdo(nodo n, const T& e);
 
-    // Pre: n es un nodo del árbol y no es el nodo raíz.
-    // Post: Inserta el elemento e como hermano derecho del nodo n del árbol.
-    //		 Si ya existe hermano derecho, éste se convierte en el hermano derecho del nuevo nodo.
+    // Pre: n es un nodo del ï¿½rbol y no es el nodo raï¿½z.
+    // Post: Inserta el elemento e como hermano derecho del nodo n del ï¿½rbol.
+    //		 Si ya existe hermano derecho, ï¿½ste se convierte en el hermano derecho del nuevo nodo.
     void insertarHermDrcho(nodo n, const T& e);
 
-    // Pre: n es un nodo del árbol. Tiene hijo izquierdo que es hoja.
+    // Pre: n es un nodo del ï¿½rbol. Tiene hijo izquierdo que es hoja.
     // Post: Destruye el hijo izquierdo del nodo n. El segundo hijo, si existe, se convierte en el
     //		 nuevo hijo izquierdo de n.
     void eliminarHijoIzqdo(nodo n);
 
-    // Pre: n es un nodo del árbol. Tiene hermano derecho que es hoja.
+    // Pre: n es un nodo del ï¿½rbol. Tiene hermano derecho que es hoja.
     // Post: destruye el hermano derecho del nodo n. El siguiente hermano se convierte en el nuevo hermano derecho de n.
     void eliminarHermDrcho(nodo n);
 
-    // Pre: El árbol tiene un único nodo.
-    // Post: Destruye la raíz.
+    // Pre: El ï¿½rbol tiene un ï¿½nico nodo.
+    // Post: Destruye la raï¿½z.
     void eliminarRaiz();
 
-    // Post: Devuelve true si el árbol está vacío y false en caso contrario.
+    // Post: Devuelve true si el ï¿½rbol estï¿½ vacï¿½o y false en caso contrario.
     bool arbolVacio() const;
 
-    // Pre: n es un nodo del árbol.
+    // Pre: n es un nodo del ï¿½rbol.
     // Post: Devuelve el elemento del nodo n.
     const T& elemento(nodo n) const;
     T& elemento(nodo n);
 
-    // Post: Devuelve el nodo raíz del árbol. Si el árbol está vacío, devuelve NODO_NULO.
+    // Post: Devuelve el nodo raï¿½z del ï¿½rbol. Si el ï¿½rbol estï¿½ vacï¿½o, devuelve NODO_NULO.
     nodo raiz() const;
 
-    // Pre: n es un nodo del árbol.
-    // Post: Devuelve el padre del nodo n. Si n es el nodo raíz, devuelve NODO_NULO.
+    // Pre: n es un nodo del ï¿½rbol.
+    // Post: Devuelve el padre del nodo n. Si n es el nodo raï¿½z, devuelve NODO_NULO.
     nodo padre(nodo n) const;
 
-    // Pre: n es un nodo del árbol.
+    // Pre: n es un nodo del ï¿½rbol.
     // Post: Devuelve el hijo izquierdo de n. Si no existe devuelve NODO_NULO.
     nodo hijoIzqdo(nodo n) const;
 
-    // Pre: n es un nodo del árbol.
+    // Pre: n es un nodo del ï¿½rbol.
     // Post: Devuelve el hermano derecho de n. Si no existe devuelve NODO_NULO.
     nodo hermDrcho(nodo n) const;
 
@@ -97,7 +97,7 @@ private:
         {}
     };
 
-    /* Nodo raíz del árbol */
+    /* Nodo raï¿½z del ï¿½rbol */
     nodo r;
 
     void destruirNodos(nodo& n);
@@ -111,9 +111,9 @@ template <typename T>
 inline Agen<T>::Agen() : r(NODO_NULO) {}
 
 template <typename T>
-inline void Agen<T>::insertarRaiz(const T& e)
+inline void Agen<T>::insertaRaiz(const T& e)
 {
-    assert(r == NODO_NULO);	// Árbol vacío
+    assert(r == NODO_NULO);	// ï¿½rbol vacï¿½o
 
     r = new celda(e);
 }
@@ -135,7 +135,7 @@ template <typename T>
 inline void Agen<T>::insertarHermDrcho(Agen<T>::nodo n, const T& e)
 {
     assert(n != NODO_NULO);
-    assert(n != r);				// n no es la raíz
+    assert(n != r);				// n no es la raï¿½z
 
     /* Hermano derecho actual */
     nodo derecho = n->hermano;
@@ -182,8 +182,8 @@ inline void Agen<T>::eliminarHermDrcho(Agen<T>::nodo n)
 template <typename T>
 inline void Agen<T>::eliminarRaiz()
 {
-    assert(r != NODO_NULO);			// Árbol no vacío.
-    assert(r->hijo == NODO_NULO); 	// La raíz es hoja.
+    assert(r != NODO_NULO);			// ï¿½rbol no vacï¿½o.
+    assert(r->hijo == NODO_NULO); 	// La raï¿½z es hoja.
 
     delete r;
     r = NODO_NULO;
@@ -250,10 +250,10 @@ Agen<T>::Agen(const Agen<T>& A)
 template <typename T>
 Agen<T>& Agen<T>::operator =(const Agen<T>& A)
 {
-    /* Evitar autoasignación */
+    /* Evitar autoasignaciï¿½n */
     if (this != &A)
     {
-        /* Vaciar el árbol */
+        /* Vaciar el ï¿½rbol */
         this->~Agen();
         r = copiar(A.r);
     }
@@ -264,10 +264,10 @@ Agen<T>& Agen<T>::operator =(const Agen<T>& A)
 template <typename T>
 inline Agen<T>::~Agen()
 {
-    destruirNodos(r);	// Vacía el árbol.
+    destruirNodos(r);	// Vacï¿½a el ï¿½rbol.
 }
 
-/* Métodos privados ____________________________________________________________________________________________*/
+/* Mï¿½todos privados ____________________________________________________________________________________________*/
 
 template <typename T>
 void Agen<T>::destruirNodos(Agen<T>::nodo& n)
@@ -306,11 +306,11 @@ typename Agen<T>::nodo Agen<T>::copiar(Agen<T>::nodo n)
 
         if (n->hijo != NODO_NULO)
         {
-            /* Copiar el primer subárbol */
+            /* Copiar el primer subï¿½rbol */
             m->hijo = copiar(n->hijo);
             m->hijo->padre = m;
 
-            /* Copiar el resto de subárboles */
+            /* Copiar el resto de subï¿½rboles */
             nodo hijo = m->hijo;
             nodo derecho = n->hijo->hermano;
 

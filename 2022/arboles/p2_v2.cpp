@@ -7,8 +7,8 @@ bool similares(Abin<t>&A, Abin<t>&B);
 
 int main(){
     Abin<int> a,b;
-    a.insertarraiz(1);
-    b.insertarraiz(1);
+    a.insertaRaiz(1);
+    b.insertaRaiz(1);
 
     a.insertarhijoDrcho(a.raiz(),2);
     b.insertarhijoDrcho(b.raiz(),2);

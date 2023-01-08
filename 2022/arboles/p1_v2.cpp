@@ -16,7 +16,7 @@ bool pseudo_completo(Abin<t>&A);
 
 int main(){
     Abin<int> a;
-    a.insertarraiz(1);
+    a.insertaRaiz(1);
     a.insertarhijoDrcho(a.raiz(),3);
     a.insertarhijoIzqdo(a.raiz(),2);
     //a.insertarhijoDrcho(a.hijoDrcho(a.raiz()),4);
