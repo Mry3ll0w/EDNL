@@ -1,4 +1,5 @@
 #include <iostream>
+#include <numeric>
 #include <vector>
 #include "abb.h"
 using namespace std; // Avoid using std:: ....
@@ -76,9 +77,64 @@ Abb<T> equilibrarAbb(Abb<T> A)
     }
 }
 
+/**
+ * Dados dos conjuntos representados mediante árboles binarios de búsqueda,
+implementa  la  operación  unión  de  dos  conjuntos  que  devuelva  como  resultado  otro
+conjunto que sea la unión de ambos, representado por un ABB equilibrado.
+El concepto de union se define como los elementos que se encuentran en los dos
+conjuntos de elementos A y B.
+ */
+
+template <class T>
+void volcadoAbb(Abb<T> abbOrigen, Abb<T> &abbDestino)
+{
+    if (!abbOrigen.vacio())
+    {
+        volcadoAbb(abbOrigen.izqdo(), abbDestino);
+        abbDestino.insertar(abbOrigen.elemento());
+        volcadoAbb(abbOrigen.drcho(), abbDestino);
+    }
+}
+
+template <class T>
+Abb<T> unionABB(Abb<T> A, Abb<T> B)
+{
+    Abb<T> abbUnion;
+    volcadoAbb(A, abbUnion);
+    volcadoAbb(B, abbUnion);
+    equilibrarAbb(abbUnion);
+    return abbUnion;
+}
+
+/**
+ * Repetir el mismo ejercicio para la interseccion
+ */
+
+template <class T>
+Abb<T> interseccion(Abb<T> A, Abb<T> B)
+{
+    Abb<T> abbDestino;
+    vector<T> aArbol1, aArbol2, aFinal;
+
+    abbToVector(A, aArbol1);
+    abbToVector(B, aArbol2);
+    for (auto i : aArbol1)
+    {
+        auto pos = std::find(aArbol2.begin(), aArbol2.end(), i);
+        if (pos != aArbol2.end())
+            aFinal.push_back(i);
+    }
+    for (auto i : aFinal)
+    {
+        abbDestino.insertar(i);
+    }
+    abbDestino = equilibrarAbb(abbDestino);
+    return abbDestino;
+}
+
 int main()
 {
-    Abb<int> A;
+    Abb<int> A, B;
     A.insertar(7);
     A.insertar(5);
     A.insertar(12);
@@ -87,6 +143,9 @@ int main()
     A.insertar(8);
     A.insertar(11);
     A = equilibrarAbb(A);
+    B.insertar(5);
+    B.insertar(2);
+    A = interseccion(A, B);
     mostrarArbol(A);
     return 0;
 }
