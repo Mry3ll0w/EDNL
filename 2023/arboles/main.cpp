@@ -1,5 +1,6 @@
 #include <iostream>
 #include "p1.h"
+#include "p2.hpp"
 #include <iostream>
 #include <fstream>
 #include "arbolbinenla.h"
@@ -14,7 +15,8 @@ int main()
     cout << "\n*** Lectura de árbol binario B de abin.dat ***\n";
     ifstream fe("abin.dat"); // Abrir fichero de entrada. rellenarAbin(fe, B); // Desde fichero.
     rellenarAbin(fe, A);
+    rellenarAbin(fe, B);
     fe.close();
     cout << "\n*** Mostrar árbol binario B ***\n";
-    imprimirAbin(A);
+    cout << ArbolesSimilares(A, B) << endl;
 }

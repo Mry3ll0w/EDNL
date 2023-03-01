@@ -20,13 +20,14 @@ size_t ej1(Abin<t> &a)
 {
     return node_counter(a, a.raiz());
 }
+
 // EJERCICIO 2==> Calcular la altura de un arbol binario
 template <typename t>
 int altura_rec(typename Abin<t>::nodo n, Abin<t> &Arbol)
 {
     if (n == Abin<t>::NODO_NULO)
     {
-        return -1; // La altura de una hoja es cero --> Altura nodo_nulo = -1
+        return -1; // La altura de una hoja es cero --> Altura nodo_nulo = -1 + 1 = 0
     }
     return 1 + fmax(altura_rec(Arbol.hijoIzqdo(n), Arbol), altura_rec(Arbol.hijoDrcho(n), Arbol));
 }
@@ -43,13 +44,16 @@ size_t ej3(typename Abin<t>::nodo n, Abin<t> &a)
 {
     if (n == a.raiz())
         return 0;
-    return 1 + ej3(a.padre(n), a); // La profundidad sera el numero de padres que tiene el nodo (hasta llegar a la raiz)
+    return 1 + ej3(a.padre(n), a);
+    // La profundidad sera el numero de padres que tiene el nodo
+    //(hasta llegar a la raiz)
 }
 
 /* EJERCICIO 4
  * Implementa un subprograma que determine el nivel de desequilibrio de un árbol binario,
- * definido como el máximo desequilibrio de todos sus nodos. El desequilibrio de un nodo se
- * define como la diferencia entre las alturas de los subárboles del mismo
+ * definido como el máximo desequilibrio de todos sus nodos.
+ * El desequilibrio de un nodo se define como la diferencia entre las alturas
+ * de los subárboles del mismo.
  */
 template <typename t>
 size_t difAltura(typename Abin<t>::nodo n, Abin<t> &a)
