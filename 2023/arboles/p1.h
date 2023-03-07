@@ -84,36 +84,39 @@ size_t ej_6(Abin<t> &a)
  * del mismo cada uno de los nodos tiene dos hijos o ninguno.
  */
 template <class t>
-bool pseudo_completo(typename Abin<t>::nodo n, Abin<t> &a)
+bool pseudo_completo(typename Abin<t>::nodo n, Abin<t> &a, int iPenultimoNivel)
 {
-    if (n == Abin<t>::NODO_NULO)
+    if (n != Abin<t>::NODO_NULO)
     {
-        return false; // No es pseudocompleto
-    }
-    pseudo_completo(a.hijoIzqdo(n), a); // RECORRIDO INORDEN
-
-    if (altura_rec(n, a) == 1 and n != a.raiz())
-    { // HEMOS LLEGADO AL PENULTIMO NIVEL, ya que el penultimo nivel debe tener altura 1
-        auto nodo_d = a.hijoDrcho(a.padre(n));
-        auto nodo_i = a.hijoIzqdo(a.padre(n));
-        // Comprobamos si es pseudo completo
-        if ((a.hijoIzqdo(nodo_d) != Abin<t>::NODO_NULO and a.hijoDrcho(nodo_d) != Abin<t>::NODO_NULO and
-             a.hijoIzqdo(nodo_i) == Abin<t>::NODO_NULO and a.hijoDrcho(nodo_i) == Abin<t>::NODO_NULO) or
-            (a.hijoIzqdo(nodo_i) != Abin<t>::NODO_NULO and a.hijoDrcho(nodo_i) != Abin<t>::NODO_NULO and
-             a.hijoIzqdo(nodo_d) == Abin<t>::NODO_NULO and a.hijoDrcho(nodo_d) == Abin<t>::NODO_NULO) or
-            (a.hijoIzqdo(nodo_d) == Abin<t>::NODO_NULO and a.hijoDrcho(nodo_d) == Abin<t>::NODO_NULO and
-             a.hijoIzqdo(nodo_i) == Abin<t>::NODO_NULO and a.hijoDrcho(nodo_i) == Abin<t>::NODO_NULO))
-        {
-            return true;
+        if (altura_rec(n, a) == iPenultimoNivel and n != a.raiz())
+        { // HEMOS LLEGADO AL PENULTIMO NIVEL, ya que el penultimo nivel debe tener altura 1
+            auto nodo_d = a.hijoDrcho(a.padre(n));
+            auto nodo_i = a.hijoIzqdo(a.padre(n));
+            // Comprobamos si es pseudo completo
+            if ((a.hijoIzqdo(nodo_d) != Abin<t>::NODO_NULO and a.hijoDrcho(nodo_d) != Abin<t>::NODO_NULO and
+                 a.hijoIzqdo(nodo_i) == Abin<t>::NODO_NULO and a.hijoDrcho(nodo_i) == Abin<t>::NODO_NULO) or
+                (a.hijoIzqdo(nodo_i) != Abin<t>::NODO_NULO and a.hijoDrcho(nodo_i) != Abin<t>::NODO_NULO and
+                 a.hijoIzqdo(nodo_d) == Abin<t>::NODO_NULO and a.hijoDrcho(nodo_d) == Abin<t>::NODO_NULO) or
+                (a.hijoIzqdo(nodo_d) == Abin<t>::NODO_NULO and a.hijoDrcho(nodo_d) == Abin<t>::NODO_NULO and
+                 a.hijoIzqdo(nodo_i) == Abin<t>::NODO_NULO and a.hijoDrcho(nodo_i) == Abin<t>::NODO_NULO))
+            {
+                return true;
+            }
+            else
+                return false;
         }
     }
-    pseudo_completo(a.hijoDrcho(n), a);
+
+    return pseudo_completo(a.hijoDrcho(n), a, iPenultimoNivel) && pseudo_completo(a.hijoIzqdo(n), a, iPenultimoNivel);
 }
 
 template <class t>
 bool ej_7(Abin<t> &a)
 {
-    return pseudo_completo(a.raiz(), a);
+    if (a.arbolVacio())
+        return true;
+    else
+        return pseudo_completo(a.raiz(), a, altura_rec(a.raiz(), a) - 1);
 }
 
 #endif // EDNLV2_P1_H

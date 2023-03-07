@@ -2,6 +2,7 @@
 #include "p1.h"
 #include "p2.hpp"
 #include <iostream>
+#include "abinrel.hpp"
 #include <fstream>
 #include "arbolbinenla.h"
 #include "abin_E-S.h"
@@ -24,4 +25,6 @@ int main()
     abPost.insertarhijoDrcho(abPost.raiz(), "2");
     abPost.insertarhijoIzqdo(abPost.raiz(), "5");
     cout << procesaPostfijo(abPost, abPost.raiz()) << endl;
+
+    AbinRel<int> abRel(3);
 }
