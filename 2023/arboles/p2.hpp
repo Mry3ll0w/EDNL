@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <cmath>
 #include <cassert>
+
 /**
  * Dos árboles binarios son similares cuando tienen idéntica estructura de ramificación,
  * es decir, ambos son vacíos, o en caso contrario, tienen subárboles izquierdo y
@@ -55,7 +56,8 @@ bool ArbolesSimilares(Abin<T> abArbol1, Abin<T> abArbol2)
  */
 
 template <class T>
-void construyeReflejoRec(Abin<T> abOrigen, Abin<T> &abDestino, typename Abin<T>::nodo ndAbOrigen, typename Abin<T>::nodo ndAbDestino)
+void construyeReflejoRec(Abin<T> abOrigen, Abin<T> &abDestino, typename Abin<T>::nodo ndAbOrigen,
+                         typename Abin<T>::nodo ndAbDestino)
 {
 
     auto ndHijoDerechoOrigen = abOrigen.hijoDrcho(ndAbOrigen);
