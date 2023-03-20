@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "arbolbinenla.h"
 using namespace std; // Avoid using std:: ....
 
@@ -67,6 +68,55 @@ int contar3Nietos(Abin<T> abArbol)
     }
 }
 
+/**
+ * Dado un árbol A y un valor x, compruebe si dicho valor se encuentra o no en el árbol.
+ * Si es así, devuelva el camino desde el nodo raíz hasta dicho nodo.
+ * Puede suponer que no hay ningún elemento repetido en el árbol que
+ * recibe como parámetro.
+ */
+template <class T>
+bool encuentraElemento(typename Abin<T>::nodo nd, Abin<T> &abArbol, const T &elemento, bool &bFound, pair<bool, typename Abin<T>::nodo> &pairRes)
+{
+    if (nd != Abin<T>::NODO_NULO && !bFound)
+    {
+        bFound = abArbol.elemento(nd) == elemento;
+        if (bFound)
+        {
+            pairRes.first = bFound;
+            pairRes.second = nd;
+        }
+
+        return bFound || encuentraElemento(abArbol.hijoIzqdo(nd), abArbol, elemento, bFound, pairRes) || encuentraElemento(abArbol.hijoDrcho(nd), abArbol, elemento, bFound, pairRes);
+    }
+    else
+        return false;
+}
+
+template <class T>
+void construyeCamino(std::vector<T> &aTCamino, typename Abin<T>::nodo nd, Abin<T> &abArbol)
+{
+    if (nd != abArbol.raiz())
+    {
+        T tElto = abArbol.elemento(nd);
+        aTCamino.emplace(aTCamino.begin(), tElto);
+        construyeCamino(aTCamino, abArbol.padre(nd), abArbol);
+    }
+}
+
+template <class T>
+std::vector<T> caminoElemento(const T &elemento, Abin<T> &abArbol)
+{
+    vector<T> aCamino;
+    bool bFound = false;
+    pair<bool, typename Abin<T>::nodo> pairRes(bFound, abArbol.raiz());
+    if (encuentraElemento(pairRes.second, abArbol, elemento, bFound, pairRes))
+    {
+
+        construyeCamino(aCamino, pairRes.second, abArbol);
+    }
+    return aCamino;
+}
+
 int main()
 {
     Abin<int> A;
@@ -77,7 +127,10 @@ int main()
     A.insertarhijoIzqdo(A.hijoIzqdo(A.raiz()), 4);
     A.insertarhijoDrcho(A.hijoIzqdo(A.raiz()), 5);
 
-    cout << contar3Nietos(A) << endl;
+    for (auto i : caminoElemento(4, A))
+        cout << i << endl;
+
+    //           cout << contar3Nietos(A) << endl;
 
     return 0;
 }

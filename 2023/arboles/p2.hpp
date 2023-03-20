@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <float.h>
 #include <stdlib.h>
 #include <cmath>
 #include <cassert>
@@ -117,3 +118,25 @@ double procesaPostfijo(Abin<std::string> A, typename Abin<std::string>::nodo n)
         return std::stof(strElemento);
     }
 }
+
+// Repeticion edicion DLH
+
+struct ElementoPostfijo
+{
+
+    char cOperador;
+    double dNumero;
+
+    ElementoPostfijo(const char c) : dNumero(FLT_MAX), cOperador(c) {}
+    ElementoPostfijo(const double d) : dNumero(d), cOperador('@') {}
+
+    operator char()
+    {
+        return cOperador;
+    }
+    operator double()
+    {
+        return dNumero;
+    }
+};
+// Copiar la funcion pero con la struct

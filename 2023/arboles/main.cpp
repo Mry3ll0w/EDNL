@@ -1,6 +1,8 @@
 #include <iostream>
 #include "p1.h"
 #include "p2.hpp"
+#include "p3.hpp"
+#include "agenEnlazado.h"
 #include <iostream>
 #include "abinrel.hpp"
 #include <fstream>
@@ -20,11 +22,4 @@ int main()
     fe.close();
     cout << "\n*** Mostrar árbol binario A ***\n";
     imprimirAbin(A);
-    Abin<std::string> abPost;
-    abPost.insertaRaiz("+");
-    abPost.insertarhijoDrcho(abPost.raiz(), "2");
-    abPost.insertarhijoIzqdo(abPost.raiz(), "5");
-    cout << procesaPostfijo(abPost, abPost.raiz()) << endl;
-
-    AbinRel<int> abRel(3);
 }
