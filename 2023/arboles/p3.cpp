@@ -20,6 +20,8 @@ void preordenAgen(typename Agen<T>::nodo n, const Agen<T> &A,
     }
 }
 
+// Se define el grado de un nodo como el maximo numero de hijos de los nodos del subarbol.
+
 template <typename T>
 int numHijosSubArbolGeneral(typename Agen<T>::nodo n, const Agen<T> &A)
 // Recorrido en preorden del subárbol cuya raíz es el nodo n
@@ -113,7 +115,6 @@ int minimaAlturaNodoAgen(typename Agen<T>::nodo nd, Agen<T> &agArbol)
     int iAlturaMinima = -1; // Por no definirlo con la clave INT_MAX, no me acuerdo de la biblioteca
     if (nd != Agen<T>::NODO_NULO)
     {
-
         nd = agArbol.hijoIzqdo(nd);
         while (nd != Agen<T>::NODO_NULO)
         {
@@ -134,6 +135,50 @@ int desequilibrioAgen(Agen<T> agenArbol)
     else
     {
         return std::abs(alturaNodoAgen(agenArbol.raiz(), agenArbol) - minimaAlturaNodoAgen(agenArbol.raiz(), agenArbol));
+    }
+}
+
+// Poda
+
+template <class T>
+void podaNodoAgen(typename Agen<T>::nodo nd, Agen<T> &agArbol)
+{
+    while (agArbol.hijoIzqdo(nd) != Agen<T>::NODO_NULO)
+    {
+        podaNodoAgen(agArbol.hijoIzqdo(nd), agArbol);
+        agArbol.eliminarHijoIzqdo(nd);
+    }
+}
+
+template <class T>
+void podaAgenRec(Agen<T> &agArbol, typename Agen<T>::nodo nd, const T &elto)
+{
+    bool bfound = false;
+    if (nd != Agen<T>::NODO_NULO && !bfound)
+    {
+
+        nd = agArbol.hijoIzqdo(n);
+
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            podaAgenRec(agArbol, agArbol.hermDrcho(nd), elto);
+            nd = agArbol.hermDrcho(nd);
+        }
+        // Destruir en postorden
+        if (agArbol.elemento(nd) == elto)
+        {
+            bfound = true;
+            podaNodoAgen(nd, agArbol);
+        }
+    }
+}
+
+template <class T>
+void podaAgen(Agen<T> &agArbol, const T &elto)
+{
+    if (!agArbol.arbolVacio())
+    {
+        podaAgenRec(agArbol, agArbol.raiz(), elto);
     }
 }
 
