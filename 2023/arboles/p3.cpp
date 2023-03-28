@@ -157,7 +157,7 @@ void podaAgenRec(Agen<T> &agArbol, typename Agen<T>::nodo nd, const T &elto)
     if (nd != Agen<T>::NODO_NULO && !bfound)
     {
 
-        nd = agArbol.hijoIzqdo(n);
+        nd = agArbol.hijoIzqdo(nd);
 
         while (nd != Agen<T>::NODO_NULO)
         {
