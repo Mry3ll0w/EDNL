@@ -153,12 +153,10 @@ void podaNodoAgen(typename Agen<T>::nodo nd, Agen<T> &agArbol)
 template <class T>
 void podaAgenRec(Agen<T> &agArbol, typename Agen<T>::nodo nd, const T &elto)
 {
-    bool bfound = false;
-    if (nd != Agen<T>::NODO_NULO && !bfound)
+    bool bEncontrado = false;
+    if (nd != Agen<T>::NODO_NULO && !bEncontrado)
     {
-
         nd = agArbol.hijoIzqdo(nd);
-
         while (nd != Agen<T>::NODO_NULO)
         {
             podaAgenRec(agArbol, agArbol.hermDrcho(nd), elto);
@@ -167,8 +165,22 @@ void podaAgenRec(Agen<T> &agArbol, typename Agen<T>::nodo nd, const T &elto)
         // Destruir en postorden
         if (agArbol.elemento(nd) == elto)
         {
-            bfound = true;
+            bEncontrado = true;
             podaNodoAgen(nd, agArbol);
+            if (nd == agArbol.raiz())
+            {
+                agArbol.eliminarRaiz(nd);
+            }
+            else
+            {
+                // Buscamos quien es el padre del nodo
+                auto ndPadreOriginal = agArbol.padre(nd);
+                while (ndPadreOriginal != Agen<T>::NODO_NULO && agArbol.hijoIzqdo(ndPadreOriginal) != nd)
+                {
+                    ndPadreOriginal = agArbol.hermDrcho(ndPadreOriginal);
+                }
+                // Tras averiguar el padre elimino el nodo,
+            }
         }
     }
 }

@@ -21,11 +21,7 @@ void mostrarSubArbol(Abb<T> abbArbol)
 template <class T>
 void eliminarSubArbol(Abb<T> &abbArbol, const T &tElto)
 {
-    // El elemento buscado no esta en el arbol
-    if (!abbArbol.buscar(tElto).vacio())
-    {
-        abbArbol.buscar(tElto).~Abb(); // Me cargo al el subarbol
-    }
+    abbArbol.buscar(tElto).~Abb(); // Me cargo al el subarbol
 }
 
 /**
@@ -51,14 +47,14 @@ void recorrerInorden(const Abb<T> &abbArbol, std::vector<T> &vElementos)
 }
 
 template <class T>
-void equilibrar(Abb<T> &abbArbol)
+void equilibrar(Abb<T> &abbArbol) // Corregir se tiene que insertar en Dicotomica
 {
     if (!abbArbol.vacio())
     {
 
         std::vector<T> vElementos;
-        recorrerInorden(abbArbol, vElementos);
-        abbArbol = Abb<T>(); // Igualamos el arbol a uno vacio
+        recorrerInorden(abbArbol, vElementos); // primero izquierdos (mas pequeños) y desp derechos (maypr tamaño)
+        abbArbol = Abb<T>();                   // Igualamos el arbol a uno vacio
 
         abbArbol.insertar(vElementos[vElementos.size() / 2]); // Insertamos la mediana
         for (int i = 0; i < vElementos.size() / 2; i++)
@@ -78,7 +74,6 @@ void equilibrar(Abb<T> &abbArbol)
  * que sea la unión de ambos, representado por un ABB equilibrado.
  * La union de dos conjuntos ==> elementos que estan en arbol1 junto con los que estan en abb2.
  */
-
 template <class T>
 Abb<T> unionAbb(Abb<T> abbArbol1, Abb<T> abbArbol2)
 {
