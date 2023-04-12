@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "arbolbinenla.h"
+#include "agenEnlazado.h"
 using namespace std; // Avoid using std:: ....
 
 // Contar numero de nodos del arbol que tienen exactamente 3 nietos
@@ -117,20 +118,87 @@ std::vector<T> caminoElemento(const T &elemento, Abin<T> &abArbol)
     return aCamino;
 }
 
+/**
+ * Examen de Arboles:
+ * Un árbol es estrictamente ternario si todos sus nodos son hojas o tienen tres hijos.
+ * Escribe una función que, dado un árbol de grado arbitrario, nos indique si es o no
+ * estrictamente ternario.
+ */
+
+/**
+ * @brief Cuenta los nodos del hijo dado
+ * @param Agen<T>
+ * @param Agen<T>::nodo
+ * @return int
+ */
+template <class T>
+void cuentaHijosAgen(Agen<T> AgArbol, typename Agen<T>::nodo nd, int &iHijos)
+{
+    if (nd != Agen<T>::NODO_NULO)
+    {
+        nd = AgArbol.hijoIzqdo(nd);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            cuentaHijosAgen(AgArbol, nd, iHijos);
+            iHijos++;
+            // cout << AgArbol.elemento(nd)<<", "<<std::endl;
+            nd = AgArbol.hermDrcho(nd);
+        }
+    }
+}
+
+template <class T>
+bool esNodoTernario(Agen<T> AgArbol, typename Agen<T>::nodo nd)
+{
+    if (nd == Agen<T>::NODO_NULO)
+    {
+        return true; // El nodo vacio es considerado como ternario ya que es hoja
+    }
+    else
+    {
+        int iHijosNodoActual = 0;
+        cuentaHijosAgen(AgArbol, nd, iHijosNodoActual);
+        return (AgArbol.hijoIzqdo(nd) == Agen<T>::NODO_NULO || iHijosNodoActual == 3 || iHijosNodoActual == 0);
+    }
+}
+
+template <class T>
+void esTernarioRec(Agen<T> AgArbol, typename Agen<T>::nodo nd, bool &bTernario)
+{
+    if (nd != Agen<T>::NODO_NULO && bTernario)
+    {
+        // Comprobamos en preorden
+        bTernario = esNodoTernario(AgArbol, nd);
+
+        nd = AgArbol.hijoIzqdo(nd);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            esTernarioRec(AgArbol, nd, bTernario);
+            nd = AgArbol.hermDrcho(nd);
+        }
+    }
+}
+
+template <class T>
+bool esArbolTernario(Agen<T> AgArbol)
+{
+    if (AgArbol.arbolVacio())
+        return true;
+    else
+    {
+        bool bEsArbolTernario = true;
+        esTernarioRec(AgArbol, AgArbol.raiz(), bEsArbolTernario);
+        return bEsArbolTernario;
+    }
+}
+
 int main()
 {
-    Abin<int> A;
+    Agen<int> A;
     A.insertaRaiz(1);
-    A.insertarhijoDrcho(A.raiz(), 3);
-    A.insertarhijoIzqdo(A.raiz(), 1);
-    A.insertarhijoDrcho(A.hijoDrcho(A.raiz()), 6);
-    A.insertarhijoIzqdo(A.hijoIzqdo(A.raiz()), 4);
-    A.insertarhijoDrcho(A.hijoIzqdo(A.raiz()), 5);
-
-    for (auto i : caminoElemento(4, A))
-        cout << i << endl;
-
-    //           cout << contar3Nietos(A) << endl;
-
+    A.insertarHijoIzqdo(A.raiz(), 2);
+    A.insertarHermDrcho(A.hijoIzqdo(A.raiz()), 3);
+    A.insertarHermDrcho(A.hijoIzqdo(A.raiz()), 4);
+    std::cout << esArbolTernario(A) << std::endl;
     return 0;
 }
