@@ -192,6 +192,161 @@ bool esArbolTernario(Agen<T> AgArbol)
     }
 }
 
+/**
+ * Tener el  doble de nietos que de bisnietos.
+ *
+ * Sera Un nieto cuando la profundidad: sea Abs(profundidad NodoOriginal - profNd) = 2
+ */
+
+/**
+ * @brief Cuenta el numero de nodos Nietos del nodo dado.
+ */
+
+template <class T>
+int profundidadNodoAgen(Agen<T> AgArbol, typename Agen<T>::nodo nd)
+{
+    if (nd == AgArbol.raiz())
+    {
+        return 0;
+    }
+    else
+        return 1 + profundidadNodoAgen(AgArbol, AgArbol.padre(nd));
+}
+
+template <class T>
+void cuentaNietosYBisnietos(const Agen<T> AgArbol, typename Agen<T>::nodo nd, const int &iProfundidadOriginal, int &iNietos, int &iBisNietos)
+{
+    if (nd != Agen<T>::NODO_NULO)
+    {
+        nd = AgArbol.hijoIzqdo(nd);
+
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            cuentaNietosYBisnietos(AgArbol, nd, iProfundidadOriginal, iNietos, iBisNietos);
+
+            int iDifProfundidad = std::abs(iProfundidadOriginal - profundidadNodoAgen(AgArbol, nd));
+
+            if (iDifProfundidad == 2)
+                iNietos++;
+
+            if (iDifProfundidad == 3)
+                iBisNietos++;
+
+            nd = AgArbol.hermDrcho(AgArbol, nd, iProfundidadOriginal, iNietos);
+        }
+    }
+}
+
+template <class T>
+bool tieneDobleNietosQueBisnietosAgen(Agen<T> AgArbol)
+{
+    if (AgArbol.arbolVacio())
+        return false;
+    else
+    {
+        int iNietos = 0, iBisNietos = 0;
+        // He asumido que la profundidad original es la raiz pero como no se especifica lo dejo en el cuentaNietosBisnietos
+        cuentaNietosYBisnietos(AgArbol, AgArbol.raiz(), 0, iNietos, iBisNietos);
+        return iBisNietos * 2 == iNietos;
+    }
+}
+
+/**
+ * Nodos reflejos. Dos nodos son reflejos cuando, siendo hermanos entre si, son las raíces de dos árboles (subárboles si queréis)
+ * que son reflejados entre sí. La definición de un árbol reflejado la conocéis de las prácticas,
+ * entendemos reflejado como la imagen especular.
+ */
+
+template <class T>
+void esReflejadoRec(const Abin<T> AbArbol1, const Abin<T> AbArbol2, typename Abin<T>::nodo nd1, typename Abin<T>::nodo nd2, bool &bEsReflejado)
+{
+    if (nd1 != Abin<T>::NODO_NULO && nd2 != Abin<T>::NODO_NULO && bEsReflejado)
+    {
+        esReflejadoRec(AbArbol1, AbArbol2, AbArbol1.hijoIzqdo(nd1), AbArbol2.hijoDrcho(nd2), bEsReflejado);
+
+        // Comprobamos que sea reflejo
+        bEsReflejado = AbArbol1.elemento(nd1) == AbArbol2.elemento(nd2);
+
+        esReflejadoRec(AbArbol1, AbArbol2, AbArbol1.hijoDrcho(nd1), AbArbol2.hijoIzqdo(nd2), bEsReflejado);
+    }
+}
+template <class T>
+bool esArbolReflejado(const Abin<T> AbArbol1, const Abin<T> AbArbol2)
+{
+
+    if (AbArbol1.arbolVacio() == AbArbol2.arbolVacio() && AbArbol1.elemento(AbArbol1.raiz()) == AbArbol2.elemento(AbArbol2.raiz()))
+    {
+        return true; // si ambos son vacios se consideran reflejos
+    }
+    else if (AbArbol1.arbolVacio() != AbArbol2.arbolVacio())
+    { // Si uno esta vacio y el otro no entonces no son reflejos
+        return false;
+    }
+    else
+    { // Caso general
+        bool bEsReflejado = true;
+        esReflejadoRec(AbArbol1, AbArbol2, AbArbol1.raiz(), AbArbol2.raiz(), bEsReflejado);
+        return bEsReflejado;
+    }
+}
+
+/**
+ * Ser nostálgicos. Definimos un nodo nostálgico como aquel que tiene más pasado que futuro,
+ * es decir son los nodos que tienen más antecesores propios que descendientes propios.
+ */
+
+template <class T>
+int cuentaAntecesoresAbin(Abin<T> AbArbol, typename Abin<T>::nodo nd)
+{
+    if (nd != AbArbol.raiz())
+    {
+        return 1 + cuentaAntecesoresAbin(AbArbol, AbArbol.padre(nd));
+    }
+}
+
+template <class T>
+int cuentaPredecesoresAbin(Abin<T> AbArbol, typename Abin<T>::nodo nd)
+{
+    if (nd == Abin<T>::NODO_NULO)
+    {
+        return 0;
+    }
+    else
+    {
+        return 1 + cuentaPredecesoresAbin(AbArbol, AbArbol.hijoDrcho(nd)) + cuentaPredecesoresAbin(AbArbol, AbArbol.hijoIzqdo(nd));
+    }
+}
+
+template <class T>
+void cuentaNostalgicosRec(Abin<T> AbArbol, typename Abin<T>::nodo nd, int &iNodosNostalgicos)
+{
+    if (nd != Abin<T>::NODO_NULO)
+    {
+        int iPasado = 0, iFuturo = 1;
+        iPasado = cuentaAntecesoresAbin(AbArbol, nd);
+        iFuturo = cuentaPredecesoresAbin(AbArbol, nd);
+
+        if (iPasado > iFuturo)
+            iNodosNostalgicos++;
+
+        cuentaNostalgicosRec(AbArbol, AbArbol.hijoIzqdo(nd));
+        cuentaNostalgicosRec(AbArbol, AbArbol.hijoDrcho(nd));
+    }
+}
+
+template <class T>
+int cuentaNostalgicosAbin(Abin<T> AbArbol)
+{
+    if (AbArbol.arbolVacio())
+        return 0;
+    else
+    {
+        int iNostalgicos = 0;
+        cuentaNostalgicosRec(AbArbol, AbArbol.raiz(), iNostalgicos);
+        return iNostalgicos;
+    }
+}
+
 int main()
 {
     Agen<int> A;
