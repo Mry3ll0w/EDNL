@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "abb.h"
 #include "arbolbinenla.h"
 #include "agenEnlazado.h"
 using namespace std; // Avoid using std:: ....
@@ -350,6 +351,56 @@ int cuentaNostalgicosAbin(Abin<T> AbArbol)
         cuentaNostalgicosRec(AbArbol, AbArbol.raiz(), iNostalgicos);
         return iNostalgicos;
     }
+}
+
+/**
+ * Examen Infimo y Supremo.
+ * Infimo es el menor elemento de A <= X, siendo A el Abb
+ * Supremo es el mayor elemento de A < X, siendo A el Abb
+ */
+
+int infimoAbb(Abb<int> AbbArbol, const int &iX, int &iInfimo)
+{
+    if (AbbArbol.elemento() == iX)
+    {
+        iInfimo = AbbArbol.elemento();
+    }
+    else
+    {
+        if (AbbArbol.elemento() < iX)
+        {
+            iInfimo = std::max(iInfimo, AbbArbol.elemento()); // Sabiendo que es menor no va a sobre pasar a x
+            infimoAbb(AbbArbol.izqdo(), iX, iInfimo);
+        }
+
+        if (AbbArbol.elemento() > iX)
+        {
+            infimoAbb(AbbArbol.drcho(), iX, iInfimo);
+        }
+    }
+    return iInfimo;
+}
+
+int supremoAbb(Abb<int> AbbArbol, const int &iX, int &iSupremo)
+{
+    if (AbbArbol.elemento() == iX)
+    {
+        iSupremo = AbbArbol.elemento();
+    }
+    else
+    {
+        if (AbbArbol.elemento() > iX)
+        {
+            iSupremo = std::min(iSupremo, AbbArbol.elemento()); // Ya que sabemos que el elemento actual supera a iX
+            supremoAbb(AbbArbol.izqdo(), iX, iSupremo);
+        }
+
+        if (AbbArbol.elemento() < iX)
+        {
+            supremoAbb(AbbArbol.drcho(), iX, iSupremo);
+        }
+    }
+    return iSupremo;
 }
 
 int main()

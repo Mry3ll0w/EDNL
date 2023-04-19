@@ -98,8 +98,40 @@ void esReflejadoSumaRec(Abin<T> AbArbol1, Abin<T> AbArbol2, typename Abin<T>::no
         }
         else
         {
-            if (AbArbol1.elemento(AbArbol1.hijoDrcho(nd1)) != Abin<T>::NODO_NULO)
+            if (AbArbol1.elemento(AbArbol1.hijoDrcho(nd1)) != Abin<T>::NODO_NULO && AbArbol1.elemento(AbArbol1.hijoIzqdo(nd1)) != Abin<T>::NODO_NULO)
+            {
+                bCondicion = AbArbol1.elemento(nd) > (AbArbol1.elemento(AbArbol1.hijoDrcho(nd1)) + AbArbol1.elemento(AbArbol1.hijoIzqdo(nd1)));
+            }
+            else
+            {
+                int iSumaHijos = 0;
+                if (AbArbol1.elemento(AbArbol1.hijoIzqdo(nd1)) != Abin<T>::NODO_NULO)
+                {
+                    iSumaHijos += AbArbol1.elemento(AbArbol1.hijoIzqdo(nd1));
+                }
+
+                if (AbArbol1.elemento(AbArbol1.hijoDrcho(nd1)) != Abin<T>::NODO_NULO)
+                {
+                    iSumaHijos += AbArbol1.elemento(AbArbol1.hijoDrcho(nd1));
+                }
+                bCondicion = AbArbol1.elemento(nd1) > iSumaHijos;
+            }
         }
+    }
+}
+
+template <class T>
+bool esReflejadoSuma(Abin<T> AbArbol1, Abin<T> AbArbol2)
+{
+    if (AbArbol1.arbolVacio() != AbArbol2.arbolVacio())
+    {
+        return false;
+    }
+    else
+    {
+        bool bCondicion = true;
+        esReflejadoSumaRec(AbArbol1, AbArbol2, AbArbol1.raiz(), AbArbol2.raiz(), bCondicion);
+        return bCondicion;
     }
 }
 
