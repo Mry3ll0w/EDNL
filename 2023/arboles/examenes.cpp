@@ -238,7 +238,7 @@ void cuentaNietosYBisnietos(const Agen<T> AgArbol, typename Agen<T>::nodo nd, co
             if (iDifProfundidad == 3)
                 iBisNietos++;
 
-            nd = AgArbol.hermDrcho(AgArbol, nd, iProfundidadOriginal, iNietos);
+            nd = AgArbol.hermDrcho(nd);
         }
     }
 }

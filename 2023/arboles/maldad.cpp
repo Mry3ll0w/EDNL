@@ -1,5 +1,6 @@
 #include <iostream>
 #include "abin_enla.h"
+#include "agenEnlazado.h"
 #include <vector>
 #include <string>
 using namespace std; // Avoid using std:: ....
@@ -283,7 +284,7 @@ bool simbolosAbinRec(Abin<std::string> AbArbol, typename Abin<std::string>::nodo
         {
             return false;
         }
-        }
+    }
 }
 
 bool simbolosAbin(Abin<std::string> AbArbol, std::vector<bool> vbSimbolos) // Siempre asumo que el arbol esta correctamente creado
@@ -292,6 +293,174 @@ bool simbolosAbin(Abin<std::string> AbArbol, std::vector<bool> vbSimbolos) // Si
     procesaExpresionesSimbolo(AbArbol, AbArbol.raiz(), vbSimbolos);
     return simbolosAbinRec(AbArbol, AbArbol.raiz());
 }
+
+/**
+ * Examen propuesto por juanfran
+ *  Dado un árbol A y un valor x, compruebe si dicho valor se encuentra o no en el árbol. Si es así, devuelva el camino desde el
+ *  nodo raíz hasta dicho nodo. Puede suponer que no hay ningún elemento repetido en el árbol que recibe como parámetro.
+ *  Haremos el problema asumiendo que se trata de un arbol general.
+ */
+
+template <class T>
+std::vector<T> recuperaCaminoNodoAgen(Agen<T> AgArbol, typename Agen<T>::nodo nd)
+{
+    std::vector<T> vTCamino;
+    if (nd != AgArbol.raiz())
+    {
+        vTCamino.insert(vTCamino.begin(), AgArbol.elemento(nd));
+        recuperaCaminoNodoAgen(AgArbol, AgArbol.padre(nd));
+    }
+    return vTCamino;
+}
+
+template <class T>
+vector<T> buscarElementoAgenRec(Agen<T> AgArbol, typename Agen<T>::nodo nd, const T &elto)
+{
+    bool bFound = false;
+    if (nd != Agen<T>::NODO_NULO && !bFound)
+    {
+        nd = AgArbol.hijoIzqdo(nd);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            buscarElementoAgenRec(AgArbol, nd, elto);
+            bFound = AgArbol.elemento(nd) == elto;
+            nd = AgArbol.hermDrcho(nd);
+        }
+    }
+    if (bFound)
+    {
+        return recuperaCaminoNodoAgen(AgArbol, nd);
+    }
+    else
+    {
+        return std::vector<T>();
+    }
+}
+
+template <class T>
+vector<T> buscarElementoAgenRec(Agen<T> AgArbol, typename Agen<T>::nodo nd, const T &elto)
+{
+    std::vector<T> vCamino;
+    if (!AgArbol.arbolVacio())
+        vCamino = buscarElementoAgenRec(AgArbol, AgArbol.raiz(), elto);
+    return vCamino;
+}
+
+/**
+ * Implementa un subprograma que devuelva el porcentaje de descendientes propios de un arbol general que sean multiplo de 3
+ */
+
+template <class T>
+void cuentaPorcentajesRec(Agen<T> AgArbol, typename Agen<T>::nodo nd, int &iNumeroHijos, int &iDivisibles3)
+{
+    if (nd != Agen<T>::NODO_NULO)
+    {
+        nd = AgArbol.hijoIzqdo(nd);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            cuentaPorcentajesRec(AgArbol, nd, iNumeroHijos, iDivisibles3);
+            iNumeroHijos++;
+            if (AgArbol.elemento(nd) % 3 == 0)
+                iDivisibles3++;
+            nd = AgArbol.hermDrcho(nd);
+        }
+    }
+}
+
+template <class T>
+int cuentaPorcentaje(Agen<T> AgArbol)
+{
+    if (AgArbol.arbolVacio())
+        return 0;
+    else
+    {
+        int iNumeroHijos = 0, iDivisibles3 = 0;
+        cuentaPorcentajesRec(AgArbol, AgArbol.raiz(), iNumeroHijos, iDivisibles3);
+        return 100 * (float)(iDivisibles3 / iNumeroHijos);
+    }
+}
+
+/**
+ * Poda todos los elementos de un arbol general a partir de un nodo dado, en la poda se incluye al nodo
+ */
+
+template <class T>
+typename Agen<T>::nodo buscaNodoAgenRec(const Agen<T> &AgArbol, typename Agen<T>::nodo nd, const T &elto)
+{
+    bool bFound = false;
+    if (nd != Agen<T>::NODO_NULO && !bFound)
+    {
+        nd = AgArbol.hijoIzqdo(nd);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            buscaNodoAgenRec(AgArbol, nd, elto);
+            bFound = AgArbol.elemento(nd) == elto;
+            nd != AgArbol.hermDrcho(nd);
+        }
+    }
+    return nd;
+}
+
+// Poda todos los nodos que cuelgan del dado
+template <class T>
+void podaDescendientesNodo(Agen<T> &AgArbol, typename Agen<T>::nodo nd)
+{
+    while (AgArbol.hijoIzqdo(nd) != Agen<T>::NODO_NULO)
+    {
+        podaDescendientesNodo(AgArbol, AgArbol.hijoIzqdo(nd));
+        AgArbol.eliminarHijoIzqdo(nd);
+    }
+}
+
+// Poda el nodo dado una vez se ha convertido en una hoja
+// nd Recibe inicialmente el padre del nodo dado
+template <class T>
+void podaAgenNodoBuscadoRec(Agen<T> &AgArbol, typename Agen<T>::nodo nd, typename Agen<T>::nodo ndObjetivo)
+{
+    // Al tener el padre del nodo en nd podemos distinguir varios casos
+    if (AgArbol.hijoIzqdo(nd) == ndObjetivo)
+    {
+        AgArbol.eliminarHijoIzqdo(nd);
+    }
+    else // Al no ser el hijo izquierdo del padre, debemos buscar a su anterior
+    {
+        nd = AgArbol.hijoIzqdo(nd);
+        while (AgArbol.hermDrcho(nd) != ndObjetivo)
+        {
+            nd = AgArbol.hermDrcho(nd);
+        }
+        // Cuando salga del bucle el hermano derecho sera el objetivo a eliminar
+        AgArbol.eliminarHermDrcho(nd);
+    }
+}
+
+template <class T>
+void podaAgenNodoIncluido(Agen<T> &AgArbol, const T &elto)
+{
+    if (!AgArbol.arbolVacio())
+    {
+        typename Agen<T>::nodo ndObjetivo = buscaNodoAgenRec(AgArbol, AgArbol.raiz(), elto);
+        if (ndObjetivo != Agen<T>::NODO_NULO)
+        {
+            if (ndObjetivo == AgArbol.raiz())
+            {
+                AgArbol = Agen<T>();
+            }
+            else
+            {
+                podaDescendientesNodo(AgArbol, ndObjetivo);                     // Podamos todos los que cuelgan del mismo
+                podaAgenNodoBuscadoRec(AgArbol, AgArbol.padre(nd), ndObjetivo); // Podamos el nodo objetivo
+            }
+        }
+    }
+}
+
+/**
+ * Implemente una funcion generica que transforme un arbol binario de un tipo generico T, eliminando
+los descendientes propios de todos aquellos nodos cuyo contenido sea, al mismo tiempo,
+mayor o igual que el de sus ancestros propios y menor o igual que sus descendientes propios.
+Supondremos que el tipo genérico T tiene sobrecargado el operador <
+ */
 
 int main()
 {
