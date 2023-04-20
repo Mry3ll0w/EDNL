@@ -448,8 +448,8 @@ void podaAgenNodoIncluido(Agen<T> &AgArbol, const T &elto)
             }
             else
             {
-                podaDescendientesNodo(AgArbol, ndObjetivo);                     // Podamos todos los que cuelgan del mismo
-                podaAgenNodoBuscadoRec(AgArbol, AgArbol.padre(nd), ndObjetivo); // Podamos el nodo objetivo
+                podaDescendientesNodo(AgArbol, ndObjetivo);                             // Podamos todos los que cuelgan del mismo
+                podaAgenNodoBuscadoRec(AgArbol, AgArbol.padre(ndObjetivo), ndObjetivo); // Podamos el nodo objetivo
             }
         }
     }
@@ -457,10 +457,78 @@ void podaAgenNodoIncluido(Agen<T> &AgArbol, const T &elto)
 
 /**
  * Implemente una funcion generica que transforme un arbol binario de un tipo generico T, eliminando
-los descendientes propios de todos aquellos nodos cuyo contenido sea, al mismo tiempo,
-mayor o igual que el de sus ancestros propios y menor o igual que sus descendientes propios.
-Supondremos que el tipo genérico T tiene sobrecargado el operador <
+ * los descendientes propios de todos aquellos nodos cuyo contenido sea, al mismo tiempo,
+ * mayor o igual que el de sus ancestros propios y menor o igual que sus descendientes propios.
+ * Supondremos que el tipo genérico T tiene sobrecargado el operador
  */
+
+template <class T>
+void podaDescendientesNodoAbin(Abin<T> &AbArbol, typename Abin<T>::nodo nd)
+{
+    if (nd != Abin<T>::NODO_NULO)
+    {
+        podaDescendientesNodoAbin(AbArbol, AbArbol.hijoDrcho(nd));
+        podaDescendientesNodoAbin(AbArbol, AbArbol.hijoIzqdo(nd));
+
+        if (AbArbol.hijoIzqdo(nd) != Abin<T>::NODO_NULO)
+        {
+            AbArbol.eliminarhijoIzqdo(nd);
+        }
+
+        if (AbArbol.hijoDrcho(nd) != Abin<T>::NODO_NULO)
+        {
+            AbArbol.eliminarhijoDrcho(nd);
+        }
+    }
+}
+
+template <class T>
+void cumpleCondicionMenor(const Abin<T> &AbArbol, typename Abin<T>::nodo nd, const T &elto)
+{
+    if (nd != AbArbol.raiz())
+    {
+        return elto <= AbArbol.elemento(nd) && cumpleCondicioMenor(AbArbol, AbArbol.padre(nd));
+    }
+    else
+    {
+        return true; // Si el vacio el elemento dado es mas grande que la nada
+    }
+}
+
+template <class T>
+void cumpleCondicionMayor(const Abin<T> &AbArbol, typename Abin<T>::nodo nd, const T &elto)
+{
+    if (nd != Abint<T>::NODO_NULO)
+    {
+        return AbArbol.elemento(nd) >= elto && cumpleCondicionMayor(AbArbol, AbArbol.hijoDrcho(nd), elto) && cumpleCondicionMayor(AbArbol, AbArbol.hijoDrcho(nd));
+    }
+    else
+    {
+        return true;
+    }
+}
+
+template <class T>
+void podaCumpleCondicionMenorMayorRec(Abin<T> &AbArbol, typename Abin<T>::nodo nd)
+{
+    if (nd != Abin<T>::NODO_NULO)
+    {
+        podaCumpleCondicionMenorMayorRec(AbArbol, AbArbol.hijoIzqdo(nd));
+        podaCumpleCondicionMenorMayorRec(AbArbol, AbArbol.hijoDrcho(nd));
+        T eltoActual = AbArbol.elemento(nd);
+        if (cumpleCondicionMayor(AbArbol, nd, eltoActual) && cumpleCondicionMenor(AbArbol, nd, eltoActual))
+            podaDescendientesNodoAbin(AbArbol, nd);
+    }
+}
+
+template <class T>
+void podaCumpleCondicionMenorMayor(Abin<T> &AbArbol)
+{
+    if (!AbArbol.arbolVacio())
+    {
+        podaCumpleCondicionMenorMayorRec(AbArbol, AbArbol.raiz());
+    }
+}
 
 int main()
 {
