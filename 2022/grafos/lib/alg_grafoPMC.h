@@ -135,6 +135,63 @@ vector<tCoste> Dijkstra(const GrafoP<tCoste> &G,
    return D;
 }
 
+/**
+ *
+ * @brief Desde cualquier origen a un destino concreto, no es hallar el camino.
+ * El algoritmo se considera dado.
+ * Recibe un nodo destino y calcula el camino del resto a este.
+ */
+template <typename tCoste>
+vector<tCoste> DijkstraInverso(const GrafoP<tCoste> &G,
+                               typename GrafoP<tCoste>::vertice destino,
+                               vector<typename GrafoP<tCoste>::vertice> &P)
+// Calcula los caminos de coste mínimo entre destino y todos los
+// vértices del grafo G. En el vector D de tamaño G.numVert()
+// devuelve estos costes mínimos y P es un vector de tamaño
+// G.numVert() tal que P[i] es el último vértice del camino
+// de destino a i.
+{
+   typedef typename GrafoP<tCoste>::vertice vertice;
+   vertice v, w; // v es el vertice actual a optimizar y w es el nodo que estamos usando para optimizar
+   const size_t n = G.numVert();
+   vector<bool> S(n, false); // Conjunto de vértices vacío.
+   vector<tCoste> D;         // Costes mínimos desde destino.
+
+   // Iniciar D y P con caminos directos desde el vértice destino.
+   D = G[destino];                  // Mete los nodos adyacentes del destino en D, guardamos los adyacentes al destino
+   D[destino] = 0;                  // Coste destino-destino es 0.
+   P = vector<vertice>(n, destino); // Se pone para que si existe un camino directo se mantenga
+
+   // Calcular caminos de coste mínimo hasta cada vértice.
+   S[destino] = true; // Incluir vértice destino en S.
+   for (size_t i = 1; i <= n - 2; i++)
+   {
+      // Seleccionar vértice w no incluido en S
+      // con menor coste desde destino.
+      tCoste costeMin = GrafoP<tCoste>::INFINITO;
+      for (v = 0; v < n; v++)
+         if (!S[v] && D[v] <= costeMin)
+         {
+            costeMin = D[v];
+            w = v;
+         }
+      S[w] = true; // Incluir vértice w en S.
+      // Recalcular coste hasta cada v no incluido en S a través de w.
+      for (v = 0; v < n; v++)
+         if (!S[v]) // S mantiene lps ya visitados
+         {
+            // tCoste Owv = suma(D[w], G[w][v]);//Coste de Origen a V pasando por w
+            tCoste VwD = suma(G[v][w], D[v]); // Si la suma no supera lo metemos
+            if (VwD < D[v])
+            {
+               D[v] = VwD;
+               P[v] = w;
+            }
+         }
+   }
+   return D;
+}
+
 template <typename tCoste>
 vector<tCoste> DijkstraInv_(const GrafoP<tCoste> &G, typename GrafoP<tCoste>::vertice destino, vector<typename GrafoP<tCoste>::vertice> &P)
 {
