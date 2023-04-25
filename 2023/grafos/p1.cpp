@@ -1,5 +1,6 @@
 #include <iostream>
-#include "lib/alg_grafoPMC.h"
+#include <list>
+#include "libGrafos/alg_grafoPMC.h"
 using namespace std; // Avoid using std:: ....
 
 /**
@@ -7,9 +8,9 @@ using namespace std; // Avoid using std:: ....
  * usando un grafo ponderado representado mediante listas de adyacencia.
  * */
 template <typename tCoste>
-vector<tCoste> Dijkstra(const GrafoP<tCoste> &G,
-                        typename GrafoP<tCoste>::vertice origen,
-                        vector<typename GrafoP<tCoste>::vertice> &P)
+vector<tCoste> DijkstraAdyacencia(const GrafoP<tCoste> &G,
+                                  typename GrafoP<tCoste>::vertice origen,
+                                  vector<typename GrafoP<tCoste>::vertice> &P)
 // Calcula los caminos de coste mínimo entre origen y todos los
 // vértices del grafo G. En el vector D de tamaño G.numVert()
 // devuelve estos costes mínimos y P es un vector de tamaño
@@ -132,7 +133,63 @@ bool esAciclica(GrafoP<int> &Grafo)
 
 /**
  * Ejercicio 4: Zuelandia
+ * Se necesita hacer un estudio de las distancias mínimas necesarias para viajar entre
+ * dos ciudades cualesquiera de un país llamado Zuelandia.
+ * El problema es sencillo pero hay que tener en cuenta unos pequeños detalles:
+ * a) La orografía de Zuelandia es un poco especial, las carreteras son muy estrechas y
+ * por tanto solo permiten un sentido de la circulación. ==> Se trata de un grafo ponderado dir
+ * b) Actualmente Zuelandia es un país en guerra. Y de hecho hay una serie de ciudades del
+ * país que han sido tomadas por los rebeldes, por lo que no pueden ser usadas para viajar.
+ * c) Los rebeldes no sólo se han apoderado de ciertas ciudades del país, sino que también
+ * han cortado ciertas carreteras, (por lo que estas carreteras no pueden ser usadas).
+ *
+ * d) Pero el gobierno no puede permanecer impasible ante la situación y ha exigido
+ * que absolutamente todos los viajes que se hagan por el país pasen por la capital del mismo,
+ * donde se harán los controles de seguridad pertinentes.
+ * Dadas estas cuatro condiciones, se pide implementar un subprograma que dados
+ * • el grafo (matriz de costes) de Zuelandia en situación normal,
+ * • la relación de las ciudades tomadas por los rebeldes,
+ * • la relación de las carreteras cortadas por los rebeldes
+ * • y la capital de Zuelandia,
+ * calcule la matriz de costes mínimos para viajar entre cualesquiera dos
+ * ciudades zuelandesas en esta situación.
  */
+GrafoP<int> procesaCarreteras(GrafoP<int> GrafoEnPaz, const std::list<std::pair<int, int>> &lCarreterasCortadas)
+{
+    GrafoP<int> GrafoCorregido = GrafoEnPaz;
+    for (auto carretera : lCarreterasCortadas)
+    {
+        GrafoCorregido[carretera.first][carretera.second] = GrafoP<int>::INFINITO;
+    }
+    return GrafoCorregido;
+}
+
+void procesaCiudades(GrafoP<int> &Grafo, std::list<int> lCiudad)
+{
+    // Tenemos que eliminar la fila y la columna
+    for (auto ciudad : lCiudad)
+    {
+        // Eliminamos las filas
+        for (int i = 0; i < Grafo.numVert(); ++i)
+        {
+            Grafo[ciudad][i] = GrafoP<int>::INFINITO;
+            Grafo[i][ciudad] = GrafoP<int>::INFINITO;
+        }
+    }
+}
+
+// Version Sin tener en cuenta que todo pasa por la capital
+template <class T>
+matriz<T> ZuelandiaSinCapital(GrafoP<int> GrafoPaz, std::list<std::pair<int, int>> lCarreteras, std::list<int> lCiudades)
+{
+    GrafoP<int> GrafoCorregido = GrafoPaz;
+    GrafoCorregido = procesaCarreteras(GrafoPaz, lCarreteras);
+    procesaCiudades(GrafoCorregido, lCiudades);
+    // Hacemos floyd
+    matriz<T> matrizCaminosFloyd;
+    matrizCaminosFloyd = Floyd(GrafoCorregido, matrizCaminosFloyd);
+    return matrizCaminosFloyd;
+}
 
 int main()
 {

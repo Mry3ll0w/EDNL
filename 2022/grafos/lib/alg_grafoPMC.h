@@ -260,6 +260,10 @@ camino(typename GrafoP<tCoste>::vertice orig,
    return C;
 }
 
+/**
+ * @brief Aplica Floyd, devolviendo por return la matriz de costes minimos y por parametros
+ * P, la matriz que representa el camino directo entre i y j
+ */
 template <typename tCoste>
 matriz<tCoste> Floyd(const GrafoP<tCoste> &G,
                      matriz<typename GrafoP<tCoste>::vertice> &P)
