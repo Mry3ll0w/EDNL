@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "abb.h"
 #include "arbolbinenla.h"
 #include "agenEnlazado.h"
 using namespace std; // Avoid using std:: ....
@@ -7,65 +8,70 @@ using namespace std; // Avoid using std:: ....
 // Contar numero de nodos del arbol que tienen exactamente 3 nietos
 
 template <class T>
-int contarDescendientesDirectos(typename Abin<T>::nodo nd, Abin<T> &abArbol)
+int profundidadNodoAgen(Agen<T> AgArbol, typename Agen<T>::nodo nd)
 {
-    if (nd == Abin<T>::NODO_NULO)
+    if (nd == AgArbol.raiz())
     {
         return 0;
     }
     else
     {
-        int iNumeroDescendientes = 0;
-        if (abArbol.hijoDrcho(nd) != Abin<T>::NODO_NULO)
+        return 1 + profundidadNodoAgen(AgArbol, AgArbol.padre(nd));
+    }
+}
+
+template <class T>
+void cuentaNietosNodoAgen(Agen<T> AgArbol, typename Agen<T>::nodo nd, int &iNietos, const int iProfundidadNodoDado)
+{
+    if (nd != Agen<T>::NODO_NULO && profundidadNodoAgen(AgArbol, nd) - iProfundidadNodoDado <= 2)
+    {
+        nd = AgArbol.hijoIzqdo(nd);
+
+        while (nd != Agen<T>::NODO_NULO)
         {
-            iNumeroDescendientes++;
+            cuentaNietosNodoAgen(AgArbol, nd, iNietos, iProfundidadNodoDado);
+
+            if (std::abs(profundidadNodoAgen(AgArbol, nd) - iProfundidadNodoDado) == 2)
+                iNietos++;
+
+            nd = AgArbol.hermDrcho(nd);
         }
-
-        if (abArbol.hijoIzqdo(nd) != Abin<T>::NODO_NULO)
-            iNumeroDescendientes++;
-
-        return iNumeroDescendientes;
     }
 }
 
 template <class T>
-bool tiene3nietos(typename Abin<T>::nodo nd, Abin<T> &abArbol)
+void cuentaNodosTresNietosHojasAgen(Agen<T> AgArbol, typename Agen<T>::nodo nd, int &iNodosTresNietosHojas)
 {
-    // hijo izq + hijo der, al ser un bin necesita los 2 hijos para obtener al menos 3 nietos
-    auto ndHijoIzq = abArbol.hijoIzqdo(nd);
-    auto ndHijoDer = abArbol.hijoDrcho(nd);
-    if (ndHijoDer != Abin<T>::NODO_NULO && ndHijoIzq != Abin<T>::NODO_NULO)
+    if (nd != Agen<T>::NODO_NULO)
     {
-        return (contarDescendientesDirectos(ndHijoDer, abArbol) + contarDescendientesDirectos(ndHijoIzq, abArbol)) == 3;
-    }
-    else
-        return false;
-}
+        nd = AgArbol.hijoIzqdo(nd);
 
-template <class T>
-void contar3NietosRec(typename Abin<T>::nodo nd, Abin<T> &abArbol, int &iNumero3Nietos)
-{
-    if (nd != Abin<T>::NODO_NULO)
-    {
-        contar3NietosRec(abArbol.hijoIzqdo(nd), abArbol, iNumero3Nietos);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            cuentaNodosTresNietosHojasAgen(AgArbol, nd, iNodosTresNietosHojas);
 
-        if (tiene3nietos(nd, abArbol))
-            iNumero3Nietos++;
+            int iNumeroNietos = 0, iProfundidadNodoDado = profundidadNodoAgen(AgArbol, nd);
 
-        contar3NietosRec(abArbol.hijoDrcho(nd), abArbol, iNumero3Nietos);
+            cuentaNietosNodoAgen(AgArbol, nd, iNumeroNietos, iProfundidadNodoDado);
+
+            if (iNumeroNietos == 3 || AgArbol.hijoIzqdo(nd) == Agen<T>::NODO_NULO) // 3 nietos u hoja
+                iNodosTresNietosHojas++;
+
+            nd = AgArbol.hermDrcho(nd);
+        }
     }
 }
 
 template <class T>
-int contar3Nietos(Abin<T> abArbol)
+int numNodos3NietosHojasAgen(Agen<T> AgArbol)
 {
-    if (abArbol.arbolVacio())
+    if (AgArbol.arbolVacio())
         return 0;
     else
     {
-        int iNumero3Nietos = 0;
-        contar3NietosRec(abArbol.raiz(), abArbol, iNumero3Nietos);
-        return iNumero3Nietos;
+        int iNodos3NietosHojas = 0;
+        cuentaNodosTresNietosHojasAgen(AgArbol, AgArbol.raiz(), iNodos3NietosHojas);
+        return iNodos3NietosHojas;
     }
 }
 
@@ -232,7 +238,7 @@ void cuentaNietosYBisnietos(const Agen<T> AgArbol, typename Agen<T>::nodo nd, co
             if (iDifProfundidad == 3)
                 iBisNietos++;
 
-            nd = AgArbol.hermDrcho(AgArbol, nd, iProfundidadOriginal, iNietos);
+            nd = AgArbol.hermDrcho(nd);
         }
     }
 }
@@ -345,6 +351,56 @@ int cuentaNostalgicosAbin(Abin<T> AbArbol)
         cuentaNostalgicosRec(AbArbol, AbArbol.raiz(), iNostalgicos);
         return iNostalgicos;
     }
+}
+
+/**
+ * Examen Infimo y Supremo.
+ * Infimo es el menor elemento de A <= X, siendo A el Abb
+ * Supremo es el mayor elemento de A < X, siendo A el Abb
+ */
+
+int infimoAbb(Abb<int> AbbArbol, const int &iX, int &iInfimo)
+{
+    if (AbbArbol.elemento() == iX)
+    {
+        iInfimo = AbbArbol.elemento();
+    }
+    else
+    {
+        if (AbbArbol.elemento() < iX)
+        {
+            iInfimo = std::max(iInfimo, AbbArbol.elemento()); // Sabiendo que es menor no va a sobre pasar a x
+            infimoAbb(AbbArbol.izqdo(), iX, iInfimo);
+        }
+
+        if (AbbArbol.elemento() > iX)
+        {
+            infimoAbb(AbbArbol.drcho(), iX, iInfimo);
+        }
+    }
+    return iInfimo;
+}
+
+int supremoAbb(Abb<int> AbbArbol, const int &iX, int &iSupremo)
+{
+    if (AbbArbol.elemento() == iX)
+    {
+        iSupremo = AbbArbol.elemento();
+    }
+    else
+    {
+        if (AbbArbol.elemento() > iX)
+        {
+            iSupremo = std::min(iSupremo, AbbArbol.elemento()); // Ya que sabemos que el elemento actual supera a iX
+            supremoAbb(AbbArbol.izqdo(), iX, iSupremo);
+        }
+
+        if (AbbArbol.elemento() < iX)
+        {
+            supremoAbb(AbbArbol.drcho(), iX, iSupremo);
+        }
+    }
+    return iSupremo;
 }
 
 int main()
