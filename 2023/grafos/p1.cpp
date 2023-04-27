@@ -191,6 +191,32 @@ matriz<T> ZuelandiaSinCapital(GrafoP<int> GrafoPaz, std::list<std::pair<int, int
     return matrizCaminosFloyd;
 }
 
+template <class T>
+matriz<T> ZuelandiaConCapital(GrafoP<T> GrafoPaz, std::list<std::pair<int, int>> lCarreteras, std::list<int> lCiudades,
+                              const int &iCapital)
+{
+    GrafoP<int> GrafoCorregido = GrafoPaz;
+    GrafoCorregido = procesaCarreteras(GrafoPaz, lCarreteras);
+    procesaCiudades(GrafoCorregido, lCiudades);
+    matriz<T> MatrizCaminosMinimos;
+    // Creamos la matriz de costes minimos yendo desde la desde i hacia capital y capital hacia j
+    for (int i = 0; i < GrafoCorregido.numVert(); ++i)
+    {
+        std::vector<T> vOCapital, vCapitalD, P;
+        vOCapital = Dijkstra(GrafoCorregido, i, P);
+        vCapitalD = DijsktraInverso(GrafoCorregido, iCapital, P);
+        for (int j = 0; j < GrafoCorregido.numVert(); ++j)
+        {
+            // El viaje es lo que vale ir desde origen a capital y de capital al destino
+            if (i != j)
+                MatrizCaminosMinimos[i][j] = vOCapital[i] + vCapitalD[j];
+            // Corregimos cuanto vale ir a si mismo => Siempre 0
+        }
+        MatrizCaminosMinimos[i][i] = 0;
+    }
+    return MatrizCaminosMinimos;
+}
+
 int main()
 {
 
