@@ -82,7 +82,36 @@ GrafoP<T> colocaParedes(GrafoP<T> GrafoLaberinto, std::list<pair<T, T>> lpParede
     return GrafoCorregido
 }
 
+// No termino de entender como implementar el concepto de moverse en diagonal ==> Procesando los diagonales?
 
+template <class T>
+pair<int, std::vector<T>> longitudCamino(GrafoP<T> GrafoLaberinto, std::list<pair<T, T>> lpParedes, const T &origen, const T &destino)
+{
+    // Add paredes de laberinto
+    GrafoP<T> GrafoCorregido = colocaParedes(GrafoLaberinto, lpParedes);
+
+    // Hallamos el camino minimo
+    std::vector<T> vCaminoDijkstra, vCostesMinimos;
+
+    vCostesMinimos = Dijkstra(GrafoCorregido, vCaminoDijkstra);
+
+    int iIterador = destino;
+    std::vector<T> vCaminoMinimo;
+    vCaminoMinimo.insert(vCaminoMinimo.begin(), iDestino);
+    while (iIterador != origen)
+    {
+        vCaminoMinimo.insert(vCaminoMinimo.begin(), iIterador);
+        iIterador = vCaminoDijkstra[iIterador];
+    }
+    // Calculamos ahora el coste total del camino (entiendo que eso es la longitud)
+    int iLongitud = 0;
+    for (auto i : vCaminoMinimo)
+    {
+        iLongitud += i;
+    }
+
+    return make_pair(iLongitud, vCaminoMinimo);
+}
 
 int main()
 {
