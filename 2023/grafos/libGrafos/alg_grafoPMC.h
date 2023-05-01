@@ -151,7 +151,7 @@ vector<tCoste> DijsktraInverso(const GrafoP<tCoste> &G,
 // G.numVert() tal que P[i] es el último vértice del camino
 // de destino a i.
 {
-   typedef typenamtemplatee GrafoP<tCoste>::vertice vertice;
+   typedef typename GrafoP<tCoste>::vertice vertice;
    vertice v, w; // v es el vertice actual a optimizar y w es el nodo que estamos usando para optimizar
    const size_t n = G.numVert();
    vector<bool> S(n, false); // Conjunto de vértices vacío.
