@@ -34,7 +34,19 @@ pair<T, T> otravezunGrafoMasCaro(matriz<T> MatrizCostes)
             {
                 for (int j = 0; j < MatrizCostes.dimension(); j++)
                 {
-                    MatrizCaminosMaximos[i][j] = max(MatrizCaminosMaximos[i][j], MatrizCaminosMaximos[i][k] + MatrizCaminosMaximos[k][j]);
+                    int iElementoIJ = MatrizCaminosMaximos[i][j];
+                    int iElementoIK = MatrizCaminosMaximos[i][k];
+                    int iElementoKJ = MatrizCaminosMaximos[k][j];
+
+                    if (iElementoIJ == std::GrafoP<T>::INFINITO)
+                        iElementoIJ = -1;
+                    if (iElementoIK == std::GrafoP<T>::INFINITO)
+                        iElementoIK = -1;
+                    if (iElementoKJ == std::GrafoP<T>::INFINITO)
+                        iElementoKJ = -1;
+
+                    // Es necesario controlar los numeros infinitos
+                    MatrizCaminosMaximos[i][j] = max(iElementoIJ, suma(iElementoIK, iElementoKJ));
                 }
             }
         }
@@ -71,47 +83,146 @@ pair<T, T> otravezunGrafoMasCaro(matriz<T> MatrizCostes)
  * Calcule el camino más corto para ir de la entrada a la salida y su longitud.
  */
 
-template <class T>
-GrafoP<T> colocaParedes(GrafoP<T> GrafoLaberinto, std::list<pair<T, T>> lpParedes)
+// No se puede pasar directamente el grafo, hay que construirlo
+
+//! El laberinto tiene n nodos * nfilas ==> La matriz de coste es de n^2 * n^2, ya
+//! que si hay n2 nodos es de n4 casillas
+//! No nos dan matriz de costes, hay que crearla
+
+// Las casillas tienen un par de casillas
+struct Casilla
 {
-    GrafoP<T> GrafoCorregido = GrafoLaberinto;
-    for (auto pared : lpParedes)
-    {
-        GrafoCorregido[pared.first][pared.second] = GrafoP<T>::INFINITO; // INFINITO
-    }
-    return GrafoCorregido
+    int iFila;
+    int iColumna;
+};
+
+struct Pared
+{
+    // Las 2 paredes que delimitan
+    Casilla c1, c2;
+};
+
+// Comprueba si las casillas son adyacentes, controla el movimiento, solo es
+// Adyacente si esta dentro del movimiento permitido
+bool sonAdyacentes(Casilla c1, Casilla c2)
+{
+    return std::abs(c1.iFila - c2.iFila + c1.iColumna - c2.iColumna) == 1; // Cuando difieren en 1
 }
 
-// No termino de entender como implementar el concepto de moverse en diagonal ==> Procesando los diagonales?
+// Tenemos que comprobar que los nodos del grafo son adyacentes, por lo que pasamos
+// de casilla a nodo.
+template <class T>
+Casilla NodoToCasilla(const int iNumNodo, const int n)
+{
+    Casilla c;
+    c.iFila = iNumNodo / (n - 1);
+    c.iColumna = iNumNodo & (n - 1);
+    return c;
+}
+
+// Rellena la matriz de coste que representa al grafo
+template <class T>
+matriz<T> construyeMatrizCoste(const int &n)
+{
+    // Solo hay 3 valores 0, 1, infinito
+    matriz<T> MatrizCoste(n * n);
+    const int iCasillas = n * n;
+    for (size_t i = 0; i < iCasillas; ++i)
+    {
+        for (size_t j = 0; j < iCasillas; ++j)
+        {
+            if (i == j)
+            {
+                MatrizCoste[i][j] = 0;
+            }
+            else if (sonAdyacentes(nodoToCasilla(i, n), nodoToCasilla(j, n))) // Son adyacentes
+            {
+                MatrizCoste[i][j] = 1;
+            }
+            else
+            {
+                MatrizCoste[i][j] = GrafoP<T>::INFINITO;
+            }
+        }
+    }
+}
+
+// Pasar de casilla a nodo
+
+int CasillaToNodo(const Casilla &c, const int &n)
+{
+    return (c.iFila * n + c.iColumna);
+}
+
+// Colocamos las paredes
 
 template <class T>
-pair<int, std::vector<T>> longitudCamino(GrafoP<T> GrafoLaberinto, std::list<pair<T, T>> lpParedes, const T &origen, const T &destino)
+void colocaParedes(matriz<T> &MatrizCoste, const int &n, std::list<Pared> lParedes)
 {
-    // Add paredes de laberinto
-    GrafoP<T> GrafoCorregido = colocaParedes(GrafoLaberinto, lpParedes);
-
-    // Hallamos el camino minimo
-    std::vector<T> vCaminoDijkstra, vCostesMinimos;
-
-    vCostesMinimos = Dijkstra(GrafoCorregido, vCaminoDijkstra);
-
-    int iIterador = destino;
-    std::vector<T> vCaminoMinimo;
-    vCaminoMinimo.insert(vCaminoMinimo.begin(), iDestino);
-    while (iIterador != origen)
+    // Para saber donde colocar la pared hay que pasar de casilla a nodo
+    for (auto i : lParedes)
     {
-        vCaminoMinimo.insert(vCaminoMinimo.begin(), iIterador);
-        iIterador = vCaminoDijkstra[iIterador];
+        int p1 = CasillaToNodo(i.c1, n), p2 = CasillaToNodo(i.c2, n);
+        MatrizCoste[p1][p2] = std::GrafoP<T>::INFINITO;
+        MatrizCoste[p2][p1] = std::GrafoP<T>::INFINITO;
     }
-    // Calculamos ahora el coste total del camino (entiendo que eso es la longitud)
-    int iLongitud = 0;
-    for (auto i : vCaminoMinimo)
-    {
-        iLongitud += i;
-    }
-
-    return make_pair(iLongitud, vCaminoMinimo);
 }
+
+// Ahora tenemos la matriz de costes, tenemos que tratar el origen y destino, con Dijkstra
+//  se acepta el camino como lo que deveulve Dijkstra
+//  en este caso hay que pasar el camino de Nodos a casillas, ya que el camino de Dijkstra
+//  es un vector de caminos de Nodos no casillas
+
+template <class T>
+std::vector<Casilla> caminoMasCorto(Casilla CasillaSalida, Casilla Destino, const int &n, std::list<Pared> lParedes)
+{
+    // Construimos la matriz de costes
+    matriz<T> MatrizCoste = construyeMatrizCoste(n);
+
+    // Colocamos la paredes
+    colocaParedes(MatrizCoste, n, lParedes);
+
+    int NodoOrigen = CasillaToNodo(CasillaSalida, n);
+    int NodoDestino = CasillaToNodo(Destino, n);
+
+    // Hacemos Dijsktra al grafo con los nodos de origen y destino
+
+    GrafoP<T> GrafoLaberinto = MatrizCoste;
+    std::vector<T> P; // Vector de camino en NODOS
+    Dijkstra(GrafoLaberinto, NodoOrigen, P);
+
+    // Camino mas corto ==> En P se almacena el camino, por lo que hacemos el camino reverso
+    // pasandolo a casillas
+
+    std::vector<Casilla> vCaminoCasillas;
+
+    int i = Destino;
+    while (i != NodoOrigen)
+    {
+        vCaminoCasillas.insert(vCaminoCasillas.begin(), NodoToCasilla(i, n));
+        i = P[i];
+    }
+
+    return vCaminoCasillas;
+}
+
+/**
+ * Eres el orgulloso dueño de una empresa de distribución. Tu misión radica en distribuir todo tu stock entre las diferentes ciudades en las que tu empresa dispone de almacén.
+ * Tienes un grafo representado mediante la matriz de costes, en el que aparece el coste (por unidad de producto) de transportar los productos entre las diferentes ciudades del grafo.
+ * Pero además resulta que los Ayuntamientos de las diferentes ciudades en las que tienes almacén están muy interesados en que almacenes tus productos en ellas, por lo que están dispuestos a subvencionarte con un porcentaje de los gastos mínimos de transporte hasta la ciudad.
+ * Para facilitar el problema, consideraremos despreciables los costes de volver el camión a su base (centro de producción).
+ * He aquí tu problema. Dispones de
+ *  el centro de producción, nodo origen en el que tienes tu producto (no tiene almacén),
+ *  una cantidad de unidades de producto (cantidad),
+ *  la matriz de costes del grafo de distribución con N ciudades,
+ *  la capacidad de almacenamiento de cada una de ellas,
+ *  el porcentaje de subvención (sobre los gastos mínimos) que te ofrece cada
+ * Ayuntamiento.
+ * Las diferentes ciudades (almacenes) pueden tener distinta capacidad, y además la
+ * capacidad total puede ser superior a la cantidad disponible de producto, por lo que debes decidir cuántas unidades de producto almacenas en cada una de las ciudades.
+ * Debes tener en cuenta además las subvenciones que recibirás de los diferentes Ayuntamientos, las cuales pueden ser distintas en cada uno y estarán entre el 0% y el 100% de los costes mínimos.
+ * La solución del problema debe incluir las cantidades a almacenar en cada ciudad bajo estas condiciones y el coste mínimo total de la operación de distribución para tu empresa.
+ */
 
 int main()
 {
