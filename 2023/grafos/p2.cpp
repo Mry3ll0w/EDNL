@@ -207,10 +207,15 @@ std::vector<Casilla> caminoMasCorto(Casilla CasillaSalida, Casilla Destino, cons
 }
 
 /**
- * Eres el orgulloso dueño de una empresa de distribución. Tu misión radica en distribuir todo tu stock entre las diferentes ciudades en las que tu empresa dispone de almacén.
- * Tienes un grafo representado mediante la matriz de costes, en el que aparece el coste (por unidad de producto) de transportar los productos entre las diferentes ciudades del grafo.
- * Pero además resulta que los Ayuntamientos de las diferentes ciudades en las que tienes almacén están muy interesados en que almacenes tus productos en ellas, por lo que están dispuestos a subvencionarte con un porcentaje de los gastos mínimos de transporte hasta la ciudad.
- * Para facilitar el problema, consideraremos despreciables los costes de volver el camión a su base (centro de producción).
+ * Eres el orgulloso dueño de una empresa de distribución. Tu misión radica en distribuir
+ * todo tu stock entre las diferentes ciudades en las que tu empresa dispone de almacén.
+ * Tienes un grafo representado mediante la matriz de costes, en el que aparece el coste
+ * (por unidad de producto) de transportar los productos entre las diferentes ciudades del grafo.
+ * Pero además resulta que los Ayuntamientos de las diferentes ciudades en las que tienes almacén
+ * están muy interesados en que almacenes tus productos en ellas, por lo que están dispuestos a
+ * subvencionarte con un porcentaje de los gastos mínimos de transporte hasta la ciudad.
+ * Para facilitar el problema, consideraremos despreciables los costes de volver el camión a su
+ * base (centro de producción).
  * He aquí tu problema. Dispones de
  *  el centro de producción, nodo origen en el que tienes tu producto (no tiene almacén),
  *  una cantidad de unidades de producto (cantidad),
@@ -219,9 +224,169 @@ std::vector<Casilla> caminoMasCorto(Casilla CasillaSalida, Casilla Destino, cons
  *  el porcentaje de subvención (sobre los gastos mínimos) que te ofrece cada
  * Ayuntamiento.
  * Las diferentes ciudades (almacenes) pueden tener distinta capacidad, y además la
- * capacidad total puede ser superior a la cantidad disponible de producto, por lo que debes decidir cuántas unidades de producto almacenas en cada una de las ciudades.
- * Debes tener en cuenta además las subvenciones que recibirás de los diferentes Ayuntamientos, las cuales pueden ser distintas en cada uno y estarán entre el 0% y el 100% de los costes mínimos.
- * La solución del problema debe incluir las cantidades a almacenar en cada ciudad bajo estas condiciones y el coste mínimo total de la operación de distribución para tu empresa.
+ * capacidad total puede ser superior a la cantidad disponible de producto, por lo que debes
+ * decidir cuántas unidades de producto almacenas en cada una de las ciudades.
+ * Debes tener en cuenta además las subvenciones que recibirás de los diferentes Ayuntamientos,
+ * las cuales pueden ser distintas en cada uno y estarán entre el 0% y el 100% de los costes
+ * mínimos.
+ * La solución del problema debe incluir las cantidades a almacenar en cada ciudad bajo estas
+ * condiciones y el coste mínimo total de la operación de distribución para tu empresa.
+ *
+ * Datos que recibes:
+ * Grafo/Matriz de costes
+ * Vector de subvenciones
+ *
+ * Notas:
+ *
+ * Comprobar como aplicar subvenciones, es decir, todos las ciudades, hay que aplicar la
+ * subvencion sobre los costes minimos
+ *
+ * SOLO APLICAR Dijsktra inverso cuando aparecen grafos dirigidos, es decir, si el camino
+ * de ida puede ser distinto al de vuelta, en este caso la vuelta no es relevante implica
+ * que vale lo mismo que la ida ==> Se aplica salvo que ocurra eso.
+ */
+
+// 1 aplicar subveciones a costes minimos de dijsktra
+
+template <class T>
+matriz<T> aplicarSubvenciones(matriz<T> grafo, vector<T> subvencionCiudades)
+{
+}
+
+// Vaciado de almacenes en los que toque
+//  hay que llenar el almacen antes de pasar al siguiente
+
+/**
+ * Problema 5:Se dispone de tres grafos que representan la matriz de costes para viajes en un
+ * determinado país pero por diferentes medios de transporte, por supuesto todos los grafos
+ * tendrán el mismo número de nodos. El primer grafo representa los costes de ir por
+ * carretera, el segundo en tren y el tercero en avión. Dado un viajero que dispone
+ * de una determinada cantidad de dinero, que es alérgico a uno de los tres medios de
+ * transporte, y que sale de una ciudad determinada, implementar un subprograma que
+ * determine las ciudades a las que podría llegar nuestro infatigable viajero.
+ *
+ * Notas:
+ *  Los trasbordos se pueden hacer
+ *  Requiere crear una combinacion entre grafos,
+ *  Hay un Origen => No se hace Floyd
+ *
+ * 1) Se crea el grafo con los minimos de cada grafo M[i,j] = min(M1[i,j], M2[i,j])
+ */
+
+template <class T>
+matriz<T> combinacionTransportes(const GrafoP<T> &g1, const GrafoP<T> &g2)
+{
+    matriz<T> MatrizResultado(g1.numVert());
+    for (int i = 0; i < g1.numVert(); ++i)
+    {
+        for (int j = 0; j < g1.numVert(); ++j)
+        {
+            MatrizResultado[i][j] = std::min(g1[i][j], g2[i][j]);
+        }
+    }
+    return MatrizResultado;
+}
+
+template <class T>
+std::vector<T> ciudadesAlcanzables(const GrafoP<T> &GrafoAvion, const GrafoP<T> &GrafoCoche, const GrafoP<T> &GrafoTren, char &alergia, const int &iPresupuesto)
+{
+    GrafoP<T> g1, g2;
+    if (c = 'T')
+    {
+        g1 = GrafoAvion;
+        g2 = GrafoCoche;
+    }
+    else if (c == 'C')
+    {
+        g1 = GrafoAvion;
+        g2 = GrafoTren;
+    }
+    else
+    {
+        g1 = GrafoCoche;
+        g2 = GrafoTren;
+    }
+
+    // Aplico Dijkstra para cer a donde llega
+
+    // Creo la lista con las ciudades a donde llega
+}
+
+/**
+ * Al dueño de una agencia de transportes se le plantea la siguiente situación.
+ * La agencia de viajes ofrece distintas trayectorias combinadas entre N ciudades
+ * españolas utilizando tren y autobús. Se dispone de dos grafos que representan los
+ * costes (matriz de costes) de viajar entre diferentes ciudades, por un lado en tren, y
+ *  por otro en autobús (por supuesto entre las ciudades que tengan línea directa entre ellas).
+ * Además coincide que los taxis de toda España se encuentran en estos momentos en huelga general,
+ * lo que implica que sólo se podrá cambiar de transporte en una ciudad determinada en la que,
+ * por casualidad, las estaciones de tren y autobús están unidas.
+ * Implementa una función que calcule la tarifa mínima (matriz de costes mínimos) de viajar
+ * entre cualesquiera de las N ciudades disponiendo del grafo de costes en autobús, del grafo
+ * de costes en tren, y de la ciudad que tiene las estaciones unidas.
+ *
+ *  1) Floyd a ambas matrices originales => Minimizamos ir hasta el cambio
+ *  2) Obtenemos la suma del cambio
+ */
+
+template <typename tCoste>
+matriz<tCoste> tarifa_minima(typename GrafoP<tCoste>::vertice cambio,
+                             const GrafoP<tCoste> &tren,
+                             const GrafoP<tCoste> &autobus)
+{
+    typedef typename GrafoP<tCoste>::vertice vertice;
+    const size_t N = tren.numVert();
+
+    matriz<vertice> P;
+    // Obtenemos los mejores costes de viajar por cada uno
+    // de los medios dados
+    auto tren_floyd = Floyd(tren, P);
+    auto autobus_floyd = Floyd(autobus, P);
+
+    matriz<tCoste> tarifa(N);
+
+    // Para cada ruta i->j, obtenemos qué viaje es mejor:
+    // - viajar únicamente en tren
+    // - viajar únicamente en bús
+    // - viajar en tren, cambiar, y después en bús
+    // - viajar en bís, cambiar, y después en tren
+    for (vertice i = 0; i < N; i++)
+        for (vertice j = 0; j < N; j++)
+            tarifa[i][j] = std::min({
+                tren_floyd[i][j],
+                autobus_floyd[i][j],
+                suma(autobus_floyd[i][cambio], tren_floyd[cambio][j]), // Para que sirve esa suma
+                suma(tren_floyd[i][cambio], autobus_floyd[cambio][j]),
+            });
+
+    return tarifa;
+}
+
+/**
+ * Problema 6:
+ * Se dispone de dos grafos (matriz de costes) que representan los costes de viajar entre N
+ * ciudades españolas utilizando el tren (primer grafo) y el autobús (segundo grafo).
+ * Ambos grafos representan viajes entre las mismas N ciudades.
+ * Nuestro objetivo es hallar el camino de coste mínimo para viajar entre dos ciudades
+ * concretas del grafo, origen y destino, en las siguientes condiciones:
+ *  La ciudad origen sólo dispone de transporte por tren.
+ *  La ciudad destino sólo dispone de transporte por autobús.
+ *  El sector del taxi, bastante conflictivo en nuestros problemas, sigue en huelga,
+ * por lo que únicamente es posible cambiar de transporte en dos ciudades del grafo,
+ * cambio1 y cambio2, donde las estaciones de tren y autobús están unidas.
+ *
+ * Implementa un subprograma que calcule la ruta y el coste mínimo para viajar entre las
+ * ciudades Origen y Destino en estas condiciones.
+ *
+ * Posibles viajes:
+ * 1) Origen -> cambio1 -> Destino
+ * 2) Origen -> cambio2 -> Destino
+ * Es obligatorio cambiar puesto que el origen solo tiene tren y el destino solo tiene bus
+ *
+ * Pasos
+ * 1) Dijsktra de origen al cambio1 y DijsktraInverso de cambio1 a Destino => Sumo el ambos y tengo el total1
+ * 2) Dijsktra de origen al cambio2 y DijstktraInverso de cambio2 a Destino => "" total2
+ *
  */
 
 int main()
