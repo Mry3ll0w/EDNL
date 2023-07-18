@@ -115,7 +115,7 @@ void eliminarCiudadesTomadas(std::list<int> lCiudadesTomadas, GrafoP<int> &grafo
 {
     for (auto i : lCiudadesTomadas)
     {
-        for (int j : j < grafoZuelandia.numVert())
+        for (int j = 0; j < grafoZuelandia.numVert(); j++)
         {
             // Cortamos desde ir a la ciudad y hacia la ciudad
             grafoZuelandia[i][j] = GrafoP<T>::INFINITO;
@@ -135,19 +135,11 @@ void eliminarCarreterasTomadas(const std::list<std::pair<int, int>> lCarreterasT
 
 template <class T>
 matriz<int> caminosMinimosZuelandia(const matriz<T> &matrizCostes, const std::list<int> lCiudadesTomadas,
-                                    const std::list<std::pair<int, int>> &lCarreterasTomadas, const int &iOrigen,
-                                    const int &iDestino, const int &iCapital)
+                                    const std::list<std::pair<int, int>> &lCarreterasTomadas, const int &iCapital)
 {
     GrafoP<int> grafoZuelandia = matrizCoste2GrafoP(matrizCostes);
     eliminarCarreterasTomadas(lCarreterasTomadas, grafoZuelandia);
     eliminarCiudadesTomadas(lCiudadesTomadas, grafoZuelandia);
-
-    // Comprobamos que el origen/destino no esten en ciudades tomadas
-    for (auto i : lCiudadesTomadas)
-    {
-        if (i == iOrigen || i == iDestino)
-            return GrafoP<int>::INFINITO;
-    }
 
     // Si no lo esta calculamos los costes minimos
     matriz<T> matrizCostesMinimos(grafoZuelandia.numVert());
@@ -164,6 +156,222 @@ matriz<int> caminosMinimosZuelandia(const matriz<T> &matrizCostes, const std::li
         }
     }
     return matrizCostesMinimos;
+}
+
+/**
+ * Ejercicio 1 P2 Grafos
+ * Tu agencia de viajes “OTRAVEZUNGRAFO S.A.” se enfrenta a un curioso cliente. Es un personaje sorprendente, no le importa el dinero
+ * y quiere hacer el viaje más caro posible entre las ciudades que ofertas.
+ * Su objetivo es gastarse la mayor cantidad de dinero posible (ojalá todos los clientes fueran así), no le importa el origen
+ * ni el destino del viaje.
+ * Sabiendo que es imposible pasar dos veces por la misma ciudad, ya que casualmente el grafo de tu agencia de ==> Recibo un grafo
+ * viajes resultó ser acíclico, devolver el coste, origen y destino de tan curioso viaje.
+ * Se parte de la matriz de costes directos entre las ciudades del grafo.
+ *
+ * Simplemente modificamos el algoritmo de Floyd para poder realizar viajes con coste maximo
+ */
+
+std::pair<int, int> viajeMasCaro(GrafoP<int> grafo)
+{
+    for (int i = 0; i < grafo.numVert(); ++i)
+    {
+        grafo[i][i] = 0;
+    }
+    for (int k = 0; k < grafo.numVert(); k++)
+    {
+        for (int i = 0; i < grafo.numVert(); i++)
+        {
+            for (int j = 0; j < 0; j++)
+            {
+                grafo[i][j] = std::max(grafo[i][j], suma(grafo[i][k], grafo[k][j]));
+            }
+        }
+    }
+}
+
+/**
+ * LABERINTO, suele caer en examenes variantes de 2 dimensiones y 3 dimensiones
+ *
+ * Se dispone de un laberinto de NxN casillas del que se conocen las casillas de entrada y salida del mismo.
+ * Si te encuentras en una casilla sólo puedes moverte en las siguientes cuatro direcciones
+ * (arriba, abajo, derecha, izquierda).
+ * Por otra parte, entre algunas de las casillas hay una pared que impide moverse entre las dos casillas
+ * que separa dicha pared (en caso contrario no sería un verdadero laberinto).
+ * Implementa un subprograma que dados
+ * · N (dimensión del laberinto),
+ * · la lista de paredes del laberinto,
+ * · la casilla de entrada, y
+ * · la casilla de salida,
+ *
+ * Calcule el camino más corto para ir de la entrada a la salida y su longitud.
+ *
+ * 1) Crear la matriz de costes, ya que nos dan un grafo laberinto, n por n casillas, siendo la matriz de coste
+ * asociada de n^2 * n^2 casillas
+ *
+ * 2) Calcular los costes de moverse entre casillas teniendo en cuenta lo anterior
+ *
+ * 3) Hacer Dijkstra para ir de la casilla Origen a la casilla de Destino
+ *
+ * 4) Por el camino vamos a necesitar multiples funciones de apoyo para irnos moviendo en el laberinto
+ *
+ */
+
+// Las casillas tienen un par de casillas struct Casilla
+struct Casilla
+{
+    int iFila;    //* Posicion X en el laberinto
+    int iColumna; //* Posicion Y en el laberinto
+};
+
+// Representa la pared que delimita el movimiento entre 2 casillas
+struct Pared
+{
+    //* Las 2 paredes que delimitan
+    Casilla c1, c2;
+};
+
+// Comprueba si las casillas son adyacentes, controla el movimiento, solo es
+// Adyacente si esta dentro del movimiento permitido, haciendo asi que se limiten los movimientos de Dijkstra.
+bool sonAdyacentes(Casilla c1, Casilla c2)
+{
+    return std::abs(c1.iFila - c2.iFila + c1.iColumna - c2.iColumna) == 1; // Cuando difieren en 1
+}
+
+// Tenemos que comprobar que los nodos del grafo son adyacentes, por lo que pasamos
+// de casilla a nodo.
+template <class T>
+Casilla NodoToCasilla(const int iNumNodo, const int n)
+{
+    Casilla c;
+    c.iFila = iNumNodo / (n - 1);
+    c.iColumna = iNumNodo & (n - 1);
+    return c;
+}
+
+// Rellena la matriz de coste que representa al grafo
+template <class T>
+GrafoP<T> construyeMatrizCoste(const int &n)
+{
+    // Solo hay 3 valores 0, 1, infinito para que Dijkstra cuente el numero de movimientos como coste para la matriz.
+    GrafoP<T> MatrizCoste(n * n);
+    const int iCasillas = n * n;
+    for (size_t i = 0; i < iCasillas; ++i)
+    {
+        for (size_t j = 0; j < iCasillas; ++j)
+        {
+            if (i == j)
+            {
+                MatrizCoste[i][j] = 0;
+            }
+            else if (sonAdyacentes(nodoToCasilla(i, n), nodoToCasilla(j, n))) // Son adyacentes
+            {
+                MatrizCoste[i][j] = 1;
+                //* Solo permitimos el movimiento si 2 casillas son adyacentes, por lo que i y j representan nodos de la matriz
+            }
+            else
+            {
+                MatrizCoste[i][j] = GrafoP<T>::INFINITO;
+            }
+        }
+    }
+}
+
+// Pasar de casilla a nodo, necesitamos esta funcion para la colocacion de las paredes del laberinto
+// puesto que la lista de paredes son representadas por elementos con las 2 casillas que limitan,
+// teniendo que pasar de casilla del laberinto a nodo de la matriz de costes.
+
+int CasillaToNodo(const Casilla &c, const int &n)
+{
+    return (c.iFila * n + c.iColumna);
+}
+
+// Colocamos las paredes
+
+template <class T>
+void colocaParedes(GrafoP<T> &MatrizCoste, const int &n, std::list<Pared> lParedes)
+{
+    // Para saber donde colocar la pared hay que pasar de casilla a nodo
+    for (auto i : lParedes)
+    {
+        int p1 = CasillaToNodo(i.c1, n), p2 = CasillaToNodo(i.c2, n);
+        MatrizCoste[p1][p2] = std::GrafoP<T>::INFINITO;
+        MatrizCoste[p2][p1] = std::GrafoP<T>::INFINITO;
+    }
+}
+
+template <class T>
+std::pair<int, std::vector<Casilla>> caminoMasCortoLaberinto2D(const int &iDimensionLaberinto, const Casilla &casillaEntrada,
+                                                               const Casilla &casillaSalida, std::list<Pared> lParedes)
+{
+    GrafoP<T> matrizCoste(iDimensionLaberinto);
+    matrizCoste = construyeMatrizCoste(iDimensionLaberinto);
+    colocaParedes(matrizCoste, iDimensionLaberinto, lParedes);
+
+    // Pasamos las casillas Origen y destino a su forma de nodo de la matriz para aplicarles Dijkstra
+    auto nodoOrigen = CasillaToNodo(casillaEntrada, iDimensionLaberinto);
+    auto nodoDestino = CasillaToNodo(casillaSalida, iDimensionLaberinto);
+    std::vector<T> P;
+    std::vector<T> aCostesMinimos = (matrizCoste, nodoOrigen, P);
+    // Hallamos el camino
+    int i = nodoDestino;
+    std::vector<Casilla> aCamino;
+    while (i != nodoOrigen)
+    {
+        aCamino.push_back(NodoToCasilla(i, iDimensionLaberinto));
+        i = P[i];
+    }
+
+    return std::make_pair(aCostesMinimos[nodoDestino], aCamino);
+}
+
+/**
+ * Problema 3 Practica 2 Grafos
+ *
+ * 3. Eres el orgulloso dueño de una empresa de distribución. Tu misión radica en distribuir todo tu stock entre las diferentes ciudades
+ * en las que tu empresa dispone de almacén.
+ * Tienes un grafo representado mediante la matriz de costes, en el que aparece el coste (por unidad de producto) de transportar los
+ * productos entre las diferentes ciudades del grafo. ==> Tengo matriz de costes bidimensional
+ * Pero además resulta que los Ayuntamientos de las diferentes ciudades en las que tienes almacén están muy interesados en que
+ * almacenes tus productos en ellas, por lo que están dispuestos a subvencionarte con un porcentaje de los gastos mínimos de
+ * transporte hasta la ciudad. ==> Lista de ciudades junto con su subvencion correspondiente
+ *
+ * Para facilitar el problema, consideraremos despreciables los costes de volver el camión a su base (centro de producción).
+ * He aquí tu problema.
+ *
+ * Dispones de ==> DATOS CON LOS QUE PARTIMOS
+ * · El centro de producción, nodo origen en el que tienes tu producto (no tiene almacén),
+ * · Una cantidad de unidades de producto (cantidad),
+ * · La matriz de costes del grafo de distribución con N ciudades,
+ * · La capacidad de almacenamiento de cada una de ellas,
+ * · El porcentaje de subvención (sobre los gastos mínimos) que te ofrece cada Ayuntamiento.
+ *
+ * Las diferentes ciudades (almacenes) pueden tener distinta capacidad, y además la capacidad total puede ser superior a
+ * la cantidad disponible de producto, por lo que debes decidir cuántas unidades de producto almacenas en cada una de las ciudades.
+ * Debes tener en cuenta además las subvenciones que recibirás de los diferentes Ayuntamientos, las cuales pueden ser distintas en
+ * cada uno y estarán entre el 0% y el 100% de los costes mínimos.
+ * La solución del problema debe incluir las cantidades a almacenar en cada ciudad bajo estas condiciones y el coste mínimo total
+ * de la operación de distribución para tu empresa.
+ */
+
+template <class T>
+void aplicaSubvenciones(const std::list<std::pair<int, double>> &lCiudadSubvencion, GrafoP<T> &grafo)
+{
+    for (auto oneCity : lCiudadSubvencion)
+    {
+        for (int j = 0; j < grafo.numVert(); j++)
+        {
+            grafo[oneCity.first][j] = grafo[oneCity.first][j] * (1 - oneCity.second);
+            grafo[j][oneCity.first] = grafo[j][oneCity.first] * (1 - oneCity.second);
+        }
+    }
+}
+
+// Algoritmo de reparto en si
+template <class T>
+std::pair<double, std::list<T>> repartoStockCiudades(GrafoP<T> grafoP, int stock, const T &centroProduccion,
+                                                     const std::list<std::pair<int, double>> &lCiudadSubvencion)
+{
+    //! FALTA POR REPARTIR LAS CARGAS
 }
 
 int main()
