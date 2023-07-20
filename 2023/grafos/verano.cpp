@@ -368,10 +368,41 @@ void aplicaSubvenciones(const std::list<std::pair<int, double>> &lCiudadSubvenci
 
 // Algoritmo de reparto en si
 template <class T>
-std::pair<double, std::list<T>> repartoStockCiudades(GrafoP<T> grafoP, int stock, const T &centroProduccion,
+std::pair<double, std::list<T>> repartoStockCiudades(GrafoP<T> grafoCostesCiudad, const std::vector<int> aCapacidacidadCidudad, int stock, const T &centroProduccion,
                                                      const std::list<std::pair<int, double>> &lCiudadSubvencion)
 {
-    //! FALTA POR REPARTIR LAS CARGAS
+    int iDescargas = 0;
+    int stockOriginal = stock;
+    std::vector<int> aCantidadesGuardadasEnCiudad(grafoCostesCiudad.numVert(), 0);
+    aplicaSubvenciones(lCiudadSubvencion, grafo); // Aplicamos a los costes de ir a la ciudad la rebaja del total
+    T &nodoActual = centroProduccion;
+    do
+    {
+        // Calculamos el mejor desde el nodo de produccion
+        std::vector<T> aCostes = Dijkstra(grafoCostesCiudad, nodoActual, std::vector<T>());
+        T nodoMejor = 1; // El siguiente despues de el mismo
+        for (int i = 1; i < aCostes.size(); ++i)
+        {
+            if (aCostes[nodoMejor] > aCostes[i] && aCapacidacidadCidudad[nodoMejor] > 0) // Buscamos el de menor coste
+            {
+                nodoMejor = i;
+            }
+        }
+        // Comprobamos que llegamos con el stock actual
+        if (stock >= aCapacidacidadCidudad[nodoMejor]) // Si llegamos con lo que tenemos repartimos a la ciudad
+        {
+            // Obtenemos cuanto dejamos en esa ciudad
+            stock -= aCapacidacidadCidudad[nodoMejor];
+            aCantidadesGuardadasEnCiudad[nodoMejor] = aCapacidacidadCidudad[nodoMejor];
+            nodoActual = nodoMejor;
+        }
+        else // No llegamos, con lo que tenemos, por lo que dejamos y volvemos al punto inicial
+        {
+            aCantidadesGuardadasEnCiudad[nodoMejor] = stock;
+            stock = 0;
+        }
+        iDescargas++;
+    } while (iDescargas < grafoCostesCiudad.numVert() && stock > 0);
 }
 
 int main()
