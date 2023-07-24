@@ -111,7 +111,7 @@ GrafoP<T> matrizCoste2GrafoP(const matriz<T> &matriz)
 }
 
 template <class T>
-void eliminarCiudadesTomadas(std::list<int> lCiudadesTomadas, GrafoP<int> &grafoZuelandia)
+void eliminarCiudadesTomadas(std::list<T> lCiudadesTomadas, GrafoP<int> &grafoZuelandia)
 {
     for (auto i : lCiudadesTomadas)
     {
@@ -187,6 +187,24 @@ std::pair<int, int> viajeMasCaro(GrafoP<int> grafo)
             }
         }
     }
+    // Hallamos el maximo
+    int maximo, iMax, jMax;
+    maximo = iMax = jMax = 0;
+
+    for (int i = 0; i < grafo.numVert(); ++i)
+    {
+        for (size_t j = 0; j < grafo.numVert(); j++)
+        {
+            if (maximo < grafo[i][j])
+            {
+                maximo = grafo[i][j];
+                iMax = i;
+                jMax = j;
+            }
+        }
+    }
+
+    return std::make_pair(iMax, jMax);
 }
 
 /**
@@ -263,7 +281,7 @@ GrafoP<T> construyeMatrizCoste(const int &n)
             {
                 MatrizCoste[i][j] = 0;
             }
-            else if (sonAdyacentes(nodoToCasilla(i, n), nodoToCasilla(j, n))) // Son adyacentes
+            else if (sonAdyacentes(NodoToCasilla(i, n), NodoToCasilla(j, n))) // Son adyacentes
             {
                 MatrizCoste[i][j] = 1;
                 //* Solo permitimos el movimiento si 2 casillas son adyacentes, por lo que i y j representan nodos de la matriz
@@ -294,8 +312,8 @@ void colocaParedes(GrafoP<T> &MatrizCoste, const int &n, std::list<Pared> lPared
     for (auto i : lParedes)
     {
         int p1 = CasillaToNodo(i.c1, n), p2 = CasillaToNodo(i.c2, n);
-        MatrizCoste[p1][p2] = std::GrafoP<T>::INFINITO;
-        MatrizCoste[p2][p1] = std::GrafoP<T>::INFINITO;
+        MatrizCoste[p1][p2] = GrafoP<T>::INFINITO;
+        MatrizCoste[p2][p1] = GrafoP<T>::INFINITO;
     }
 }
 
@@ -403,6 +421,64 @@ std::pair<double, std::list<T>> repartoStockCiudades(GrafoP<T> grafoCostesCiudad
         }
         iDescargas++;
     } while (iDescargas < grafoCostesCiudad.numVert() && stock > 0);
+}
+
+/**
+ *
+ * El zuelandés es una persona que se toma demasiadas “libertades” en su trabajo,
+ * de hecho, tienes fundadas sospechas de que tus conductores utilizan los camiones de la empresa para usos particulares (es decir indebidos, y a tu costa)
+ * por lo que quieres controlar los kilómetros que recorren tus camiones.
+ *
+ * Todos los días se genera el parte de trabajo, en el que se incluyen el número de cargas de cemento (1 carga = 1 camión lleno de cemento) que
+ * debes enviar a cada cliente (cliente = ciudad de Zuelandia). Es innecesario indicar que no todos los días hay que enviar cargas a todos los clientes,
+ * y además, puedes suponer razonablemente que tu flota de camiones es capaz de hacer el trabajo diario.
+ * Para la resolución del problema quizá sea interesante recordar que Zuelandia es un país cuya especial orografía sólo permite que las carreteras
+ * tengan un sentido de circulación. ==> Grafo Dirigido
+ *
+ * Implementa una función que
+ * dado el grafo con las distancias directas entre las diferentes ciudades zuelandesas,
+ * el parte de trabajo diario, y
+ * la capital de Zuelandia, ==> Desde donde parte el camion (ya sea para carga y/o descarga)
+ * devuelva la distancia total en kilómetros que deben recorrer tus camiones en el día, para que puedas descubrir si
+ * es cierto o no que usan tus camiones en actividades ajenas a la empresa.
+ *
+ * Datos
+ *  1) Grafo Distancias directas entre ciudades
+ *  2) Desde donde salen los camiones
+ *  3) Parte de Trabajo ==> Entiendo que la lista de sitios que tienen que ir en total, asumo que he de calcular la suma total de las distancias
+ *
+ */
+
+template <class T>
+struct ParteTrabajo
+{
+    int iCargas;
+    T &ciudad;
+    ParteTrabajo(cosnt T &c = T(), const int &cargas = 0) : iCargas(cargas), ciudad(c) {}
+};
+
+template <class T>
+bool totalDistanciaCamionesZuelandia(const T &totalDistanciasdada, const GrafoP<T> grafoDistancias, std::vector<ParteTrabajo<T>> vTrabajo, const T &capitalZuelandia)
+{
+    T nodoActual = capitalZuelandia;
+    T &distanciaRecorrida = 0;
+    for (int i = 0; i < grafoDistancias.numVert(); i++)
+    {
+        while (vTrabajo[i].iCargas > 0)
+        {
+            std::vector<T> aCostesIda = Dijkstra(grafoDistancias, nodoActual, std::vector<T>());
+            distanciaRecorrida += aCostesIda[vTrabajo[i].ciudad];
+            nodoActual = vTrabajo[i].ciudad;
+            vTrabajo[i].iCargas--; // Descargamos el cargamento
+            // Calculamos el camino de vuelta desde donde hemos descargado a la capital
+            std::vector<T> aCostesVuelta = DijsktraInverso(grafoDistancias, capitalZuelandia, std::vector<T>());
+            distanciaRecorrida += aCostesVuelta[vTrabajo[i].ciudad];
+            nodoActual = capitalZuelandia;
+        }
+        // Hacemos Dijkstra desde el nodo en el que estamos hasta el que no tenemos mas partes a repartir
+        nodoActual = capitalZuelandia;
+    }
+    return totalDistanciasdada == distanciaRecorrida;
 }
 
 int main()
