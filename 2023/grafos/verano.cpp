@@ -481,6 +481,132 @@ bool totalDistanciaCamionesZuelandia(const T &totalDistanciasdada, const GrafoP<
     return totalDistanciasdada == distanciaRecorrida;
 }
 
+/**
+ * Se dispone de tres grafos que representan la matriz de costes para viajes en un determinado país pero por diferentes medios de
+ * transporte, por supuesto todos los grafos tendrán el mismo número de nodos. El primer grafo representa los costes de ir por carretera,
+ * el segundo en tren y el tercero en avión. Dado un viajero que dispone de una determinada cantidad de dinero, que es alérgico a uno
+ * de los tres medios de transporte, y que sale de una ciudad determinada, implementar un subprograma que determine las ciudades
+ * a las que podría llegar nuestro infatigable viajero.
+ */
+
+GrafoP<int> combinacionesGrafos(const GrafoP<int> g1, const GrafoP<int> g2)
+{
+    GrafoP<int> grafoResultado(g1.numVert());
+    for (int i = 0; i < g1.numVert(); i++)
+    {
+        for (int j = 0; j < g1.numVert(); j++)
+        {
+            grafoResultado[i][j] = std::min(g1[i][j], g2[i][j]);
+        }
+    }
+    return grafoResultado;
+}
+
+template <class T>
+std::vector<int> viajeroAlergico5(const char &cAlergia, GrafoP<int> grafoTren, GrafoP<int> grafoAvion,
+                                  GrafoP<int> grafoCoche, const int &presupuesto, const int &origen)
+{
+    GrafoP<int> grafoResultado(grafoAvion.numVert());
+    if (cAlergia == 'c')
+    {
+        grafoResultado = combinacionesGrafos(grafoAvion, grafoTren);
+    }
+    else if (cAlergia == 't')
+    {
+        grafoResultado = combinacionesGrafos(grafoAvion, grafoCoche);
+    }
+    else
+    {
+        grafoResultado = combinacionesGrafos(grafoCoche, grafoTren);
+    }
+
+    // Hallamos los costes minimos
+    std::vector<int> aCostes = Dijkstra(grafoResultado, origen, std::vector<int>());
+    for (auto i : aCostes)
+    {
+        if (i > presupuesto)
+            i = -1;
+    }
+    return aCostes;
+}
+
+/**
+ * Ejercicio 6:
+ *
+ * Al dueño de una agencia de transportes se le plantea la siguiente situación.
+ * La agencia de viajes ofrece distintas trayectorias combinadas entre N ciudades españolas utilizando tren y autobús.
+ * Se dispone de dos grafos que representan los costes (matriz de costes) de viajar entre diferentes ciudades, por un lado en tren,
+ * y por otro en autobús (por supuesto entre las ciudades que tengan línea directa entre ellas). Además coincide que los taxis de
+ * toda España se encuentran en estos momentos en huelga general, lo que implica que sólo se podrá cambiar de transporte en una
+ * ciudad determinada en la que, por casualidad, las estaciones de tren y autobús están unidas.
+ *
+ * Implementa una función que calcule la tarifa mínima (matriz de costes mínimos) de viajar entre cualesquiera de las N ciudades
+ * disponiendo del grafo de costes en autobús, del grafo de costes en tren, y de la ciudad que tiene las estaciones unidas.
+ */
+
+template <typename tCoste>
+matriz<tCoste> tarifa_minima(typename GrafoP<tCoste>::vertice cambio,
+                             const GrafoP<tCoste> &tren,
+                             const GrafoP<tCoste> &autobus)
+{
+    typedef typename GrafoP<tCoste>::vertice vertice;
+    const size_t N = tren.numVert();
+
+    matriz<vertice> P;
+    // Obtenemos los mejores costes de viajar por cada uno
+    // de los medios dados
+    auto tren_floyd = Floyd(tren, P); // Usamos Floyd puesto que nos piden la matriz de costes minimos no ir de A hacia B
+    auto autobus_floyd = Floyd(autobus, P);
+
+    matriz<tCoste> tarifa(N);
+
+    // Para cada ruta i->j, obtenemos qué viaje es mejor:
+    // - viajar únicamente en tren
+    // - viajar únicamente en bús
+    // - viajar en tren, cambiar, y después en bús
+    // - viajar en bís, cambiar, y después en tren
+    for (vertice i = 0; i < N; i++)
+        for (vertice j = 0; j < N; j++)
+            tarifa[i][j] = std::min({
+                tren_floyd[i][j],
+                autobus_floyd[i][j],
+                suma(autobus_floyd[i][cambio], tren_floyd[cambio][j]), // Hacemos los minimos entre ir al sitio usando solo tren
+                suma(tren_floyd[i][cambio], autobus_floyd[cambio][j]), // solo tren y bus con los cambios pertinentes
+            });
+
+    return tarifa;
+}
+
+/**
+ * Ejercicio 7:
+ *  Se dispone de dos grafos (matriz de costes) que representan los costes de viajar entre N ciudades españolas utilizando el t
+ * ren (primer grafo) y el autobús (segundo grafo).
+ * Ambos grafos representan viajes entre las mismas N ciudades.
+ * Nuestro objetivo es hallar el camino de coste mínimo para viajar entre dos ciudades concretas del grafo, origen y destino,
+ * en las siguientes condiciones:
+ *
+ * · La ciudad origen sólo dispone de transporte por tren.
+ *
+ * · La ciudad destino sólo dispone de transporte por autobús.
+ *
+ * · El sector del taxi, bastante conflictivo en nuestros problemas, sigue en huelga,
+ *   por lo que únicamente es posible cambiar de transporte en dos ciudades del grafo, cambio1 y cambio2,
+ *   donde las estaciones de tren y autobús están unidas.
+ *
+ * Implementa un subprograma que calcule la ruta y el coste mínimo para viajar entre las ciudades Origen y Destino en
+ * estas condiciones. ==> Nos hablan de coste minimo entre A y B, por lo que seria necesario trabajar con Dijsktra
+ */
+
+template <class T>
+int costeMinimoEntreCiudadesGrafosAutobusTren(const GrafoP<int> &grafoTren, const GrafoP<int> grafoAvion, const int &c1, const int &c2,
+                                              const int &iDestino, const int &iOrigen)
+{
+    // 1) Costes minimos de viajar solo en tren
+    std::vector<int> vCostesTren = Dijkstra(grafoTren, iOrigen, std::vector<int>());
+    // 2) Costes minimos de Viajar solo en avion
+    std::vector<int> vCostesAvion = Dijkstra(grafoAvion, iOrigen, std::vector<int>());
+}
+
 int main()
 {
 
