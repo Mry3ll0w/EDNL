@@ -68,7 +68,8 @@ size_t desequilibrio(typename Abin<t>::nodo n, Abin<t> &Arbol)
     {
         return 0;
     }
-    return fmax(difAltura(n, Arbol), fmax(desequilibrio(Arbol.hijoDrcho(n), Arbol), desequilibrio(Arbol.hijoIzqdo(n), Arbol)));
+    return fmax(difAltura(n, Arbol), fmax(desequilibrio(Arbol.hijoDrcho(n), Arbol),
+                                          desequilibrio(Arbol.hijoIzqdo(n), Arbol)));
     // Grado maximo del nodo n y sus dos hijos, siendo el desequilibrio el maximo de los mismos
 }
 

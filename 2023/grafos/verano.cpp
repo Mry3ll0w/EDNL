@@ -160,6 +160,7 @@ matriz<int> caminosMinimosZuelandia(const matriz<T> &matrizCostes, const std::li
 
 /**
  * Ejercicio 1 P2 Grafos
+ *
  * Tu agencia de viajes “OTRAVEZUNGRAFO S.A.” se enfrenta a un curioso cliente. Es un personaje sorprendente, no le importa el dinero
  * y quiere hacer el viaje más caro posible entre las ciudades que ofertas.
  * Su objetivo es gastarse la mayor cantidad de dinero posible (ojalá todos los clientes fueran así), no le importa el origen
@@ -329,7 +330,7 @@ std::pair<int, std::vector<Casilla>> caminoMasCortoLaberinto2D(const int &iDimen
     auto nodoOrigen = CasillaToNodo(casillaEntrada, iDimensionLaberinto);
     auto nodoDestino = CasillaToNodo(casillaSalida, iDimensionLaberinto);
     std::vector<T> P;
-    std::vector<T> aCostesMinimos = (matrizCoste, nodoOrigen, P);
+    std::vector<T> aCostesMinimos = Dijkstra(matrizCoste, nodoOrigen, P);
     // Hallamos el camino
     int i = nodoDestino;
     std::vector<Casilla> aCamino;
@@ -345,7 +346,7 @@ std::pair<int, std::vector<Casilla>> caminoMasCortoLaberinto2D(const int &iDimen
 /**
  * Problema 3 Practica 2 Grafos
  *
- * 3. Eres el orgulloso dueño de una empresa de distribución. Tu misión radica en distribuir todo tu stock entre las diferentes ciudades
+ * Eres el orgulloso dueño de una empresa de distribución. Tu misión radica en distribuir todo tu stock entre las diferentes ciudades
  * en las que tu empresa dispone de almacén.
  * Tienes un grafo representado mediante la matriz de costes, en el que aparece el coste (por unidad de producto) de transportar los
  * productos entre las diferentes ciudades del grafo. ==> Tengo matriz de costes bidimensional
@@ -378,7 +379,6 @@ void aplicaSubvenciones(const std::list<std::pair<int, double>> &lCiudadSubvenci
     {
         for (int j = 0; j < grafo.numVert(); j++)
         {
-            grafo[oneCity.first][j] = grafo[oneCity.first][j] * (1 - oneCity.second);
             grafo[j][oneCity.first] = grafo[j][oneCity.first] * (1 - oneCity.second);
         }
     }
@@ -399,6 +399,7 @@ std::pair<double, std::list<T>> repartoStockCiudades(GrafoP<T> grafoCostesCiudad
         // Calculamos el mejor desde el nodo de produccion
         std::vector<T> aCostes = Dijkstra(grafoCostesCiudad, nodoActual, std::vector<T>());
         T nodoMejor = 1; // El siguiente despues de el mismo
+
         for (int i = 1; i < aCostes.size(); ++i)
         {
             if (aCostes[nodoMejor] > aCostes[i] && aCapacidacidadCidudad[nodoMejor] > 0) // Buscamos el de menor coste
@@ -406,6 +407,7 @@ std::pair<double, std::list<T>> repartoStockCiudades(GrafoP<T> grafoCostesCiudad
                 nodoMejor = i;
             }
         }
+
         // Comprobamos que llegamos con el stock actual
         if (stock >= aCapacidacidadCidudad[nodoMejor]) // Si llegamos con lo que tenemos repartimos a la ciudad
         {
