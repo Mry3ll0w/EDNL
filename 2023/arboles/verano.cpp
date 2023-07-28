@@ -79,6 +79,36 @@ int desequilibrioAbin(Abin<int> abArbol)
         return desequilibrioMaximoRec(abArbol, abArbol.raiz());
 }
 
+// ####################################################################################
+
+// Practica 2 Arboles binarios
+/**
+ * Ejercicio 1:
+ * Dos árboles binarios son similares cuando tienen idéntica estructura de ramificación,
+ * es decir, ambos son vacíos, o en caso contrario, tienen subárboles izquierdo y
+ * derecho similares.
+ * Implementa un subprograma que determine si dos árboles binarios son similares
+ */
+
+template <class T>
+bool arbolesSimilaresAbin(const Abin<T> abArbol1, const Abin<T> abArbol2,
+                          typename Abin<T>::nodo nd1, typename Abin<T>::nodo nd2)
+{
+
+    if (nd1 != Abin<T>::NODO_NULO && nd2 != Abin<T>::NODO_NULO)
+    {
+        arbolesSimilaresAbin(abArbol1, abArbol2, abArbol1.hijoIzqdo(nd1), abArbol2.hijoIzqdo(nd2));
+        arbolesSimilaresAbin(abArbol1, abArbol2, abArbol1.hijoDrcho(nd1), abArbol2.hijoDrcho(nd2));
+    }
+    // Comprobamos que pasa al salir
+    if (nd1 == Abin<T>::NODO_NULO && nd2 == Abin<T>::NODO_NULO)
+    {
+        return true; // Si cuando sale del bucle ambos no son nulos tiene != ramificacion
+    }
+    else
+        return false;
+}
+
 // ###################################################################################
 /**
  * Practica 3 de Arboles Generales
