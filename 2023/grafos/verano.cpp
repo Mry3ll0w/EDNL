@@ -599,14 +599,199 @@ matriz<tCoste> tarifa_minima(typename GrafoP<tCoste>::vertice cambio,
  * estas condiciones. ==> Nos hablan de coste minimo entre A y B, por lo que seria necesario trabajar con Dijsktra
  */
 
+/**
+ *  Necesitamos crear un supergrafo para calcular los saltos entre g1 y g2 y viceversa
+ *  Pasos:
+ *      1) Tamaño del grafo es numvert por el numero de Grafos que tenemos
+ *      2) Cuadrante 0, 0 es el grafo 1 y cuadrante 1,1 es g2, rellenando el resto
+ *      de INFINITO
+ *      3) El resto de cuadrantes se rellenan a INF salco la diag ppal que se rellena
+ *      con el precio del cambio
+ */
 template <class T>
-int costeMinimoEntreCiudadesGrafosAutobusTren(const GrafoP<int> &grafoTren, const GrafoP<int> grafoAvion, const int &c1, const int &c2,
-                                              const int &iDestino, const int &iOrigen)
+GrafoP<T> creaSuperGrafoDoble(const GrafoP<T> &g1, const GrafoP<T> &g2, const T &costeAdicional = 0)
 {
-    // 1) Costes minimos de viajar solo en tren
-    std::vector<int> vCostesTren = Dijkstra(grafoTren, iOrigen, std::vector<int>());
-    // 2) Costes minimos de Viajar solo en avion
-    std::vector<int> vCostesAvion = Dijkstra(grafoAvion, iOrigen, std::vector<int>());
+    size_t n = g1.numVert() + g2.numVert();
+    GrafoP<T> SuperGrafo(n);
+
+    // Rellenamos el grafo completo a INFITO
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            // Cuadrante perteneciente al grafo 1 0,0
+            SuperGrafo[i][j] = GrafoP<T>::INFINITO;
+        }
+    }
+
+    // Rellenamos el grafo con los valores necesarios para el problema
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            // Cuadrante perteneciente al grafo 1 0,0
+            SuperGrafo[i][j] = g1[i][j];
+            // Cuadrante perteneciente al grafo 2 c2 0,1
+            SuperGrafo[i + n][j + n] = g2[i][j];
+
+            // Cuadrante 1 0 DIAGONALES
+            SuperGrafo[i][i + n] = costeAdicional;
+
+            // Cuadrante 1 1 DIAGONALES
+            SuperGrafo[i + n][i] = costeAdicional;
+        }
+    }
+}
+
+template <class T>
+T costesMinimosTrenAvion(const GrafoP<T> gTren, const GrafoP<T> gBus, const typename GrafoP<T>::vertice cambio1, const typename GrafoP<T>::vertice cambio2,
+                         const T &origen, const T &destino)
+{
+    // Creamos el superGrafo con los costes de ir en tren directamente y costes de ir en bus directamente para poder hacer Dijkstra correctamente
+    GrafoP<T> sg = creaSuperGrafoDoble(gTren, gBus);
+    const int n = gTren.numVert();
+    // Tenemos que tener en cuenta que solo se permiten los cambios en c1 y c2 por lo que tendremos que ir a cada cuadrante del cambio y ponerlos a 0
+    // Para esto ponemos cada una de las posiciones donde se permite el cambio a 0
+
+    sg[cambio1][cambio1 + n] = 0; // Cambio1 en cuadrante 0 1 solo en tren
+    sg[cambio1 + n][cambio1] = 0; // Cambio1 en cuadrante 1, solo en bus
+    sg[cambio2][cambio2 + n] = 0; // igual con cambio 2 s
+    sg[cambio2 + n][cambio2] = 0;
+
+    // Aplicamos Dijkstra
+    std::vector<T> costesMinimos = Dijkstra(sg, origen, std::vector<T>());
+
+    return costesMinimos[destino];
+}
+
+/**
+ * Ejercicio 8
+ * “UN SOLO TRANSBORDO, POR FAVOR”. Este es el título que reza en tu flamante compañía de viajes. Tu publicidad explica, por supuesto,
+ * que ofreces viajes combinados de TREN y/o AUTOBÚS (es decir, viajes en tren, en autobús, o usando ambos), entre N ciudades del país,
+ * que ofreces un servicio inmejorable, precios muy competitivos, y que garantizas ante notario algo que no ofrece ninguno de tus competidores:
+ * que en todos tus viajes COMO MÁXIMO se hará un solo transbordo (cambio de medio de transporte).
+ * Bien, hoy es 1 de Julio y comienza la temporada de viajes.
+ * ¡Qué suerte! Acaba de aparecer un cliente en tu oficina. Te explica que quiere viajar entre dos ciudades, Origen y Destino, y quiere saber
+ * cuánto le costará.
+ * Para responder a esa pregunta dispones de:
+ *  dos grafos de costes directos (matriz de costes) de viajar entre las N ciudades del país,
+ * un grafo con los costes de viajar en tren y otro en autobús.
+ * Implementa un subprograma que calcule la tarifa mínima en estas condiciones.
+ * Mucha suerte en el negocio, que la competencia es dura.
+ */
+
+template <class T>
+void viajeUnicoTransbordo(const GrafoP<T> gBus, const GrafoP<T> gTren, const T &origen, const T &destino)
+{
+    // Se hace "a lo bestia"
+    std::vector<T> costesMinimosSoloBus = Dijkstra(gBus, origen, std::vector<T>());
+    std::vector<T> costesMinimosSoloTren = Dijkstra(gBus, origen, std::vector<T>());
+
+    // Suponemos de hacer un unico cambio en una posicion x, por lo que hacemos del destino al resto
+    std::vector<T> aCambioCostesMinimosBusTren = DijkstraInverso(gTren, destino, std::vector<T>());
+    std::vector<T> aCambioCostesMinimosTrenBus = DijsktraInverso(gBus, destino, std::vector<T>());
+
+    // Comprobamos cual es el de menor coste
+    T costeMinimoTotal = GrafoP<T>::INFINITO;
+    for (int i = 0; i < costesMinimosSoloBus.size(); ++i)
+    {
+        // Calculamos que seria mas rentable, si hacer el cambio en i o ir completo con el medio original
+        costeMinimoTotal = std::min(costesMinimosTotales[i], costesMinimosSoloBus[i], costesMinimosSoloTren[i],
+                                    suma(costesMinimosSoloBus[i], aCambioCostesMinimosBusTren[i]), suma(costesMinimosSoloTren[i], aCambioCostesMinimosTrenBus[i]));
+    }
+    return min(costeMinimoTotal, costesMinimosSoloBus[destino], costesMinimosSoloTren[destino]);
+}
+
+/**
+ * Ejercicio 9
+ * Se dispone de dos grafos que representan la matriz de costes para viajes en un determinado país, pero por diferentes medios de transporte
+ * (tren y autobús, por ejemplo). Por supuesto ambos grafos tendrán el mismo número de nodos, N. Dados ambos grafos, una ciudad de origen,
+ * una ciudad de destino y el coste del taxi para cambiar de una estación a otra dentro de cualquier ciudad (se supone constante e igual para todas las ciudades),
+ * implementa un subprograma que calcule el camino y el coste mínimo para ir de la ciudad origen a la ciudad destino.
+ */
+
+template <class T>
+GrafoP<T> costesMinimosGastoTaxi(const GrafoP<T> gTren, const GrafoP<T> gBus, const T &costeTaxi, const T &origen, const T &destino)
+{
+    // Creamos el superGrafo
+    int n = gTren.numVert() + gBus.numVert();
+    GrafoP<T> superGrafo(n); // Asumo que el grafo tiene en sus casillas el valor infinito por defecto
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            // Rellenamos el superGrafo con el resto de valores dados por el enunciadoå
+            superGrafo[i][j] = gTren[i][j];
+            superGrafo[i + n][j + n] = gBus[i][j];
+
+            // Actualizamos el coste de usar taxi en las diagonales principales
+            superGrafo[i + n][i] = costeTaxi;
+            superGrafo[i][i + n] = costeTaxi;
+        }
+    }
+
+    // Hacemos Dijsktra desde origen hasta destino
+    std::vector<T> costesMinimos = Dijkstra(superGrafo, origen, std::vector<T>());
+    return costesMinimos[destino];
+}
+
+/**
+ * Ejercicio 10
+ * Se dispone de tres grafos que representan la matriz de costes para viajes en un determinado país, pero por diferentes medios de transporte
+ * (tren, autobús y avión).
+ * Por supuesto los tres grafos tendrán el mismo número de nodos, N.
+ * Dados los siguientes datos:
+ *  los tres grafos,
+ *  una ciudad de origen,
+ *  una ciudad de destino,
+ *  el coste del taxi para cambiar, dentro de una ciudad, de la estación de tren a la
+ * de autobús o viceversa (taxi-tren-bus) y
+ *  el coste del taxi desde el aeropuerto a la estación de tren o la de autobús, o
+ * viceversa (taxi-aeropuerto-tren/bus)
+ * Asumiendo que ambos costes de taxi (distintos entre sí, son dos costes diferentes) son constantes e iguales para todas las ciudades,
+ * implementa un subprograma que calcule el camino y el coste mínimo para ir de la ciudad origen a la ciudad destino.
+ */
+
+template <class T>
+GrafoP<T> creaSuperGrafoTriple(const GrafoP<T> gTren, const GrafoP<T> gBus, const GrafoP<T> gAvion, const T &costeCambioTrenBus, const T &costeCambioAvionAlResto)
+{
+
+    const int n = gTren.numVert() + gBus.numVert() + gAvion.numVert();
+    GrafoP<T> sg(n);
+
+    // Inicializo los campos del grafo a infinito
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            sg[i][j] = GrafoP<T>::INFINITO;
+        }
+    }
+
+    // Relleno los datos del enunciado
+    for (int i = 0; i < gBus.numVert(); i++)
+    {
+        for (int j = 0; j < gBus.numVert(); j++)
+        {
+            sg[i][j] = gBus[i][j];          // Primer Cuadrante: Bus
+            sg[i + n][j + n] = gTren[i][j]; // Segundo Cuadrante Superior
+            sg[i + 2 * n][j + *n] = gAvion[i][j];
+            // Rellenamos las diagonales con los costes
+            sg[i + n][i] = costeCambioTrenBus;
+            sg[i][i + n] = costeCambioTrenBus;
+            sg[i + 2 * n][i] = costeCambioAvionAlResto;
+            sg[i][i + 2 * n] = costeCambioAvionAlResto;
+        }
+    }
+    return sg;
+}
+
+template <class T>
+T costesMinimosAvionTrenBus(const GrafoP<T> gTren, const GrafoP<T> gBus, const GrafoP<T> gAvion, const T &costeCambioTrenBus, const T &costeCambioAvionAlResto, const T &origen, const T &destino)
+{
+    GrafoP<T> sg = creaSuperGrafoTriple(gTren, gBus, gAvion, costeCambioTrenBus, costeCambioAvionAlResto);
+    return Dijkstra(sg, origen, std::vector<T>())[destino]; // No necesito ni almacenarlo
 }
 
 int main()

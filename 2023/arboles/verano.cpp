@@ -94,19 +94,17 @@ template <class T>
 bool arbolesSimilaresAbin(const Abin<T> abArbol1, const Abin<T> abArbol2,
                           typename Abin<T>::nodo nd1, typename Abin<T>::nodo nd2)
 {
-
-    if (nd1 != Abin<T>::NODO_NULO && nd2 != Abin<T>::NODO_NULO)
-    {
-        arbolesSimilaresAbin(abArbol1, abArbol2, abArbol1.hijoIzqdo(nd1), abArbol2.hijoIzqdo(nd2));
-        arbolesSimilaresAbin(abArbol1, abArbol2, abArbol1.hijoDrcho(nd1), abArbol2.hijoDrcho(nd2));
-    }
-    // Comprobamos que pasa al salir
     if (nd1 == Abin<T>::NODO_NULO && nd2 == Abin<T>::NODO_NULO)
     {
         return true; // Si cuando sale del bucle ambos no son nulos tiene != ramificacion
     }
-    else
-        return false;
+    else if (nd1 != Abin<T>::NODO_NULO && nd2 != Abin<T>::NODO_NULO)
+    {
+        return arbolesSimilaresAbin(abArbol1, abArbol2, abArbol1.hijoIzqdo(nd1), abArbol2.hijoIzqdo(nd2)) &&
+               arbolesSimilaresAbin(abArbol1, abArbol2, abArbol1.hijoDrcho(nd1), abArbol2.hijoDrcho(nd2));
+    }
+    return false;
+    // Comprobamos que pasa al salir
 }
 
 // ###################################################################################
@@ -136,12 +134,17 @@ int numNodosAgen(Agen<T> &agArbol, typename Agen<T>::nodo nd)
 
 int main()
 {
-    Abin<int> ab;
-    ab.insertaRaiz(1);
-    ab.insertarhijoIzqdo(ab.raiz(), 2);
-    ab.insertarhijoDrcho(ab.raiz(), 3);
-    ab.insertarhijoIzqdo(ab.hijoDrcho(ab.raiz()), 4);
+    Abin<int> ab1, ab2;
+    ab1.insertaRaiz(1);
+    ab1.insertarhijoIzqdo(ab1.raiz(), 2);
+    ab1.insertarhijoDrcho(ab1.raiz(), 3);
+    ab1.insertarhijoIzqdo(ab1.hijoDrcho(ab1.raiz()), 4);
 
-    std::cout << desequilibrioMaximoRec(ab, ab.raiz()) << std::endl;
+    ab2.insertaRaiz(1);
+    ab2.insertarhijoIzqdo(ab2.raiz(), 2);
+    ab2.insertarhijoDrcho(ab2.raiz(), 3);
+    ab2.insertarhijoIzqdo(ab2.hijoDrcho(ab2.raiz()), 4);
+
+    std::cout << arbolesSimilaresAbin(ab1, ab2, ab1.raiz(), ab2.raiz()) << std::endl;
     return 0;
 }
