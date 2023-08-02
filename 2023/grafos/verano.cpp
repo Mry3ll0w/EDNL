@@ -708,6 +708,12 @@ void viajeUnicoTransbordo(const GrafoP<T> gBus, const GrafoP<T> gTren, const T &
  * (tren y autobús, por ejemplo). Por supuesto ambos grafos tendrán el mismo número de nodos, N. Dados ambos grafos, una ciudad de origen,
  * una ciudad de destino y el coste del taxi para cambiar de una estación a otra dentro de cualquier ciudad (se supone constante e igual para todas las ciudades),
  * implementa un subprograma que calcule el camino y el coste mínimo para ir de la ciudad origen a la ciudad destino.
+ *
+ *       Tren y bus = NXN ==> Tren.numver * Bus.numvert
+ *          TREN  |  Bus
+ *            --------
+ *          CTren | CBus
+ *
  */
 
 template <class T>
@@ -722,7 +728,9 @@ GrafoP<T> costesMinimosGastoTaxi(const GrafoP<T> gTren, const GrafoP<T> gBus, co
         for (int j = 0; j < n; j++)
         {
             // Rellenamos el superGrafo con el resto de valores dados por el enunciadoå
+
             superGrafo[i][j] = gTren[i][j];
+
             superGrafo[i + n][j + n] = gBus[i][j];
 
             // Actualizamos el coste de usar taxi en las diagonales principales
@@ -774,9 +782,10 @@ GrafoP<T> creaSuperGrafoTriple(const GrafoP<T> gTren, const GrafoP<T> gBus, cons
     {
         for (int j = 0; j < gBus.numVert(); j++)
         {
-            sg[i][j] = gBus[i][j];          // Primer Cuadrante: Bus
+            sg[i][j] = gBus[i][j];          // Primer Cuadrante: Bus    0  + n + n      T       B       A
             sg[i + n][j + n] = gTren[i][j]; // Segundo Cuadrante Superior
-            sg[i + 2 * n][j + *n] = gAvion[i][j];
+            sg[i + 2 * n][j + 2 * n] = gAvion[i][j];
+
             // Rellenamos las diagonales con los costes
             sg[i + n][i] = costeCambioTrenBus;
             sg[i][i + n] = costeCambioTrenBus;
@@ -792,6 +801,96 @@ T costesMinimosAvionTrenBus(const GrafoP<T> gTren, const GrafoP<T> gBus, const G
 {
     GrafoP<T> sg = creaSuperGrafoTriple(gTren, gBus, gAvion, costeCambioTrenBus, costeCambioAvionAlResto);
     return Dijkstra(sg, origen, std::vector<T>())[destino]; // No necesito ni almacenarlo
+}
+
+/**
+ * Ejercicio 7 P8
+ * El archipiélago de Grecoland (Zuelandia) está formado únicamente por dos islas, Fobos y Deimos, que tienen N1 y N2 ciudades, respectivamente, de las cuales C1 y C2
+ * ciudades son costeras (obviamente C1 ≤ N1 y C2 ≤ N2 ). Se dispone de las coordenadas cartesianas (x, y) de todas y cada una de las ciudades del archipiélago.
+ * El huracán Isadore acaba de devastar el archipiélago, con lo que todas las carreteras y puentes construidos en su día han desaparecido. En esta terrible situación
+ * se pide ayuda a la ONU, que acepta reconstruir el archipiélago (es decir volver a comunicar todas las ciudades del archipiélago) siempre que se haga al mínimo coste.
+ *
+ * De cara a poder comparar costes de posibles reconstrucciones se asume lo siguiente:
+    1. El coste de construir cualquier carretera o cualquier puente es proporcional a su longitud
+    (distancia euclídea entre las poblaciones de inicio y fin de la carretera o del puente).
+    2. Cualquier puente que se construya siempre será más caro que cualquier carretera que se construya.
+    De cara a poder calcular los costes de VIAJAR entre cualquier ciudad del
+    archipiélago se considerará lo siguiente:
+        1. El coste directo de viajar, es decir de utilización de una carretera o de un puente, coincidirá con su longitud
+        (distancia euclídea entre las poblaciones origen y destino de la carretera o del puente).
+
+En estas condiciones, implementa un subprograma que calcule el coste mínimo de viajar entre dos ciudades de Grecoland, origen y destino,
+después de haberse reconstruido el archipiélago, dados los siguientes datos:
+    1. Lista de ciudades de Fobos representadas mediante sus coordenadas cartesianas.
+    2. Lista de ciudades de Deimos representadas mediante sus coordenadas cartesianas.
+    3. Lista de ciudades costeras de Fobos.
+    4. Lista de ciudades costeras de Deimos.
+    5. Ciudad origen del viaje.
+    6. Ciudad destino del viaje.
+ */
+
+struct Ciudad
+{
+    double x, y;
+};
+
+struct Puente
+{
+    Ciudad costeraFobos, costeraDeimos;
+};
+
+double distaciaEuclidea(Ciudad c1, Ciudad c2)
+{
+    return std::sqrt(std::pow((c2.x - c1.x), 2) + std::pow((c2.y - c1.y), 2)); // RAIZ de (x1-x2)^2 + (y1-y2)^2
+}
+
+// Crear un mapa de cada isla
+
+GrafoP<double> creaMapaIsla(vector<Ciudad> ciudadesIsla)
+{
+
+    GrafoP<double> mapa(ciudadesIsla.size());
+
+    for (int i = 0; i < ciudadesIsla.size(); ++i)
+    {
+        for (int j = 0; j < ciudadesIsla.size(); j++)
+        {
+            mapa[i][j] = distaciaEuclidea(ciudadesIsla[i], ciudadesIsla[j]);
+        }
+    }
+}
+
+void grecolandP8(vector<Ciudad> Fobos, vector<Ciudad> Deimos, vector<Ciudad> costerasFobos,
+                 vector<Ciudad> costerasDeimos, GrafoP<double>::vertice origen,
+                 GrafoP<double>::vertice destino)
+{
+
+    // Calculo de las distancias entre Fobos y Deimos
+    GrafoP<double> mapaFobos = creaMapaIsla(Fobos), mapaDeimos = creaMapaIsla(Deimos);
+
+    // Para saber costes de carreteras usamos Kruskal, ya que conecta todos las ciudades con coste minimo
+    GrafoP<double> carreterasFobos = Kruskall(mapaFobos);
+    GrafoP<double> carreterasDeimos = Kruskall(mapaDeimos);
+
+    // Conectar Ciudades Costeras entre Islas
+
+    // Comprobamos que ciudades de Fobos y Deimos estan mas cercas entre si
+    Puente mejorPuente;
+    double dDistanciaMinima = GrafoP<double>::INFINITO;
+    for (auto ciudadDeimos : costerasDeimos)
+    {
+        for (auto ciudadFobos : costerasFobos)
+        {
+            if (dDistanciaMinima < distaciaEuclidea(ciudadDeimos, ciudadFobos))
+            {
+                dDistanciaMinima = distaciaEuclidea(ciudadDeimos, ciudadFobos);
+                mejorPuente.costeraDeimos = ciudadDeimos;
+                mejorPuente.costeraFobos = ciudadFobos;
+            }
+        }
+    }
+
+    // Crear SuperGrafo con puentes
 }
 
 int main()
