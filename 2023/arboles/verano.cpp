@@ -210,24 +210,32 @@ int numNodosAgen(Agen<T> &agArbol, typename Agen<T>::nodo nd)
     return iNumNodos;
 }
 
+/**
+ * Ejercicio 2
+ * Implementa un subprograma que dados un árbol y un nodo dentro de dicho árbol
+ * determine la profundidad de éste nodo en el árbol.
+ */
+
+template <class T>
+int profundidadNodoAgen(typename Agen<T>::NODO nd, Agen<T> &agArbol)
+{
+    if (nd == agArbol.raiz())
+    {
+        return 0;
+    }
+    else
+        return 1 + profundidadNodoAgen(agArbol.padre(nd), agArbol);
+}
+
 int main()
 {
-    Abin<int> ab1, ab2, ab3;
-    ab1.insertaRaiz(1);
-    ab1.insertarhijoIzqdo(ab1.raiz(), 2);
-    ab1.insertarhijoDrcho(ab1.raiz(), 3);
-    ab1.insertarhijoIzqdo(ab1.hijoDrcho(ab1.raiz()), 4);
-
-    ab2.insertaRaiz(1);
-    ab2.insertarhijoIzqdo(ab2.raiz(), 2);
-    ab2.insertarhijoDrcho(ab2.raiz(), 3);
-    ab2.insertarhijoIzqdo(ab2.hijoDrcho(ab2.raiz()), 4);
-    ab3.insertaRaiz(1);
-    arbolReflejadoAbin(ab1, ab3, ab1.raiz(), ab3.raiz());
-
-    printAbin(ab1, ab1.raiz());
-    std::cout << "··························" << std::endl;
-    printAbin(ab3, ab3.raiz());
+    Agen<int> A;
+    A.insertaRaiz(1);
+    A.insertarHijoIzqdo(A.raiz(), 2);
+    A.insertarHermDrcho(A.hijoIzqdo(A.raiz()), 3);
+    auto n = A.hermDrcho(A.hijoIzqdo(A.raiz()));
+    A.insertarHijoIzqdo(A.hijoIzqdo(A.raiz()), 39);
+    auto n2 = A.hijoIzqdo(A.hijoIzqdo(A.raiz()));
 
     return 0;
 }
