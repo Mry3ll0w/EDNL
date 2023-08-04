@@ -227,6 +227,80 @@ int profundidadNodoAgen(typename Agen<T>::NODO nd, Agen<T> &agArbol)
         return 1 + profundidadNodoAgen(agArbol.padre(nd), agArbol);
 }
 
+/**
+ * Examen "nodos verdes"
+ * Cuenta todos los nodos con exactamente 3 nietos
+ */
+
+// Definimos la altura como
+template <class T>
+int alturaNodoAgen(typename Agen<T>::nodo nd, Agen<T> &agArbol)
+{
+    int iAlturaNodo = -1;
+    if (nd != Agen<T>::NODO_NULO)
+    {
+        nd = agArbol.hijoIzqdo(nd);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            // Proceso la altura en inorden
+            iAlturaNodo = std::max(iAlturaNodo, alturaNodoAgen(nd, agArbol)); // Hundimiento en recursividad
+            nd = agArbol.hermDrcho(nd);
+        }
+    }
+    return 1 + iAlturaNodo; // Hacemos 1 + puesto que cada vez que pueda la funcion hundirse significa que hemos bajado de nivel ==> +1 altura
+}
+
+// Podemos decir que es nieto de un nodo cuando la altura de un nodo dado sea igual a
+//  su altura - 2
+template <class T>
+int cuentaNietos(Agen<T> agArbol, typename Agen<T>::nodo nd, int alturaNodoPadre)
+{
+    int numNietos = 0;
+    if (nd != Agen<T>::NODO_NULO)
+    {
+        nd = agArbol.hijoIzqdo(nd);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            if (std::abs(alturaNodoAgen(nd, agArbol) - alturaNodoPadre) == 2)
+            {
+                numNietos++;
+            }
+            nd = agArbol.hermDrcho(nd);
+        }
+    }
+    return numNietos;
+}
+
+template <class T>
+int cuenta3Nietos(Agen<T> agArbol, typename Agen<T>::nodo nd)
+{
+    int i3Nietos = 0;
+    if (nd != Agen<T>::NODO_NULO)
+    {
+        nd = agArbol.hijoIzqdo(nd);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+
+            if (cuentaNietos(agArbol, nd, alturaNodoAgen(agArbol, nd)) == 3)
+                i3Nietos++;
+
+            nd = agArbol.hermDrcho(nd);
+        }
+    }
+    return i3Nietos;
+}
+
+template <class T>
+int nodos3Nietos(Agen<T> agArbol)
+{
+    if (agArbol.arbolVacio())
+        return 0;
+    else
+    {
+        return cuenta3Nietos(agArbol, agArbol.raiz());
+    }
+}
+
 int main()
 {
     Agen<int> A;
