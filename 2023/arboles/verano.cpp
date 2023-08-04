@@ -210,6 +210,21 @@ int numNodosAgen(Agen<T> &agArbol, typename Agen<T>::nodo nd)
     return iNumNodos;
 }
 
+template <class T>
+int gradoAgenRec(Agen<T> agArbol, typename Agen<T>::nodo nd)
+{
+    int iGradoAgen = -1;
+    if (nd != Agen<T>::NODO_NULO)
+    {
+        nd = agArbol.hijoIzqdo(nd);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            iGradoAgen = std::max(iGradoAgen, gradoAgen(agArbol, nd));
+            nd = agArbol.hermDrcho(nd);
+        }
+    }
+}
+
 /**
  * Ejercicio 2
  * Implementa un subprograma que dados un árbol y un nodo dentro de dicho árbol
@@ -225,6 +240,17 @@ int profundidadNodoAgen(typename Agen<T>::NODO nd, Agen<T> &agArbol)
     }
     else
         return 1 + profundidadNodoAgen(agArbol.padre(nd), agArbol);
+}
+
+template <class T>
+void ej3P3()
+{
+    /**
+     * Enunciado:
+     * 3. Se define el desequilibrio de un árbol general como la máxima diferencia entre las alturas
+        de los subárboles más bajo y más alto de cada nivel. Implementa un subprograma que calcule
+        el grado de desequilibrio de un árbol general.
+     */
 }
 
 /**
