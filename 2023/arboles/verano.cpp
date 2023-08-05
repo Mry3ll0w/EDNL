@@ -242,25 +242,19 @@ int profundidadNodoAgen(typename Agen<T>::NODO nd, Agen<T> &agArbol)
         return 1 + profundidadNodoAgen(agArbol.padre(nd), agArbol);
 }
 
-template <class T>
-void ej3P3()
-{
-    /**
-     * Enunciado:
-     * 3. Se define el desequilibrio de un árbol general como la máxima diferencia entre las alturas
-        de los subárboles más bajo y más alto de cada nivel. Implementa un subprograma que calcule
-        el grado de desequilibrio de un árbol general.
-     */
-}
-
 /**
- * Examen "nodos verdes"
- * Cuenta todos los nodos con exactamente 3 nietos
- */
+* Enunciado:
+*   3. Se define el desequilibrio de un árbol general como la máxima diferencia entre las alturas
+    de los subárboles más bajo y más alto de cada nivel. Implementa un subprograma que calcule
+    el grado de desequilibrio de un árbol general. ==> Se puede hallar haciendo la diferencia entre la rama mas larga del arbol y la mas pequeña.
+    1) Necesitamos la altura maxima del arbol, en consecuencia se trata de la altura de la raiz
+    2) Iterar todos y cada uno de los subArboles a ver cual tiene la menor
+
+*/
 
 // Definimos la altura como
 template <class T>
-int alturaNodoAgen(typename Agen<T>::nodo nd, Agen<T> &agArbol)
+int alturaNodoAgen(typename Agen<T>::nodo nd, Agen<T> agArbol)
 {
     int iAlturaNodo = -1;
     if (nd != Agen<T>::NODO_NULO)
@@ -275,6 +269,87 @@ int alturaNodoAgen(typename Agen<T>::nodo nd, Agen<T> &agArbol)
     }
     return 1 + iAlturaNodo; // Hacemos 1 + puesto que cada vez que pueda la funcion hundirse significa que hemos bajado de nivel ==> +1 altura
 }
+
+template <class T>
+int desequilibrioAgenRec(Agen<T> agArbol, typename Agen<T>::nodo nd, int iAlturaRaiz)
+{
+    int iAlturaMinima = iAlturaRaiz;
+    if (nd != Agen<T>::NODO_NULO)
+    {
+        nd = agArbol.hijoIzqdo(nd);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            desequilibrioAgenRec(agArbol, nd, iAlturaRaiz);
+            iAlturaMinima = std::min(iAlturaMinima, alturaNodoAgen(nd, agArbol));
+            nd = agArbol.hermDrcho(nd);
+        }
+    }
+    // Cuando salimos del bucle simplemente devolcemos la diferencia entre la altura de la raiz
+    return iAlturaRaiz - iAlturaMinima;
+}
+
+template <class T>
+int desequilibrioAgen(Agen<T> agArbol)
+{
+    if (agArbol.arbolVacio())
+        return 0;
+    else
+        return desequilibrioAgenRec(agArbol, agArbol.raiz(), alturaNodoAgen(agArbol.raiz(), agArbol));
+}
+
+/**
+ * Ejercicio 4:
+ * Dado un árbol general de enteros A y un entero x, implementa un subprograma que realice
+ * la poda de A a partir de x. Se asume que no hay elementos repetidos en A.
+ */
+
+template <class T>
+void eliminarDescendenciaNodo(Agen<T> &agArbol, typename Agen<T>::nodo nd)
+{
+    // Voy eliminando el hijoIzquierdo hasta que me quede sin descendientes, hay que hacerlo en postorden
+    while (agArbol.hijoIzqdo(nd) != Agen<T>::NODO_NULO)
+    {
+        eliminarDescendenciaNodo(agArbol, agArbol.hijoIzqdo(nd));
+        std::cout << "ESTOY ELIMINANDO: " << agArbol.elemento(nd) << std::endl;
+        agArbol.eliminarHijoIzqdo(nd);
+    }
+}
+
+template <class T>
+void podaArbolAgenRec(Agen<T> &agArbol, typename Agen<T>::nodo nd, const T &elementoBuscado)
+{
+    if (nd != Agen<T>::NODO_NULO)
+    {
+
+        nd = agArbol.hijoIzqdo(nd);
+        while (nd != Agen<T>::NODO_NULO)
+        {
+            podaArbolAgenRec(agArbol, nd, elementoBuscado);
+            if (agArbol.elemento(nd) == elementoBuscado)
+            {
+                eliminarDescendenciaNodo(agArbol, nd);
+            }
+            nd = agArbol.hermDrcho(nd);
+        }
+    }
+}
+
+template <class T>
+void podaAgen(Agen<T> &agArbol, const T &elementoBuscado)
+{
+    if (!agArbol.arbolVacio())
+    {
+
+        // Caso general
+        podaArbolAgenRec(agArbol, agArbol.raiz(), elementoBuscado);
+        printAgen(agArbol.raiz(), agArbol);
+    }
+}
+
+/**
+ * Examen "nodos verdes"
+ * Cuenta todos los nodos con exactamente 3 nietos
+ */
 
 // Podemos decir que es nieto de un nodo cuando la altura de un nodo dado sea igual a
 //  su altura - 2
@@ -327,6 +402,26 @@ int nodos3Nietos(Agen<T> agArbol)
     }
 }
 
+// PrintAgen
+template <typename T>
+void printAgen(typename Agen<T>::nodo n, const Agen<T> &A)
+// Recorrido en preorden del subárbol cuya raíz es el nodo n
+// perteneciente al árbol A. Cada nodo visitado se procesa mediante // la función procesar().
+{
+    if (n != Agen<T>::NODO_NULO)
+    {
+
+        n = A.hijoIzqdo(n);
+        while (n != Agen<T>::NODO_NULO)
+        {
+            printAgen(n, A);
+            std::cout << A.elemento(n) << ", ";
+            n = A.hermDrcho(n);
+        }
+        std::cout << std::endl;
+    }
+}
+
 int main()
 {
     Agen<int> A;
@@ -336,6 +431,21 @@ int main()
     auto n = A.hermDrcho(A.hijoIzqdo(A.raiz()));
     A.insertarHijoIzqdo(A.hijoIzqdo(A.raiz()), 39);
     auto n2 = A.hijoIzqdo(A.hijoIzqdo(A.raiz()));
+
+    // insertamos 4 hermanos
+    for (int i = 4; i < 7; ++i)
+        A.insertarHermDrcho(n, i);
+    n = A.hermDrcho(n);
+
+    for (int i = 9; i < 15; ++i)
+        A.insertarHermDrcho(n2, i);
+    n2 = A.hermDrcho(n2);
+
+    printAgen(A.raiz(), A);
+    std::cout << "COMENZAMOS PODA" << endl;
+    podaAgen(A, 3);
+
+    // printAgen(A.raiz(), A);
 
     return 0;
 }
