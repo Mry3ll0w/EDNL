@@ -803,6 +803,52 @@ T costesMinimosAvionTrenBus(const GrafoP<T> gTren, const GrafoP<T> gBus, const G
     return Dijkstra(sg, origen, std::vector<T>())[destino]; // No necesito ni almacenarlo
 }
 
+/** Ejercicio 11 P7 Grafos
+ * 11. Disponemos de tres grafos (matriz de costes) que representan los costes directos de viajar entre las ciudades de tres de las islas del archipiélago
+ * de las Huríes (Zuelandia). Para poder viajar de una isla a otra se dispone de una serie de puentes que conectan ciudades de las diferentes islas
+ * a un precio francamente asequible (por decisión del Prefecto de las Huríes, el uso de los puentes es absolutamente gratuito).
+Si el alumno desea simplificar el problema, puede numerar las N1 ciudades de la isla 1, del 0 al N1-1, las N2 ciudades de la isla 2, del N1 al N1+N2-1,
+y las N3 de la última, del N1+ N2 al N1+N2+ N3-1.
+Disponiendo de las tres matrices de costes directos de viajar dentro de cada una de las islas, y la lista de puentes entre ciudades de las mismas,
+calculad los costes mínimos de viajar entre cualesquiera dos ciudades de estas tres islas.
+¡¡¡ QUE DISFRUTÉIS EL VIAJE !!!
+*/
+
+template <class T>
+matriz<T> costesMinimosPuentesGratisZuelandia(const GrafoP<T> mCostesIsla1, const GrafoP<T> mCostesIsla2, const GrafoP<T> mCostesIsla3)
+{
+    GrafoP<T> sgIslas(mCostesIsla1.numVert() + mCostesIsla2.numVert() + mCostesIsla3.numVert());
+    // Inicializamos el superGrafo a INFINITO
+    for (size_t i = 0; i < sgIslas.numVert(); i++)
+    {
+        for (size_t j = 0; j < sgIslas.numVert(); j++)
+        {
+            sgIslas[i][j] = GrafoP<T>::INFINITO;
+        }
+    }
+    int n = mCostesIsla1.numVert();
+    for (size_t i = 0; i < mCostesIsla1.numVert(); i++)
+    {
+        for (size_t j = 0; j < mCostesIsla1.numVert(); j++)
+        {
+            // Primera Isla
+            sgIslas[i][j] = mCostesIsla1[i][j];
+
+            // Segunda Isla
+            sgIslas[i + n][j + n] = mCostesIsla2[i][j];
+
+            // Tercera Isla
+            sgIslas[i + 2 * n][j + 2 * n] = mCostesIsla3[i][j];
+
+            // Rellenamos los costes de los puentes itermedios
+            sgIslas[i][i + n] = 0;         // Puente entre isla 1 y 2
+            sgIslas[i][i + 2 * n] = 0;     // Puente entre isla 1 y 3
+            sgIslas[i + n][i + 2 * n] = 0; // Puente entre isla 2 y 3
+        }
+    }
+    return Floyd(sgIslas, matriz<T>());
+}
+
 /**
  * Ejercicio 7 P8
  * El archipiélago de Grecoland (Zuelandia) está formado únicamente por dos islas, Fobos y Deimos, que tienen N1 y N2 ciudades, respectivamente, de las cuales C1 y C2
