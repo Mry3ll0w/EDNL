@@ -1,6 +1,7 @@
 #include <iostream>
 #include "arbolbinenla.h"
 #include "agenEnlazado.h"
+#include "abb.h"
 using namespace std; // Avoid using std:: ....
 
 /**
@@ -422,7 +423,21 @@ void printAgen(typename Agen<T>::nodo n, const Agen<T> &A)
     }
 }
 
-// Practica 5 de Arboles
+// Practica 4 de Arboles
+/**
+ * Ejercicio 1
+ * Implementa una nueva operación del TAD Abb que tomando un elemento del mismo
+ * elimine al completo el subárbol que cuelga de él.
+ */
+
+template <class T>
+void podarAbb(Abb<T> &ab, T &elemento)
+{
+    if (!ab.buscar(elemento).vacio())
+    {
+        ab.buscar(elemento).~Abb();
+    }
+}
 
 int main()
 {

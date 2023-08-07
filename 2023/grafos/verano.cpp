@@ -1010,7 +1010,7 @@ matriz<double> tombuctu(GrafoP<bool> adyTombuctu, std::vector<Ciudad> vCiudadesT
 }
 
 /**
- * Ejercicio 2 P8
+ * Ejercicio 2 P8 VERSION DE DANI
  *
  * El archipiélago de Tombuctú2 está formado por un número desconocido de islas,
  * cada una de las cuales tiene, a su vez, un número desconocido de ciudades, las cuales
@@ -1038,6 +1038,12 @@ matriz<double> tombuctu(GrafoP<bool> adyTombuctu, std::vector<Ciudad> vCiudadesT
  * Implementen un subprograma que calcule y devuelva las líneas aéreas necesarias para
  * comunicar adecuadamente el archipiélago siguiendo los criterios anteriormente
  * expuestos.
+ *
+ * ¿Para que el particion?
+ * 1 a 4
+ *
+ * Si aplicacmos el paticion ==> 1, 2           3,          4,5
+ *
  */
 
 struct tipo_coordenada
@@ -1050,6 +1056,21 @@ struct Isla
     std::vector<Ciudad> vCiudades;
 };
 
+bool esBosque(Particion &p, size_t tam) // Si una particion es bosque es que tiene mas de un arbol
+{
+    bool es = false;
+    for (size_t i = 0; i < tam - 1 && !es; ++i)
+    {
+        for (size_t j = i + 1; j < tam && !es; ++j)
+        {
+            if (p.encontrar(i) != p.encontrar(j))
+                es = true;
+        }
+    }
+    return es;
+}
+
+// Creamos las carreteras mediante la distancia euclidea
 template <class T>
 GrafoP<double> creaCarreteras(matriz<bool> adyTombuctu, std::list<Ciudad> vCiudadesTombuctu)
 {
@@ -1069,9 +1090,9 @@ GrafoP<double> creaCarreteras(matriz<bool> adyTombuctu, std::list<Ciudad> vCiuda
 }
 
 template <typename tCoste>
-void tombuctu2(Grafo &g, std::vector<tipo_coordenada> ciudades)
+Grafo tombuctu2(Grafo &g, std::vector<tipo_coordenada> ciudades)
 {
-    Particion p(g.numVert());
+    Particion p(g.numVert()); // Para almacenar y crear el numero de islas
     typename Grafo::vertice origen, destino;
     tCoste costeMin = GrafoP<tCoste>::INFINITO;
 
@@ -1080,17 +1101,20 @@ void tombuctu2(Grafo &g, std::vector<tipo_coordenada> ciudades)
     {
         for (size_t j = 0; j < g.numVert(); ++j)
         {
-            if (g[i][j] || g[j][i]) // Si en la matriz de ady hay camino entre i y j
+            if (g[i][j] || g[j][i]) // Si en la matriz de ady hay camino entre i y j, estan en la misma isla
             {
                 if (p.encontrar(i) != p.encontrar(j)) // Si i,j no pertenecen al mismo subconjunto (no estan unidas aun)
-                    p.unir(i, j);                     // las unimos en un subconjunto comun
+                    p.unir(i, j);                     // las unimos en un subconjunto comun (la metemos en la misma isla)
             }
         }
     }
-    // p={{0,1}{2,4,5}{3,6,7,8,9}} = {{0,1,2,3,4,5,6,7,8,9}}
+
+    //        I1      I2          I3
+    // p={  {0,1}  {2,4,5}   {3,6,7,8,9}} = {{0,1,2,3,4,5,6,7,8,9}}
+
     //-----------------------------------------
-    while (esBosque(p, g.numVert())) // Mientras haya islas desconectadas (Si una particion es un bosque es que tiene mas
-                                     // de un subconjunto, por lo que aun existen nodos no conectados entre si)
+    while (esBosque(p, g.numVert()) ºº) // Mientras haya islas desconectadas (Si una particion es un bosque es que tiene mas
+                                        // de un subconjunto, por lo que aun existen nodos no conectados entre si)
     {
         // Este bucle recorre todas las posibles parejas de ciudades
         for (size_t i = 0; i < g.numVert(); ++i)
@@ -1118,7 +1142,169 @@ void tombuctu2(Grafo &g, std::vector<tipo_coordenada> ciudades)
         p.unir(origen, destino); // unimos ambas ciudades en el mismo subconjunto de la particion y volvemos al while de arriba
         std::cout << "Linea aerea entre " << origen << " y " << destino << std::endl;
     } // Fin de mientras
+
+    return g;
 }
+
+/**
+ * Ejercicio 3
+ * La empresa EMASAJER S.A. tiene que unir mediante canales todas las ciudades del
+ * valle del Jerte (Cáceres). Calcula qué canales y de qué longitud deben construirse
+ * partiendo del grafo con las distancias entre las ciudades y asumiendo las siguientes
+ * premisas:
+ *      − el coste de abrir cada nuevo canal es casi prohibitivo, luego la solución final
+ *          debe tener un número mínimo de canales.
+ *      − el Ministerio de Fomento nos subvenciona por Kms de canal, luego los canales
+ *          deben ser de la longitud máxima posible.
+ */
+
+double distanciaEuclidea(const double x1, const double y1, const double x2, const double y2)
+{
+    return std::sqrt(std::pow(x1 - x2, 2) + std::pow(y1 - y2, 2));
+}
+
+template <class T>
+GrafoP<T> unirCiudadesCaceres(Grafo gCiudadesAdyacencia, std::vector<Ciudad> vCiudades)
+{
+    GrafoP<T> gCiudadesUnidas(gCiudadesAdyacencia.numVert());
+    for (int i = 0; i < gCiudadesAdyacencia.numVert(); i++)
+    {
+        for (int j = 0; j < gCiudadesAdyacencia.numVert(); j++)
+        {
+            gCiudadesUnidas[i][j] = (-1) * distaciaEuclidea(vCiudades[i].x, vCiudades[i].y, vCiudades[j].x, vCiudades[j].y);
+        }
+    }
+
+    // MST DE COSTE MAXIMO
+    gCiudadesUnidas = Kruskall(gCiudadesUnidas);
+
+    for (int i = 0; i < gCiudadesAdyacencia.numVert(); i++)
+    {
+        for (int j = 0; j < gCiudadesAdyacencia.numVert(); j++)
+        {
+            gCiudadesUnidas[i][j] *= (-1)
+        }
+    }
+    return gCiudadesUnidas;
+}
+
+/**
+ * Ejercicio 5 P8
+ *
+ * La nueva compañía de telefonía RETEUNI3 tiene que conectar entre sí, con fibra
+ * óptica, todas y cada una de las ciudades del país. Partiendo del grafo que representa las
+ * distancias entre todas las ciudades del mismo, implementad un subprograma que
+ * calcule la longitud mínima de fibra óptica necesaria para realizar dicha conexión
+ * --> matriz<Costes>
+ */
+
+template <class T>
+T reteUni3(const GrafoP<T> grCiudades)
+{
+    GrafoP<T> grMinimas = Kruskal(grCiudades);
+    T totalDistancia = 0;
+    for (int i = 0; i < grMinimas.numVert(); i++)
+    {
+        for (int j = 0; j < grMinimas.numVert(); j++)
+        {
+            if (grMinimas[i][j] != GrafoP<T>::INFINITO)
+                totalDistancia = suma(grMinimas[i][j], totalDistancia);
+        }
+    }
+    return totalDistancia;
+}
+
+/**
+ * Ejercicio 6
+ * /* 6.-
+La empresa EMASAJER S.A. tiene que unir mediante canales todas las ciudades del
+valle del Jerte (Cáceres), teniendo en cuenta las siguientes premisas:
+
+− El coste de abrir cada nuevo canal es casi prohibitivo, luego la solución final debe
+tener un número mínimo de canales.
+
+− El Ministerio de Fomento nos subvenciona por m3/sg. de caudal, luego el
+conjunto de los canales debe admitir el mayor caudal posible; pero por otra parte,
+el coste de abrir cada canal es proporcional a su longitud, por lo que el conjunto de
+los canales también debería medir lo menos posible. Así pues, la solución óptima
+debería combinar adecuadamente ambos factores.
+
+
+1.-Dada la matriz de distancias entre las diferentes ciudades del valle del Jerte,
+2.-Matriz con los diferentes caudales máximos admisibles entre estas ciudades teniendo en
+cuenta su orografía,
+3.-La subvención que nos da Fomento por m3/sg. de caudal
+4.-y el coste por km. de canal,
+escribid un subprograma que calcule qué canales y de qué longitud y
+caudal deben construirse para minimizar el coste (Floyd) total de la red de canales.
+
+ */
+
+template <class T>
+GrafoP<T> uneCiudadesJerte2(const GrafoP<T> grDistanciasCiudades)
+{
+    return Kruskall(grDistanciasCiudades);
+}
+
+template <class T>
+GrafoP<T> calculaCostesCanales(GrafoP<T> grDistancias, const vector<T> subvencionCaudal, double dCosteCanal)
+{
+    GrafoP<T> grCostes(grDistancias.numVert());
+    for (int i = 0; i < grDistancias.numVert(); i++)
+    {
+        for (int j = 0; j < grDistancias.numVert(); j++)
+        {
+            if (grDistancias[i][j] != GrafoP<T>::INFINITO)
+            {
+                grCostes[i][j] = grDistancias[i][j] * dCosteCanal * (1 - subvencionCaudal[i]);
+                grCostes[j][i] = grDistancias[j][i] * dCosteCanal * (1 - subvencionCaudal[j]);
+            }
+            else
+                grCostes[i][j] = GrafoP<T>::INFINITO;
+        }
+    }
+}
+
+template <class T>
+matriz<T> calcularCostesMinimosRedCanales(const GrafoP<T> grDistanciasCiudades, const GrafoP<T> subvencionCaudal, const double dCosteCanal)
+{
+    GrafoP<T> grDistancias = uneCiudadesJerte2(grDistanciasCiudades);
+    GrafoP<T> costesCalculados = calculaCostesCanales(grDistancias, subvencionCaudal, dCosteCanal);
+    return Floyd(costesCalculados, std::vector<T>());
+}
+
+/* 7.-
+El archipiélago de Grecoland (Zuelandia) está formado únicamente por dos islas,
+Fobos y Deimos, que tienen n1 y n2 ciudades, respectivamente, de las cuales c1 y c2 son
+costeras. Se dispone de las coordenadas cartesianas (x, y) de todas y cada una de las
+ciudades del archipiélago. El huracán Isadore acaba de devastar el archipiélago, con lo
+que todas las carreteras y puentes construidos en su día han desaparecido. En esta
+terrible situación se pide ayuda a la ONU, que acepta reconstruir el archipiélago (es
+decir volver a comunicar todas las ciudades del archipiélago) siempre que se haga al
+mínimo coste.
+De cara a poder comparar costes de posibles reconstrucciones se asume lo
+siguiente:
+1. El coste de construir cualquier carretera o cualquier puente es proporcional a su
+longitud (distancia euclídea entre las poblaciones de inicio y fin de la carretera o
+del puente).
+2. Cualquier puente que se construya siempre será más caro que cualquier carretera
+que se construya.
+De cara a poder calcular los costes de viajar entre cualquier ciudad del
+archipiélago se considerará lo siguiente:
+1. El coste directo de viajar, es decir de utilización de una carretera o de un puente,
+coincidirá con su longitud (distancia euclídea entre las poblaciones origen y
+destino de la carretera o del puente).
+En estas condiciones, implementa un subprograma que calcule el coste mínimo
+de viajar entre dos ciudades de Grecoland, origen y destino, después de haberse
+reconstruido el archipiélago, dados los siguientes datos:
+1. Lista de ciudades de Fobos representadas mediante sus coordenadas cartesianas.
+2. Lista de ciudades de Deimos representadas mediante sus coordenadas
+cartesianas.
+3. Lista de ciudades costeras de Fobos.
+4. Lista de ciudades costeras de Deimos.
+5. Ciudad origen del viaje.
+6. Ciudad destino del viaje.
+*/
 
 int main()
 {
