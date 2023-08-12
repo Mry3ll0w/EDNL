@@ -1273,39 +1273,6 @@ matriz<T> calcularCostesMinimosRedCanales(const GrafoP<T> grDistanciasCiudades, 
     return Floyd(costesCalculados, std::vector<T>());
 }
 
-/* 7.-
-El archipiélago de Grecoland (Zuelandia) está formado únicamente por dos islas,
-Fobos y Deimos, que tienen n1 y n2 ciudades, respectivamente, de las cuales c1 y c2 son
-costeras. Se dispone de las coordenadas cartesianas (x, y) de todas y cada una de las
-ciudades del archipiélago. El huracán Isadore acaba de devastar el archipiélago, con lo
-que todas las carreteras y puentes construidos en su día han desaparecido. En esta
-terrible situación se pide ayuda a la ONU, que acepta reconstruir el archipiélago (es
-decir volver a comunicar todas las ciudades del archipiélago) siempre que se haga al
-mínimo coste.
-De cara a poder comparar costes de posibles reconstrucciones se asume lo
-siguiente:
-1. El coste de construir cualquier carretera o cualquier puente es proporcional a su
-longitud (distancia euclídea entre las poblaciones de inicio y fin de la carretera o
-del puente).
-2. Cualquier puente que se construya siempre será más caro que cualquier carretera
-que se construya.
-De cara a poder calcular los costes de viajar entre cualquier ciudad del
-archipiélago se considerará lo siguiente:
-1. El coste directo de viajar, es decir de utilización de una carretera o de un puente,
-coincidirá con su longitud (distancia euclídea entre las poblaciones origen y
-destino de la carretera o del puente).
-En estas condiciones, implementa un subprograma que calcule el coste mínimo
-de viajar entre dos ciudades de Grecoland, origen y destino, después de haberse
-reconstruido el archipiélago, dados los siguientes datos:
-1. Lista de ciudades de Fobos representadas mediante sus coordenadas cartesianas.
-2. Lista de ciudades de Deimos representadas mediante sus coordenadas
-cartesianas.
-3. Lista de ciudades costeras de Fobos.
-4. Lista de ciudades costeras de Deimos.
-5. Ciudad origen del viaje.
-6. Ciudad destino del viaje.
-*/
-
 int main()
 {
 

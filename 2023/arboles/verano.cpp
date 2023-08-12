@@ -439,6 +439,349 @@ void podarAbb(Abb<T> &ab, T &elemento)
     }
 }
 
+/**
+ * Ejercicio 2 P4 Arboles
+ * Un árbol binario de búsqueda se puede equilibrar realizando el recorrido en inorden
+ * del árbol para obtener el listado ordenado de sus elementos y a continuación, repartir
+ * equitativamente los elementos a izquierda y derecha colocando la mediana en la raíz y
+ * construyendo recursivamente los subárboles izquierdo y derecho de cada nodo.
+ * Implementa este algoritmo para equilibrar un ABB.
+ */
+
+template <class T>
+std::vector<T> recorreAbbInorden(Abb<T> &ab)
+{
+    std::vector<T> vEltos;
+    if (!ab.vacio())
+    {
+        recorreAbbInorden(ab.izqdo());
+        vEltos.push_back(ab.elemento());
+        recorreAbbInorden(ab.drcho());
+    }
+    return vEltos;
+}
+
+template <class T>
+void equilibrarAbbRec(std::vector<T> eltos, Abb<T> &A, int ini, int fin) // Se inserta de forma sencilla mediante el usa de la insercion binaria
+{
+    if (fin != ini)
+    {
+        int pos = (fin - ini) / 2 + ini;
+        A.insertar(eltos[pos]);
+        equilibrarRec(eltos, A, ini, pos);
+        equilibrarRec(eltos, A, pos + 1, fin);
+    }
+}
+
+template <class T>
+void equilibrarAbb(Abb<T> &ab)
+{
+
+    if (!ab.vacio())
+    {
+        auto eltos = recorreAbbInorden(ab);
+        equilibrarAbbRec(eltos, ab, 0, eltos.size());
+    }
+}
+
+/**
+ * Ejercicio 3
+ * Dados dos conjuntos representados mediante árboles binarios de búsqueda,
+implementa la operación unión de dos conjuntos que devuelva como resultado otro
+conjunto que sea la unión de ambos, representado por un ABB equilibrado.
+ */
+
+template <class T>
+void unionAbbRec(Abb<T> &abDestino, Abb<T> &abOr)
+{
+    if (!abOr.vacio())
+    {
+        abDestino.insertar(abOr.elemento());
+        unionAbbRec(abDestino, abOr.izqdo());
+        unionAbbRec(abDestino, abOr.drcho());
+    }
+}
+
+template <class T>
+Abb<T> unionAbb(Abb<T> &ab1, Abb<T> &ab2)
+{
+    Abb<T> abDestino = ab1;
+    unionAbbRec(abDestino, ab2);
+    equilibrarAbb(abDestino);
+    return abDestino;
+}
+
+/**
+ * Ejercicio 4 Interseccion
+ * Dados dos conjuntos representados mediante árboles binarios de búsqueda,
+implementa la operación intersección de dos conjuntos, que devuelva como resultado
+otro conjunto que sea la intersección de ambos. El resultado debe quedar en un árbol
+equilibrado.
+ */
+
+template <class T>
+Abb<T> interseccionAbb(Abb<T> ab1, Abb<T> ab2)
+{
+    std::vector<T> v1 = recorreAbbInorden(ab1);
+    std::vector<T> v2 = recorreAbbInorden(ab2);
+
+    Abb<T> abDestino;
+    std::vector<T> vInterseccion;
+    for (auto i : v1)
+    {
+        int j = 0;
+        bool bFound = false;
+        while (!bFound && j < v2.size())
+        {
+            bFound = i == v2[j];
+            j++;
+        }
+        if (!bFound)
+            vInterseccion.push_back(i);
+    }
+    for (auto i : v2)
+    {
+        int j = 0;
+        bool bFound = false;
+        while (!bFound && j < v1.size())
+        {
+            bFound = i == v1[j];
+            j++;
+        }
+        if (!bFound)
+            vInterseccion.push_back(i);
+    }
+
+    equilibrarAbbRec(vInterseccion, abDestino, 0, v1.size() + v2.size());
+    return abDestino;
+}
+
+/**
+ * Practica 5 Popurri de problemas de arboles
+ */
+
+/**
+ * Ejercicio 1: Dado un árbol binario de enteros donde el valor de cada nodo es menor
+ * que el de sus hijos,  implementa  un  subprograma  para  eliminar  un  valor  del
+ * mismo  preservando  la propiedad  de  orden  establecida.
+ * Explica  razonadamente  la  elección  de  la  estructura  de datos
+ */
+template <class T>
+void reordenaAbin(Abin<T> &abin, typename Abin<T>::nodo nd)
+{
+    if (nd != Abin<T>::NODO_NULO)
+    {
+
+        if (abin.elemento(abin.hijoIzqdo(nd)) != Abin<T>::NODO_NULO)
+        {
+            if (abin.elemento(abin.hijoIzqdo(nd)) < abin.elemento(nd))
+            {
+                std::swap(abin.elemento(nd), abin.elemento(abin.hijoIzqdo(nd)));
+            }
+        }
+        if (abin.elemento(abin.hijoDrcho(nd)) != Abin<T>::NODO_NULO)
+        {
+            if (abin.elemento(abin.hijoDrcho(nd)) < abin.elemento(nd))
+            {
+                std::swap(abin.elemento(nd), abin.elemento(abin.hijoDrcho(nd)));
+            }
+        }
+        reordenaAbin(abin, abin.hijoDrcho(nd));
+        reordenaAbin(abin, abin.hijoIzqdo(nd));
+    }
+}
+
+template <class T>
+void eliminaElementoAbin(Abin<T> &abin, typename Abin<T>::nodo nd, const int &elemento)
+{
+    bool bEliminado = false;
+    if (nd != Abin<T>::NODO_NULO && !bEliminado)
+    {
+        eliminaElementoAbin(abin, abin.hijoDrcho(nd), elemento);
+        eliminaElementoAbin(abin, abin.hijoIzqdo(nd), elemento);
+
+        // Caso el nodo a eliminar es hijo de nd
+        if (abin.elemento(abin.hijoIzqdo(nd)) == elemento)
+        {
+            abin.eliminarhijoIzqdo(nd);
+            bEliminado = true;
+        }
+
+        if (abin.elemento(abin.hijoDrcho(nd)) == elemento)
+        {
+            abin.eliminarhijoIzqdo(nd);
+            bEliminado = true;
+        }
+
+        if (abin.elemento(nd) == elemento)
+        {
+            if (nd == abin.raiz())
+            {
+                abin.eliminarraiz();
+                bEliminado = true;
+            }
+            else
+            {
+                auto nodoPadre = abin.padre(nd);
+                if (abin.hijoDrcho(nodoPadre) == nd)
+                {
+                    abin.eliminarhijoDrcho(nodoPadre);
+                    bEliminado = true;
+                }
+                if (abin.hijoIzqdo(nodoPadre) == nd)
+                {
+                    abin.eliminarhijoIzqdo(nodoPadre);
+                    bEliminado = true;
+                }
+            }
+        }
+    }
+    if (bEliminado)
+        reordenaAbin(abin, abin.raiz());
+}
+
+/**
+ * Primer Parcial EDNL 2022
+ * Dado un árbol binario de un tipo genérico T calcular el número de nodos que siendo hermanos entre
+ * sí tienen misma raíz y sus subárboles son reflejados (respecto a sus elementos)
+ */
+
+template <class T>
+bool sonReflejados(Abin<T> abin, typename Abin<T>::nodo n1, typename Abin<T>::nodo n2) //! La clave esta en comprobar los nodos actuales y sus subarboles a la vez.
+{
+    // Base case: If both trees are empty, they are mirrors
+    if (n1 == Abin<T>::NODO_NULO && n2 == Abin<T>::NODO_NULO)
+        return true;
+
+    // If only one tree is empty, they are not mirrors
+    if (n1 == Abin<T>::NODO_NULO || n2 == Abin<T>::NODO_NULO)
+        return false;
+
+    // If both trees are not empty, they are mirrors if:
+    // 1: The roots contain the same value
+    // 2: The right subtree of the first tree is mirror of the left subtree of the second tree
+    // 3: The left subtree of the first tree is mirror of the right subtree of the second tree
+    return (abin.elemento(n1) == abin.elemento(n2) &&
+            sonReflejados(abin, abin.hijoIzqdo(n1), abin.hijoDrcho(n2)) &&
+            sonReflejados(abin, abin.hijoDrcho(n1), abin.hijoIzqdo(n2)));
+}
+
+template <class T>
+void cuentaReflejadosRec(Abin<T> abin, typename Abin<T>::nodo nd, int &iReflejados)
+{
+    if (nd != Abin<T>::NODO_NULO)
+    {
+        if (sonReflejados(abin, abin.hijoIzqdo(nd), abin.hijoDrcho(nd)))
+            iReflejados += 2;
+        cuentaReflejadosRec(abin, abin.hijoDrcho(nd), iReflejados);
+        cuentaReflejadosRec(abin, abin.hijoIzqdo(nd), iReflejados);
+    }
+}
+
+template <class T>
+int cuentaNodosReflejados(Abin<T> abin, typename Abin<T>::nodo nd)
+{
+    if (abin.arbolVacio())
+        return 0;
+    else
+    {
+        int iReflejados = 0;
+        cuentaReflejadosRec(abin, abin.raiz(), iReflejados);
+        return iReflejados;
+    }
+}
+
+/**
+ * Examen Septiembre 2022
+ * Construye una función que, dado un Árbol Binario, devuelva true si es un AVL y false en el caso contrario
+ */
+
+// Un avl: es un abb con un factor de desequilibrio de valor absoluto 0 o 1
+
+// Un abb es abin solo que hijo izquierdo < padre < hijoDerecho
+
+template <class T>
+bool abinEsAbb(Abin<T> &abin, typename Abin<T>::nodo nd)
+{
+    bool bCumplePropiedad = true;
+    if (nd != Abin<T>::NODO_NULO && bCumplePropiedad)
+    {
+        if (abin.hijoDrcho(nd) != Abin<T>::NODO_NULO)
+        {
+            bCumplePropiedad = abin.elemento(nd) < abin.elemento(abin.hijoDrcho(nd));
+        }
+        if (abin.hijoIzqdo(nd) != Abin<T>::NODO_NULO)
+        {
+            bCumplePropiedad = abin.elemento(nd) > abin.elemento(abin.hijoIzqdo(nd));
+        }
+        return bCumplePropiedad && abinEsAbb(abin, abin.hijoDrcho(nd)) && abinEsAbb(abin, abin.hijoIzqdo(nd));
+    }
+    else
+    {
+        return bCumplePropiedad;
+    }
+}
+
+// Desequilibrio: maxima diferencias entre las alturas del nodo
+
+template <class T>
+int alturaNodoAbin(Abin<T> abin, typename Abin<T>::nodo nd)
+{
+    if (nd == Abin<T>::NODO_NULO)
+    {
+        return -1;
+    }
+    else
+    {
+        return 1 + std::max(alturaNodoAbin(abin, abin.hijoDrcho(nd)), alturaNodoAbin(abin, abin.hijoIzqdo(nd)));
+    }
+}
+
+template <class T>
+int difAlturaAbin(Abin<T> abin, typename Abin<T>::nodo nd)
+{
+    return std::abs(alturaNodoAbin(abin, abin.hijoIzqdo(nd)), alturaNodoAbin(abin, abin.hijoDrcho(nd)));
+}
+
+template <class T>
+int desequilibrioAbinRec(Abin<T> abin, typename Abin<T>::nodo nd)
+{
+    if (nd == Abin<T>::NODO_NULO)
+    {
+        return 0;
+    }
+    else
+    {
+        return std::max(difAlturaAbin(abin, nd), difAlturaAbin(abin, abin.hijoIzqdo(nd)), difAlturaAbin(abin, abin.hijoDrcho(nd)));
+    }
+}
+
+// COMPROBAR DESEQUILIBRIO Y CUERPO DE LA FUNCION
+
+template <class T>
+bool compruebaDesequilibrio(Abin<T> abin, typename Abin<T>::nodo nd)
+{
+    if (nd == Abin<T>::NODO_NULO)
+    {
+        return true;
+    }
+    else
+    {
+        int iDesequilibrioNodo = desequilibrioAbinRec(abin, nd);
+
+        return (desequilibrioAbin == 0 || iDesequilibrioNodo == 1) && compruebaDesequilibrio(abin, abin.hijoIzqdo(nd)) && compruebaDesequilibrio(abin, abin.hijoDrcho(nd));
+    }
+}
+
+template <class T>
+bool abinEsAVL(Abin<T> abin)
+{
+    if (abin.arbolVacio())
+        return true;
+    else
+        return abinEsAbb(abin, abin.raiz()) && compruebaDesequilibrio(abin, abin.raiz()); // Comprobamos que se cumplan ambos casos
+}
+
 int main()
 {
     Agen<int> A;
@@ -458,11 +801,12 @@ int main()
         A.insertarHermDrcho(n2, i);
     n2 = A.hermDrcho(n2);
 
-    printAgen(A.raiz(), A);
-    std::cout << "COMENZAMOS PODA" << endl;
-    podaAgen(A, 3);
+    Abin<char> abin;
+    abin.insertaRaiz('a');
+    abin.insertarhijoIzqdo(abin.raiz(), 'b');
+    abin.insertarhijoDrcho(abin.raiz(), 'b');
 
-    // printAgen(A.raiz(), A);
+    abin.insertarhijoIzqdo(abin.hijoIzqdo(abin.raiz()), 'c');
 
     return 0;
 }
