@@ -6,14 +6,35 @@ using namespace std; // Avoid using std:: ....
 
 /**
  * Teoria
+ *
  * 1) Aparte de una mejora en el problema de la busqueda ¿realizan alguna aportacion adicional los arboles?
+ *  Permiten la representacion de sistemas basados en jerarquías y/ representar sistemas en las que exista una
+ *  relación de descendencia entre nodos, pudiendo representar arboles genialógicos,etc.
+ *
  * 2) Un AVL es un ABB, pero el reciproco no es cierto ¿Estas de acuerdo?
+ *  Estoy de acuerdo porque un AVL cumple todas las caracteristicas de un abb, ya que mantiene su relación de orden,
+ *  pero un ABB no tiene porque mantener una relacion de desequilibrio con valor absoluto 1 o O.
+ *
  * 3) Explicar ventajas e inconvenientes que plantean las colas con prioridad frente a un APO.
+ *  Ventajas CPrioridad: Acceso rapido a elementos que tienen una relación, permitiendo facil acceso y eliminación de
+ *  elementos, útiles para algoritmos como Dijkstra.
+ *  Inconvenientes CPrioridad: Busqueda del elemento con mayor prioridad, cosa que en los APOS es mas sencillo de acceder,
+ *  estos permiten un aceso rapido y eliminación y busqueda, ademas permiten un uso eficiente con algoritmos como
+ *  Prim y Kruskall.
+ *
+ *
+ *
  * 4) ¿Que estrategia de union (por altura o por tamaño) combina mejor con la tecnica de compresión de caminos con la
  *    tecnica de compresion de caminos del TAD Particion ?
+ *      Combina mejor la estrategia de unión por altura que por tamañao, puesto que permite que la ramas que se unen no
+ *      crezcan demasiado, teniendo asi un arbol mas equilibrado, mejorando el rendimiento de las búsquedas y la
+ *      operacón de unión.
+ *
  * 5) Todos los subgrafos de n-1 aristas de un grafo de n nodos ¿son árboles generadores? ¿O son solo subgrafos de
  * coste minimo?
- *
+ *  Son siempre árboles generadores, ya que en un grafo no dirigido de n nodos, un arbol es una estructura conexa
+ *  y acíclica que abarva todos los nodos del grafo, esto no implica que sea de coste minimo, ya que solo se garantiza
+ * que sean acíclicas y conexas ( al usar arboles generadores) no los costes minimoss
  */
 
 /**
