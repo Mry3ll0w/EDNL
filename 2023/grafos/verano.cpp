@@ -253,7 +253,7 @@ struct Pared
 // Adyacente si esta dentro del movimiento permitido, haciendo asi que se limiten los movimientos de Dijkstra.
 bool sonAdyacentes(Casilla c1, Casilla c2)
 {
-    return std::abs(c1.iFila - c2.iFila + c1.iColumna - c2.iColumna) == 1; // Cuando difieren en 1
+    return std::abs(c1.iFila - c2.iFila + c1.iColumna - c2.iColumna) == 1; // Cuando difieren en 1, distancia euclidea
 }
 
 // Tenemos que comprobar que los nodos del grafo son adyacentes, por lo que pasamos
@@ -339,7 +339,6 @@ std::pair<int, std::vector<Casilla>> caminoMasCortoLaberinto2D(const int &iDimen
         aCamino.push_back(NodoToCasilla(i, iDimensionLaberinto));
         i = P[i];
     }
-
     return std::make_pair(aCostesMinimos[nodoDestino], aCamino);
 }
 

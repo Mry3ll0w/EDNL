@@ -9,8 +9,11 @@ using namespace std; // Avoid using std:: ....
  *  EJ: Laberinto de NXN ==> grafo de nxn ==> matriz de costes/adyacencia ==> n2 x n2
  *
  * 2) OBJETIVO DE LA PREGUNTA
+ *
  *      a) Te piden ir de A -> B, caminos minimos ==> Dijsktra ==> Laberinto, Reparto, Viajero Alergico
  *      b) Implica conocer todos los caminos ==> Floyd
+ *      c) Ejemplo Kruskal==> Te piden generar las carreteras de unas islas, o esten todos nodos entre si. !!SI HAY KRUSKAL SUELE HABER PARTICIONES
+ * º    d) Ejemplo particiones=> Comprobar el numero de islas que hay en archipielago, hallar grafos conexos.
  *
  * 3) RESULTADO de pregunta
  *
