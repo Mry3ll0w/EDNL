@@ -28,7 +28,7 @@
  * mínimo de saltos necesarios para conseguirlo
  *
  * Datos
- * Laberinto es NxM
+ * Laberinto es NxM ==> podemos asumir que se trata de Mismo tipo de laberinto que el de practicas.
  * lista de casillas con trampa
  * lista de casillas con caballero
  *
@@ -42,6 +42,10 @@ struct Casilla
 typedef Casilla Trampa;
 typedef Casilla Caballero;
 
+std::pair<int, int> CasillaNodo()
+{
+}
+
 bool esAmenazadoPorCaballero(const Caballero &c)
 {
 }
@@ -49,6 +53,27 @@ bool esAmenazadoPorCaballero(const Caballero &c)
 // Determina el movimiento del Fauno
 bool esColindanteFauno(Casilla casillaOrigen, Casilla cDestino)
 {
+}
+
+template <class T>
+std::vector<int> nodosAdyacentesMovimientoCaballo(Casilla c)
+{
+}
+
+// Para pasar de nodo a casilla
+template <class T>
+Casilla NodoToCasilla(const int iNumNodo, const int n)
+{
+    Casilla c;
+    c.iFila = iNumNodo / (n - 1);
+    c.iColumna = iNumNodo & (n - 1);
+    return c;
+}
+
+// Para pasar de Casilla a Nodo
+int CasillaToNodo(const Casilla &c, const int &n)
+{
+    return (c.x * n + c.y);
 }
 
 int main()
